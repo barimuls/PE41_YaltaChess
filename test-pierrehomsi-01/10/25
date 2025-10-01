@@ -1,0 +1,7 @@
+def mariussolo(t):
+    état="actif"
+    if t>18 :
+        état=("inactif","aigri","en-train-de-faire-des-trucs-de-dingue-dans-sa-chambre")
+    elif t>13 and t<18 :
+        état="blasé"
+    return état
