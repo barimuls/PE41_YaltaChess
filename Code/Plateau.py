@@ -5,7 +5,7 @@
 
 class Arete:
     def __init__(self, orientation, sommet_arrive):
-        self.orientation = orientation  # "vertical", "horizontal", "diag1", "diag2", ...
+        self.orientation = orientation  # "chiffre", "lettre", "diag_a1", "diag_h1", "cavalier" ...
         self.sommet_arrive = sommet_arrive
 
     def __repr__(self):
@@ -74,6 +74,22 @@ class Graph:
             ligne_str = "  ".join(f"{c.nom}:{'x' if c.piece is None else c.piece}" for c in cases_ligne)
             print(ligne_str)
     
+"""
+    def remplir_arete_chiffre(self): 
+        
+    def remplir_arete_lettre(self): 
+    def remplir_arete_diag_a1(self): 
+    def remplir_arete_diag_h1(self): 
+
+    def remplir_arete_cavalier(self):
+
+    def remplir_arete(self): 
+        remlir_arete_chiffre()
+        remplir_arete_lettre()
+        remplir_arete_diag_a1()
+        remplir_arete_diag_h1()
+        remplir_arete_cavalier()
+""" 
 
 #------Initialisation du plateau hexagonal carré (type Yalta)------
 
