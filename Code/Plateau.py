@@ -21,6 +21,14 @@ class Case:
     def ajouter_arete(self, orientation, sommet_arrive):
         self.aretes.append(Arete(orientation, sommet_arrive))
 
+    def recuperer_arete_oriente(self,orientation):
+        sortie = []
+        taille = len(self.aretes)
+        for i in range (0,taille-1):
+            if (self.aretes[i].orientation == orientation) :
+                sortie.append(self.aretes[i])
+        return sortie
+
     def __repr__(self):
         if self.piece is None:
             piece_str = "vide"
@@ -63,23 +71,16 @@ class Graph:
         for ligne in lignes:
             # Récupère toutes les cases de cette ligne (dans l'ordre alphabétique)
             cases_ligne = [self.sommets[n] for n in noms if int(n[1:]) == ligne]
-            ligne_str = "  ".join(f"{c.nom}:{'vi' if c.piece is None else c.piece}" for c in cases_ligne)
+            ligne_str = "  ".join(f"{c.nom}:{'x' if c.piece is None else c.piece}" for c in cases_ligne)
             print(ligne_str)
     
-
-
 
 #------Initialisation du plateau hexagonal carré (type Yalta)------
 
 def creer_plateau():
     plateau = Graph()
 
-    # Colonnes 'a' à 'l' (12 colonnes)
-    colonnes = [chr(i) for i in range(ord('a'), ord('l') + 1)]
-    lignes = range(1, 13)
-
-    # Définition du masque de plateau (forme hexagonale)
-    # chaque ligne a un certain nombre de colonnes valides
+    # Les combinaisons qui existe
     masque = {
         1:  ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
         2:  ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
@@ -95,7 +96,7 @@ def creer_plateau():
         12: ('e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'),
     }
 
-    # 1️⃣ Créer les cases existantes
+    # Créer les cases existantes
     for ligne, cols in masque.items():
         for col in cols:
             plateau.ajouter_case(f"{col}{ligne}")
