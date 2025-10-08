@@ -7,6 +7,8 @@ le retour bis
 
 Tuto pour mettre un fichier en ligne : 
 
+git pull
+
 git add README.md
 
 git commit -m " ajout des explications pour un ajout"
