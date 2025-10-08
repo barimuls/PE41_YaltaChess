@@ -122,6 +122,11 @@ def creer_plateau():
 #----------------------Test----------------------
 if __name__ == "__main__":
     plateau = creer_plateau()
-    plateau.afficher()
+    #plateau.afficher()
     #print(f"\nNombre total de cases : {len(plateau.sommets)}")
 
+
+    caseA2=Case('A2',None)
+    print(caseA2.nom[0])
+
+    
