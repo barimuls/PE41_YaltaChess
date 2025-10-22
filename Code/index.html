@@ -9,6 +9,8 @@
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
+            background-color: #eae9e9;
+            color: #363636;
         }
 
         /* Menu vertical */
@@ -59,11 +61,20 @@
             padding: 20px;
             flex-grow: 1;
         }
-
-        body {
-            background-color: #eae9e9;
-            color: #363636;
+        
+        .mon-bouton {
+        background-color: green;
+        color: white;
+        font-size: 18px;
+        padding: 12px 24px;
+        margin: 30px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        left: 50px; /* déplacement horizontal */
         }
+
     </style>
 </head>
 
@@ -85,7 +96,7 @@
     <main>
         <h1>Bienvenue sur ECL Echec Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
-        <button onclick="afficherMessage()">Jouer</button>
+        <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
         <p id="message"></p>
     </main>
     <script>
