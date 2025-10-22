@@ -74,13 +74,26 @@
         position: relative;
         text-align: center;
         box-shadow: 0 4px #2a2a2a;
-        transition: box-shadow 0.3s, transform 0.3s;
+        transition: transform 0.3s ease;
         width: 150px;
         height: 70px;
         }
 
-    
+        /* Animation de clic */
+        .mon-bouton:active {
+        transform: scale(0.95); /* effet de "pression" */
+        }
 
+        /* Animation personnalisée déclenchée par JS */
+        .anime {
+        animation: rebond 0.3s ease;
+        }
+
+        @keyframes rebond {
+        0%   { transform: scale(1); }
+        50%  { transform: scale(1.2); }
+        100% { transform: scale(1); }
+        }
 
 
     </style>
