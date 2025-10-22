@@ -75,6 +75,15 @@
         left: 150px; /* déplacement horizontal */
         }
 
+        .centrage-bouton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px; /* hauteur du bloc contenant le bouton */
+        }
+
+
+
     </style>
 </head>
 
@@ -96,7 +105,9 @@
     <main>
         <h1>Bienvenue sur ECL Echec Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
-        <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
+        <div class="centrage-bouton">
+            <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
+        </div>
         <p id="message"></p>
     </main>
     <script>
