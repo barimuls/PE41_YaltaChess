@@ -35,7 +35,7 @@ def arete_par_lettre(self):
 
 
 ## test
-testA2=Case('i5',None)
+testA2=Case('e9',None)
 arete_par_lettre(testA2)
 
 def arete_par_chiffre(self):
