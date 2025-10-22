@@ -67,18 +67,15 @@
         color: #eae9e9;
         font-size: 18px;
         padding: 12px 24px;
-        margin: 30px;
+        margin-top: 30px;
         border-radius: 8px;
         border: none;
         cursor: pointer;
         position: relative;
+        text-align: center;
         }
 
-        .centrage-bouton {
-        display: flex;
-        text-align: center;
-        margin-top : 40px;
-        }
+    
 
 
 
@@ -103,9 +100,7 @@
     <main>
         <h1>Bienvenue sur ECL Echec Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
-        <div class="centrage-bouton">
-            <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
-        </div>
+        <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
         <p id="message"></p>
     </main>
     <script>
