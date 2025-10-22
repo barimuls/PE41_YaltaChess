@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Exemple Site Web</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+        /* Menu vertical */
+        nav {
+            width: 200px;
+            background-color: #333;
+            color: white;
+            height: 100vh;
+            /* pleine hauteur */
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            /* reste en place même si on scrolle */
+        }
+
+        nav .logo {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        nav ul li {
+            margin: 0;
+        }
+
+        nav ul li a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        /* Contenu principal */
+        main {
+            margin-left: 200px;
+            /* espace pour le menu */
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        body {
+            background-color: #292929;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bandeau avec logo et menu -->
+    <header>
+        <div class="logo">
+            <img src="C:\Users\ouvre\Documents\python\Html\logo.jpg" alt="Logo du site">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index">Accueil</a></li>
+                <li><a href="test">À propos</a></li>
+                <li><a href="test2">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <main>
+        <h1>Bienvenue sur mon site !</h1>
+        <p>Ceci est un exemple simple d’une page web avec un bandeau, un logo et un menu de navigation.</p>
+        <button onclick="afficherMessage()">Cliquez-moi</button>
+        <p id="message"></p>
+    </main>
+    <script>
+        // Déclaration d'une variable
+        const y = 10;
+
+        // Affichage dans la console
+        console.log("Valeur de y * 10 :", y * 10);
+
+        // Fonction appelée quand on clique sur le bouton
+        function afficherMessage() {
+            // Affiche le résultat dans la page
+            document.getElementById("message").innerText = "y * 10 = " + (y * 10);
+
+            // Affiche également dans la console
+            console.log("Image cliquée, y * 10 =", y * 10);
+        }
+    </script>
+</body>
+</html>
