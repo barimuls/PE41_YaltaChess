@@ -40,25 +40,29 @@ class Case:
         elif chiffre==12:
             voisins.append(lettre+str(11))
         else:
-            if lettre in {'e','f','g','h'}:
-                if chiffre==4:
-                    voisins.append(lettre+str(9))
-                    voisins.append(lettre+str(3))
-                elif chiffre==9:
-                    voisins.append(lettre+str(10))
-                    voisins.append(lettre+str(4))
-        
-            elif lettre in {'i','j','k','l'}:
-                if chiffre==5:
-                    voisins.append(lettre+str(9))
-                    voisins.append(lettre+str(6))
-                elif chiffre==9:
-                    voisins.append(lettre+str(5))
-                    voisins.append(lettre+str(10))
-
-            else:
+            if lettre in {'a','b','c','d'}:
                 voisins.append(lettre+str(chiffre+1))
                 voisins.append(lettre+str(chiffre-1))
+            elif lettre in {'e','f','g','h'}:
+                if chiffre !=4 and chiffre !=9:
+                    voisins.append(lettre+str(chiffre+1))
+                    voisins.append(lettre+str(chiffre-1))
+                elif chiffre==4:
+                    voisins.append(lettre+str(3))
+                    voisins.append(lettre+str(9))
+                else: #chiffre==9
+                    voisins.append(lettre+str(10))
+                    voisins.append(lettre+str(4))
+            else: #lettre in {'i','j','k','l'}
+                if chiffre !=5 and chiffre !=9:
+                    voisins.append(lettre+str(chiffre+1))
+                    voisins.append(lettre+str(chiffre-1))
+                elif chiffre==5:
+                    voisins.append(lettre+str(6))
+                    voisins.append(lettre+str(9))
+                else: #chiffre==9
+                    voisins.append(lettre+str(10))
+                    voisins.append(lettre+str(5))
         return voisins
     
     def voisin_arete_tour_par_chiffre(self):
@@ -100,22 +104,154 @@ class Case:
                 
         return voisins
 
+    def voisin_arete_fou_a1(self):
+        voisins=[]
+        lettre=str(self.nom[0])
+        chiffre=int(self.nom[1:])
+        if (lettre=='h' and chiffre==1)or(lettre=='a' and chiffre==8)or(lettre=='l' and chiffre==12):
+            return voisins
+        elif lettre=='a' or chiffre==1:
+            voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+        elif lettre=='h' or chiffre==12 :
+            if lettre =='i':
+                voisins.append('e'+str(11))
+            elif chiffre ==9:
+                voisins.append('g'+str(4))
+            elif lettre =='e':
+                voisins.append('i'+str(11))
+            else:
+                voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
+        elif lettre=='l' or chiffre==8:
+            if lettre =='i':
+                voisins.append('d'+str(7))
+            elif chiffre ==5:
+                voisins.append('k'+str(9))
+            else:
+                voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
+        else:
+
+            if chiffre ==4 and lettre in {'e','f','g'}:
+                voisins.append(chr(ord(lettre)+1)+str(9))
+                voisins.append(chr(ord(lettre)-1)+str(3))
+            elif chiffre ==4 and lettre == 'd':
+                voisins.append('i'+str(5))
+                voisins.append('c'+str(3))
+                voisins.append('e'+str(9))
+            elif chiffre ==9 and lettre in {'e','f','g'}:
+                voisins.append(chr(ord(lettre)-1)+str(4))
+                voisins.append(chr(ord(lettre)+1)+str(10))
+                if lettre =='e':
+                    voisins.append('i'+str(5))
+            elif lettre == 'e' and chiffre in {9,10,11}:
+                voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+                voisins.append('i'+str(chiffre-1))
+            elif lettre == 'i' and chiffre in {9,10,11}:
+                voisins.append('e'+str(chiffre+1))
+                if chiffre ==9:
+                    voisins.append('j'+str(5))
+                else :
+                    voisins.append('j'+str(chiffre-1))
+            elif chiffre ==9 and lettre in {'i','j','k'}:
+                voisins.append(chr(ord(lettre)+1)+str(5))
+                if lettre =='i':
+                    voisins.append('e'+str(10))
+                else:
+                    voisins.append(chr(ord(lettre)-1)+str(10))
+            elif chiffre ==5 and lettre in {'i','j','k'}:
+                voisins.append(chr(ord(lettre)+1)+str(6))
+                if lettre =='i':
+                    voisins.append('e'+str(6))
+                    voisins.append('d'+str(4))
+                else:
+                    voisins.append(chr(ord(lettre)-1)+str(9))
+            elif lettre == 'i' and chiffre in {5,6,7}:
+                voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+                if chiffre ==5:
+                    voisins.append('e'+str(9))
+                    voisins.append('d'+str(4))
+                else:
+                    voisins.append('d'+str(chiffre-1))
+            elif lettre == 'd'and chiffre in {5,6,7}:
+                voisins.append('i'+str(chiffre+1))
+                voisins.append('c'+str(chiffre-1))
+
+            
+            else:
+                voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
+                voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+        return voisins
+    
+    def voisin_arete_fou_h1(self):
+        voisins=[]
+        lettre=str(self.nom[0])
+        chiffre=int(self.nom[1:])
+        
+        if (lettre=='a' and chiffre==1)or(lettre=='h' and chiffre==12)or(lettre=='l' and chiffre==8):
+            return voisins
+        elif lettre=='a' or chiffre==8:
+            voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+        elif lettre=='h' or chiffre==1 :
+            if chiffre ==4:
+                voisins.append('g'+str(9))
+            else:
+                voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+        elif lettre=='l' or chiffre==12:
+            if chiffre ==9:
+                voisins.append('k'+str(5))
+            else:
+                voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+        
+        elif chiffre ==4 and lettre in {'f','g'}:
+            voisins.append(chr(ord(lettre)-1)+str(9))
+            voisins.append(chr(ord(lettre)+1)+str(3))
+        elif lettre =='e' and chiffre ==4:
+            voisins.append('i'+str(9))
+            voisins.append('d'+str(5))
+            voisins.append('f'+str(3))
+        elif chiffre ==9 and lettre in {'f','g'}:
+            voisins.append(chr(ord(lettre)+1)+str(4))
+            voisins.append(chr(ord(lettre)-1)+str(10))
+        elif lettre == 'e' and chiffre ==9:
+            voisins.append('f'+str(4))
+            voisins.append('i'+str(10))
+        elif lettre == 'e' and chiffre in {10,11}:
+            voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+            voisins.append('i'+str(chiffre+1))
+        elif lettre == 'i' and chiffre in {10,11}:
+            voisins.append('e'+str(chiffre-1))
+            voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+        elif chiffre ==9 and lettre == 'i':
+            voisins.append('e'+str(4))
+            voisins.append('d'+str(5))
+            voisins.append('j'+str(10))
+        elif chiffre ==9 and lettre in {'j','k'}:
+            voisins.append(chr(ord(lettre)-1)+str(5))
+            voisins.append(chr(ord(lettre)+1)+str(10))
+        elif chiffre ==5 and lettre in {'j','k'}:
+            voisins.append(chr(ord(lettre)+1)+str(9))
+            voisins.append(chr(ord(lettre)-1)+str(6))
+        elif lettre == 'i' and chiffre ==5:
+            voisins.append('d'+str(6))
+            voisins.append('j'+str(9))
+        elif lettre == 'i' and chiffre in {6,7}:
+            voisins.append('d'+str(chiffre+1))
+            voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+        elif lettre == 'd'and chiffre in {6,7}:
+            voisins.append('i'+str(chiffre-1))
+            voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+        elif chiffre ==5 and lettre ==5:
+            voisins.append('d'+str(4))
+            voisins.append('i'+str(9))
+            voisins.append('c'+str(6))
+        else:
+            voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+            voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+
+        return voisins
     def aretes_appartient_case(self,arete):
         return arete in self.aretes
 
-    """def __repr__(self):
-        if self.piece is None:
-            piece_str = "vide"
-        else:
-            couleurs = {0: "Blanc", 1: "Noir", 2: "Rouge"}
-            roles = {0: "Pion", 1: "Tour", 2: "Cavalier", 3: "Fou", 4: "Reine", 5: "Roi"}
 
-            couleur = couleurs.get(self.piece.get("couleur"), "?")
-            role = roles.get(self.piece.get("role"), "?")
-            piece_str = f"{couleur} {role}"
-
-        return f"{self.nom} : {piece_str}""
-"""
 
 class Graph:
     def __init__(self):
@@ -173,9 +309,23 @@ class Graph:
             for sommet_arrive in l:
                 self.ajouter_arete(case.nom,sommet_arrive,'lettre')
 
+    def remplir_arete_fou_a1(self):
+        for case in self.sommets.values():
+            l = case.voisin_arete_fou_a1()
+            for sommet_arrive in l:
+                self.ajouter_arete(case.nom,sommet_arrive,'diag_a1')
+
+    def remplir_arete_fou_h1(self):
+        for case in self.sommets.values():
+            l = case.voisin_arete_fou_h1()
+            for sommet_arrive in l:
+                self.ajouter_arete(case.nom,sommet_arrive,'diag_h1')
+
     def remplir_arete(self):
         self.remplir_arete_tour_chiffre()
         self.remplir_arete_tour_lettre()
+        self.remplir_arete_fou_a1()
+        self.remplir_arete_fou_h1()
 
 
 #------Initialisation du plateau hexagonal carré (type Yalta)------
@@ -210,8 +360,8 @@ def creer_plateau():
 if __name__ == "__main__":
     plateau = creer_plateau()
     plateau.remplir_arete()
-    #plateau.afficher()
-    print(plateau.sommets['e9'].aretes)
+    plateau.afficher()
+    #print(plateau.sommets['e9'].aretes)
     #print(f"\nNombre total de cases : {len(plateau.sommets)}")
 
 
