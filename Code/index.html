@@ -32,6 +32,12 @@
             border-bottom: 1px solid #444;
         }
 
+        nav .ecl {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+        }
+
         nav ul {
             list-style: none;
             padding: 0;
@@ -142,6 +148,19 @@
             justify-content: center;
             align-items: center;
         }
+
+        .bouton-fermer:hover {
+            background-color: red;
+            color: white;
+            box-shadow: 0 4px #ab0101;
+        }
+
+        .mon-bouton:hover {
+            background-color: green;
+            color: white;
+            box-shadow: 0 4px rgb(0, 87, 0);
+        }
+
     </style>
 </head>
 
@@ -157,11 +176,14 @@
             <li><a href="test2">Services</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
+        <div class="ecl">
+            <img src="2024_LOGO-CENTRALE-H_BLANC.png" alt="ECL" width="160">
+        </div>
     </nav>
 
     <!-- Contenu principal -->
     <main>
-        <h1>Bienvenue sur ECL Echec Yalta !</h1>
+        <h1>Bienvenue sur PE41 Echecs Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
         <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
         <button class="mon-bouton" onclick="openModal()">Tutoriel</button>
@@ -170,8 +192,8 @@
         <div class="overlay" id="overlay">
             <div class="modal">
                 <span class="bouton-fermer" onclick="closeModal()">×</span>
-                <h2>Contenu de la modale</h2>
-                <p>Voici une page affichée au-dessus de l'autre.</p>
+                <h2>Tutoriel</h2>
+                <p>Voici la page du tutoriel.</p>
             </div>
         </div>
     </main>
