@@ -79,6 +79,22 @@
             height: 70px;
         }
 
+        .bouton-fermer {
+            background-color: #363636;
+            color: #eae9e9;
+            font-size: 30px;
+            margin-top: 30px;
+            border-radius: 8px;
+            padding: 10px 10px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            position: absolute;
+            text-align: center;
+            box-shadow: 0 4px #2a2a2a;
+            transition: transform 0.3s ease;
+        }
+
         /* Animation de clic */
         .mon-bouton:active {
             transform: scale(0.95);
@@ -109,8 +125,9 @@
             padding: 20px;
             border-radius: 8px;
             width: 80%;
-            max-width: 500px;
+            max-width: 700px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         .overlay {
@@ -151,16 +168,7 @@
 
         <div class="overlay" id="overlay">
             <div class="modal">
-                <span class="mon-bouton" onclick="closeModal()", id="fermer">×</span>
-                <style>
-                    #fermer {
-                        position: absolute;
-                        top: 10px;
-                        right: 20px;
-                        font-size: 30px;
-                        cursor: pointer;
-                    }
-                </style>
+                <span class="bouton-fermer" onclick="closeModal()">×</span>
                 <h2>Contenu de la modale</h2>
                 <p>Voici une page affichée au-dessus de l'autre.</p>
             </div>
