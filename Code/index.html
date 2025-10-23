@@ -61,41 +61,69 @@
             padding: 20px;
             flex-grow: 1;
         }
-        
+
         .mon-bouton {
-        background-color: #363636;
-        color: #eae9e9;
-        font-size: 30px;
-        padding: 12px 24px;
-        margin-top: 30px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        position: relative;
-        text-align: center;
-        box-shadow: 0 4px #2a2a2a;
-        transition: transform 0.3s ease;
-        width: 150px;
-        height: 70px;
+            background-color: #363636;
+            color: #eae9e9;
+            font-size: 30px;
+            padding: 12px 24px;
+            margin-top: 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 4px #2a2a2a;
+            transition: transform 0.3s ease;
+            width: 150px;
+            height: 70px;
         }
 
         /* Animation de clic */
         .mon-bouton:active {
-        transform: scale(0.95); /* effet de "pression" */
+            transform: scale(0.95);
+            /* effet de "pression" */
         }
 
         /* Animation personnalisée déclenchée par JS */
         .anime {
-        animation: rebond 0.3s ease;
+            animation: rebond 0.3s ease;
         }
 
         @keyframes rebond {
-        0%   { transform: scale(1); }
-        50%  { transform: scale(1.2); }
-        100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
 
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -118,7 +146,16 @@
         <h1>Bienvenue sur ECL Echec Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
         <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
+        <button class="mon-bouton" onclick="openModal()">Tutoriel</button>
         <p id="message"></p>
+
+        <div class="overlay" id="overlay">
+            <div class="modal">
+                <span class="mon-bouton" onclick="closeModal()">×</span>
+                <h2>Contenu de la modale</h2>
+                <p>Voici une page affichée au-dessus de l'autre.</p>
+            </div>
+        </div>
     </main>
     <script>
         // Déclaration d'une variable
@@ -135,6 +172,15 @@
             // Affiche également dans la console
             console.log("Image cliquée, y * 10 =", y * 10);
         }
+
+        function openModal() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('overlay').style.display = 'none';
+        }
     </script>
 </body>
+
 </html>
