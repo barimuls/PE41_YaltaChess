@@ -151,7 +151,16 @@
 
         <div class="overlay" id="overlay">
             <div class="modal">
-                <span class="mon-bouton" onclick="closeModal()">×</span>
+                <span class="mon-bouton" onclick="closeModal()", id="fermer">×</span>
+                <style>
+                    #fermer {
+                        position: absolute;
+                        top: 10px;
+                        right: 20px;
+                        font-size: 30px;
+                        cursor: pointer;
+                    }
+                </style>
                 <h2>Contenu de la modale</h2>
                 <p>Voici une page affichée au-dessus de l'autre.</p>
             </div>
