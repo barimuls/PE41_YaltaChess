@@ -163,6 +163,19 @@
             box-shadow: 0 4px rgb(0, 87, 0);
         }
 
+        .bloc-boutons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 500px;/* ajuste selon l'espace que tu veux */
+        }
+
+        .bloc-boutons button {
+            margin-bottom: 20px;
+        }
+
+
     </style>
 </head>
 
@@ -187,8 +200,10 @@
     <main>
         <h1>Bienvenue sur PE41 Echecs Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
-        <button class="mon-bouton" onclick="afficherMessage()">Jouer</button>
-        <button class="mon-bouton" onclick="openModal()">Tutoriel</button>
+        <div class="bloc-boutons">
+            <button class="mon-bouton" onclick="window.location.href='jeu.html'">Jouer</button>
+            <button class="mon-bouton" onclick="openModal()">Tutoriel</button>
+        </div>
         <p id="message"></p>
 
         <div class="overlay" id="overlay">
