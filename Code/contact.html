@@ -170,7 +170,7 @@
 
         .image-hover img {
             display: block;
-            width: 300px;
+            height: 30px;
             transition: filter 0.4s ease;
             filter: brightness(0.35) sepia(20) hue-rotate(0deg) saturate(0%) contrast(1);
         }
@@ -189,6 +189,7 @@
             height: 30px;
             transition: filter 0.4s ease;
         }
+
         .image-hv::before {
             content: "";
             position: absolute;
@@ -197,7 +198,8 @@
             width: 100%;
             height: 100%;
             background-color: #363636;
-            mix-blend-mode: lighten; /* ou try 'color' */
+            mix-blend-mode: lighten;
+            /* ou try 'color' */
             pointer-events: none;
             transition: opacity 0.4s ease;
         }
@@ -205,16 +207,19 @@
         .image-hv:hover::before {
             opacity: 0;
         }
-        
+
         .bas-du-main {
             display: flex;
-            justify-content: center;     /* centre horizontalement */
-            align-items: flex-end;       /* aligne en bas */
-            gap: 20px;                 /* espace entre les images */
+            justify-content: center;
+            /* centre horizontalement */
+            align-items: flex-end;
+            /* aligne en bas */
+            gap: 20px;
+            /* espace entre les images */
             margin-top: 50px;
-            height: 450px;           /* espace depuis le contenu */
+            height: 450px;
+            /* espace depuis le contenu */
         }
-
     </style>
 </head>
 
@@ -222,39 +227,44 @@
     <!-- Bandeau avec logo et menu -->
     <nav>
         <div class="logo">
-            <img src="C:\Users\ouvre\Documents\python\Html\logo.jpg" alt="Logo" width="100">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
         </div>
         <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="test.html">À propos</a></li>
-            <li><a href="contact.html">Services</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="{{ url_for('index') }}">Accueil</a></li>
+            <li><a href="{{ url_for('test') }}">À propos</a></li>
+            <li><a href="{{ url_for('test2') }}">Services</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
         </ul>
         <div class="ecl">
-            <img src="2024_LOGO-CENTRALE-H_BLANC.png" alt="ECL" width="160">
+            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
         </div>
     </nav>
 
     <!-- Contenu principal -->
     <main>
         <h1>Pour nous contacter</h1>
-        <p>Vous pouvez nous contacter par email à l'adresse suivante pour tous problèmes: @etu.ec_lyon.fr</p>
+        <p>Vous pouvez nous contacter par email à l'adresse suivante pour tous problèmes avec le site ou le jeu:
+            @etu.ec-lyon.fr</p>
         <div class="bas-du-main">
             <div class="image-hover">
                 <a href="https://www.youtube.com/channel/UCT0sN5vqNUMG1CNvY7viouA" target="_blank">
-                    <img src="youtube.png" alt="Lien vers YouTube" class="image-hover">
+                    <img src="{{ url_for('static', filename='images/youtube.png') }}" alt="Lien vers YouTube"
+                        class="image-hover">
                 </a>
             </div>
             <div class="image-hv">
                 <a href="https://github.com/barimuls/PE41_YaltaChess/" target="_blank">
-                    <img src="github.png" alt="Image teintée gris foncé">
+                    <img src="{{ url_for('static', filename='images/github.png') }}" alt="Image teintée gris foncé">
                 </a>
             </div>
             <div class="image-hover">
-                <img src="discord.png" alt="Image teintée gris foncé">
+                <img src="{{ url_for('static', filename='images/discord.png') }}" alt="Image teintée gris foncé">
             </div>
         </div>
+
+
     </main>
+
     <script>
 
     </script>
