@@ -9,7 +9,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
-            background-color: #eae9e9;
+            background-color: #444;
             color: #363636;
         }
 
@@ -81,6 +81,7 @@
             padding: 20px;
             flex-grow: 1;
             position: relative;
+            background-color: #444;
 
         }
 
@@ -200,28 +201,234 @@
     <!-- Bandeau avec logo et menu -->
     <nav>
         <div class="logo">
-            <img src="C:\Users\ouvre\Documents\python\Html\logo.jpg" alt="Logo" width="100">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
         </div>
         <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="test.html">À propos</a></li>
-            <li><a href="test2.html">Services</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="{{ url_for('index') }}">Accueil</a></li>
+            <li><a href="{{ url_for('test') }}">À propos</a></li>
+            <li><a href="{{ url_for('test2') }}">Services</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
         </ul>
         <div class="ecl">
-            <img src="2024_LOGO-CENTRALE-H_BLANC.png" alt="ECL" width="160">
+            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
         </div>
         
     </nav>
     <div class="nav-droite">
+        <p id="resultat"></p>
+
     </div>
 
     <!-- Contenu principal -->
     <main>
-        <img src="plateau.jpg" alt="Échiquier" style="width: 100%; height: auto;">
+        <svg class="select-none h-full w-full" viewBox="0 0 960 831.3843876330611">
+            <polygon points="300,0 240,0 210,51.96152422706632 277.5,64.9519052838329" fill="#769656" onclick="sendValue('L8')"></polygon>
+            <text x="245" y="41.47595264191645" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L8')">L<!-- -->8</text>
+            <polygon points="360,0 300,0 277.5,64.9519052838329 345,77.94228634059948" fill="#EEEED2" onclick="sendValue('L7')"></polygon>
+            <text x="308.75" y="47.97114317029974" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L7')">L<!-- -->7</text>
+            <polygon points="420,0 360,0 345,77.94228634059948 412.5,90.93266739736606" fill="#769656" onclick="sendValue('L6')"></polygon>
+            <text x="372.5" y="54.46633369868303" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L6')">L<!-- -->6</text>
+            <polygon points="480,0 420,0 412.5,90.93266739736606 480,103.92304845413264" fill="#EEEED2" onclick="sendValue('L5')"></polygon>
+            <text x="436.25" y="60.96152422706632" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L5')">L<!-- -->5</text>
+            <polygon points="480,0 540,0 547.5,90.93266739736606 480,103.92304845413264" fill="#769656" onclick="sendValue('L9')"></polygon>
+            <text x="503.75" y="60.96152422706632" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L9')">L<!-- -->9</text>
+            <polygon points="540,0 600,0 615,77.94228634059948 547.5,90.93266739736606" fill="#EEEED2" onclick="sendValue('L10')"></polygon>
+            <text x="567.5" y="54.46633369868303" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L10')">L<!-- -->10</text>
+            <polygon points="600,0 660,0 682.5,64.9519052838329 615,77.94228634059948" fill="#769656" onclick="sendValue('L11')"></polygon>
+            <text x="631.25" y="47.97114317029974" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L11')">L<!-- -->11</text>
+            <polygon points="660,0 720,0 750,51.96152422706632 682.5,64.9519052838329" fill="#EEEED2" onclick="sendValue('L12')"></polygon>
+            <text x="695" y="41.47595264191645" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L12')">L<!-- -->12</text>
+            <polygon points="277.5,64.9519052838329 210,51.96152422706632 180,103.92304845413264 255,129.90381056766574" fill="#EEEED2" onclick="sendValue('K8')"></polygon>
+            <text x="218.75" y="99.93266739736603" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K8')">K<!-- -->8</text>
+            <polygon points="345,77.94228634059948 277.5,64.9519052838329 255,129.90381056766574 330,155.8845726811989" fill="#769656" onclick="sendValue('K7')"></polygon>
+            <text x="290" y="119.4182389825159" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K7')">K<!-- -->7</text>
+            <polygon points="412.5,90.93266739736606 345,77.94228634059948 330,155.8845726811989 405,181.8653347947321" fill="#EEEED2" onclick="sendValue('K6')"></polygon>
+            <text x="361.25" y="138.9038105676658" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K6')">K<!-- -->6</text>
+            <polygon points="480,103.92304845413264 412.5,90.93266739736606 405,181.8653347947321 480,207.84609690826525" fill="#769656" onclick="sendValue('K5')"></polygon>
+            <text x="432.5" y="158.38938215281564" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K5')">K<!-- -->5</text>
+            <polygon points="480,103.92304845413264 547.5,90.93266739736606 555,181.8653347947321 480,207.84609690826525" fill="#EEEED2" onclick="sendValue('K9')"></polygon>
+            <text x="507.5" y="158.38938215281564" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K9')">K<!-- -->9</text>
+            <polygon points="547.5,90.93266739736606 615,77.94228634059948 630,155.8845726811989 555,181.8653347947321" fill="#769656" onclick="sendValue('K10')"></polygon>
+            <text x="578.75" y="138.9038105676658" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K10')">K<!-- -->10</text>
+            <polygon points="615,77.94228634059948 682.5,64.9519052838329 705,129.90381056766574 630,155.8845726811989" fill="#EEEED2" onclick="sendValue('K11')"></polygon>
+            <text x="650" y="119.4182389825159" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K11')">K<!-- -->11</text>
+            <polygon points="682.5,64.9519052838329 750,51.96152422706632 780,103.92304845413264 705,129.90381056766574" fill="#769656" onclick="sendValue('K12')"></polygon>
+            <text x="721.25" y="99.93266739736603" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K12')">K<!-- -->12</text>
+            <polygon points="255,129.90381056766574 180,103.92304845413264 150,155.8845726811989 232.5,194.85571585149864" fill="#769656" onclick="sendValue('J8')"></polygon>
+            <text x="192.5" y="158.38938215281564" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J8')">J<!-- -->8</text>
+            <polygon points="330,155.8845726811989 255,129.90381056766574 232.5,194.85571585149864 315,233.82685902179838" fill="#EEEED2" onclick="sendValue('J7')"></polygon>
+            <text x="271.25" y="190.86533479473206" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J7')">J<!-- -->7</text>
+            <polygon points="405,181.8653347947321 330,155.8845726811989 315,233.82685902179838 397.5,272.7980021920981" fill="#769656" onclick="sendValue('J6')"></polygon>
+            <text x="350" y="223.3412874366485" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J6')">J<!-- -->6</text>
+            <polygon points="480,207.84609690826525 405,181.8653347947321 397.5,272.7980021920981 480,311.76914536239786" fill="#EEEED2" onclick="sendValue('J5')"></polygon>
+            <text x="428.75" y="255.81724007856496" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J5')">J<!-- -->5</text>
+            <polygon points="480,207.84609690826525 555,181.8653347947321 562.5,272.7980021920981 480,311.76914536239786" fill="#769656" onclick="sendValue('J9')"></polygon>
+            <text x="511.25" y="255.81724007856496" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J9')">J<!-- -->9</text>
+            <polygon points="555,181.8653347947321 630,155.8845726811989 645,233.82685902179838 562.5,272.7980021920981" fill="#EEEED2" onclick="sendValue('J10')"></polygon>
+            <text x="590" y="223.3412874366485" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J10')">J<!-- -->10</text>
+            <polygon points="630,155.8845726811989 705,129.90381056766574 727.5,194.85571585149864 645,233.82685902179838" fill="#769656" onclick="sendValue('J11')"></polygon>
+            <text x="668.75" y="190.86533479473206" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J11')">J<!-- -->11</text>
+            <polygon points="705,129.90381056766574 780,103.92304845413264 810,155.8845726811989 727.5,194.85571585149864" fill="#EEEED2" onclick="sendValue('J12')"></polygon>
+            <text x="747.5" y="158.38938215281564" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J12')">J<!-- -->12</text>
+            <polygon points="232.5,194.85571585149864 150,155.8845726811989 120,207.84609690826525 210,259.80762113533154" fill="#EEEED2" onclick="sendValue('I8')"></polygon>
+            <text x="166.25" y="216.84609690826522" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I8')">I<!-- -->8</text>
+            <polygon points="315,233.82685902179838 232.5,194.85571585149864 210,259.80762113533154 300,311.76914536239786" fill="#769656" onclick="sendValue('I7')"></polygon>
+            <text x="252.5" y="262.3124306069483" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I7')">I<!-- -->7</text>
+            <polygon points="397.5,272.7980021920981 315,233.82685902179838 300,311.76914536239786 390,363.7306695894642" fill="#EEEED2" onclick="sendValue('I6')"></polygon>
+            <text x="338.75" y="307.7787643056313" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I6')">I<!-- -->6</text>
+            <polygon points="480,311.76914536239786 397.5,272.7980021920981 390,363.7306695894642 480,415.6921938165305" fill="#769656" onclick="sendValue('I5')"></polygon>
+            <text x="425" y="353.2450980043143" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I5')">I<!-- -->5</text>
+            <polygon points="480,311.76914536239786 562.5,272.7980021920981 570,363.7306695894642 480,415.6921938165305" fill="#EEEED2" onclick="sendValue('I9')"></polygon>
+            <text x="515" y="353.2450980043143" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I9')">I<!-- -->9</text>
+            <polygon points="562.5,272.7980021920981 645,233.82685902179838 660,311.76914536239786 570,363.7306695894642" fill="#769656" onclick="sendValue('I10')"></polygon>
+            <text x="601.25" y="307.7787643056313" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I10')">I<!-- -->10</text>
+            <polygon points="645,233.82685902179838 727.5,194.85571585149864 750,259.80762113533154 660,311.76914536239786" fill="#EEEED2" onclick="sendValue('I11')"></polygon>
+            <text x="687.5" y="262.3124306069483" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I11')">I<!-- -->11</text>
+            <polygon points="727.5,194.85571585149864 810,155.8845726811989 840,207.84609690826525 750,259.80762113533154" fill="#769656" onclick="sendValue('I12')"></polygon>
+            <text x="773.75" y="216.84609690826522" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I12')">I<!-- -->12</text>
+            <polygon points="930,467.6537180435967 960,415.6921938165304 930,363.73066958946407 885,415.6921938165304" fill="#769656" onclick="sendValue('H12')"></polygon>
+            <text x="912.5" y="424.6921938165304" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H12')">H<!-- -->12</text>
+            <polygon points="900,519.615242270663 930,467.6537180435967 885,415.6921938165304 840,467.6537180435967" fill="#EEEED2" onclick="sendValue('H11')"></polygon>
+            <text x="875" y="476.65371804359665" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H11')">H<!-- -->11</text>
+            <polygon points="870,571.5767664977293 900,519.615242270663 840,467.6537180435967 795,519.615242270663" fill="#769656" onclick="sendValue('H10')"></polygon>
+            <text x="837.5" y="528.615242270663" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H10')">H<!-- -->10</text>
+            <polygon points="840,623.5382907247956 870,571.5767664977293 795,519.615242270663 750,571.5767664977294" fill="#EEEED2" onclick="sendValue('H9')"></polygon>
+            <text x="800" y="580.5767664977293" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H9')">H<!-- -->9</text>
+            <polygon points="840,623.5382907247956 810,675.4998149518619 727.5,636.5286717815623 750,571.5767664977294" fill="#769656" onclick="sendValue('H4')"></polygon>
+            <text x="773.75" y="632.5382907247956" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H4')">H<!-- -->4</text>
+            <polygon points="810,675.4998149518619 780,727.4613391789283 705,701.4805770653952 727.5,636.5286717815623" fill="#EEEED2" onclick="sendValue('H3')"></polygon>
+            <text x="747.5" y="690.9950054802453" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H3')">H<!-- -->3</text>
+            <polygon points="780,727.4613391789283 750,779.4228634059946 682.5,766.432482349228 705,701.4805770653952" fill="#769656" onclick="sendValue('H2')"></polygon>
+            <text x="721.25" y="749.4517202356949" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H2')">H<!-- -->2</text>
+            <polygon points="750,779.4228634059946 720,831.3843876330609 660,831.3843876330609 682.5,766.432482349228" fill="#EEEED2" onclick="sendValue('H1')"></polygon>
+            <text x="695" y="807.9084349911445" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H1')">H<!-- -->1</text>
+            <polygon points="885,415.6921938165304 930,363.73066958946407 900,311.7691453623978 840,363.7306695894641" fill="#EEEED2" onclick="sendValue('G12')"></polygon>
+            <text x="875" y="372.7306695894641" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G12')">G<!-- -->12</text>
+            <polygon points="840,467.6537180435967 885,415.6921938165304 840,363.7306695894641 780,415.69219381653045" fill="#769656" onclick="sendValue('G11')"></polygon>
+            <text x="822.5" y="424.69219381653045" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G11')">G<!-- -->11</text>
+            <polygon points="795,519.615242270663 840,467.6537180435967 780,415.69219381653045 720,467.65371804359677" fill="#EEEED2" onclick="sendValue('G10')"></polygon>
+            <text x="770" y="476.6537180435967" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G10')">G<!-- -->10</text>
+            <polygon points="750,571.5767664977294 795,519.615242270663 720,467.65371804359677 660,519.6152422706631" fill="#769656" onclick="sendValue('G9')"></polygon>
+            <text x="717.5" y="528.6152422706631" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G9')">G<!-- -->9</text>
+            <polygon points="750,571.5767664977294 727.5,636.5286717815623 645,597.5575286112626 660,519.6152422706631" fill="#EEEED2" onclick="sendValue('G4')"></polygon>
+            <text x="687.5" y="587.0719570261126" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G4')">G<!-- -->4</text>
+            <polygon points="727.5,636.5286717815623 705,701.4805770653952 630,675.499814951862 645,597.5575286112626" fill="#769656" onclick="sendValue('G3')"></polygon>
+            <text x="668.75" y="658.5190528383289" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G3')">G<!-- -->3</text>
+            <polygon points="705,701.4805770653952 682.5,766.432482349228 615.0000000000001,753.4421012924615 630,675.499814951862" fill="#EEEED2" onclick="sendValue('G2')"></polygon>
+            <text x="650" y="729.966148650545" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G2')">G<!-- -->2</text>
+            <polygon points="682.5,766.432482349228 660,831.3843876330609 600,831.3843876330609 615.0000000000001,753.4421012924615" fill="#769656" onclick="sendValue('G1')"></polygon>
+            <text x="631.25" y="801.4132444627612" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G1')">G<!-- -->1</text>
+            <polygon points="840,363.7306695894641 900,311.7691453623978 870,259.8076211353315 795,311.7691453623978" fill="#769656" onclick="sendValue('F12')"></polygon>
+            <text x="837.5" y="320.7691453623978" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F12')">F<!-- -->12</text>
+            <polygon points="780,415.69219381653045 840,363.7306695894641 795,311.7691453623978 720,363.7306695894641" fill="#EEEED2" onclick="sendValue('F11')"></polygon>
+            <text x="770" y="372.7306695894641" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F11')">F<!-- -->11</text>
+            <polygon points="720,467.65371804359677 780,415.69219381653045 720,363.7306695894641 645,415.69219381653045" fill="#769656" onclick="sendValue('F10')"></polygon>
+            <text x="702.5" y="424.69219381653045" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F10')">F<!-- -->10</text>
+            <polygon points="660,519.6152422706631 720,467.65371804359677 645,415.69219381653045 570,467.6537180435968" fill="#EEEED2" onclick="sendValue('F9')"></polygon>
+            <text x="635" y="476.65371804359677" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F9')">F<!-- -->9</text>
+            <polygon points="660,519.6152422706631 645,597.5575286112626 562.5,558.5863854409629 570,467.6537180435968" fill="#769656" onclick="sendValue('F4')"></polygon>
+            <text x="601.25" y="541.6056233274297" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F4')">F<!-- -->4</text>
+            <polygon points="645,597.5575286112626 630,675.499814951862 555.0000000000001,649.5190528383289 562.5,558.5863854409629" fill="#EEEED2" onclick="sendValue('F3')"></polygon>
+            <text x="590" y="626.0431001964125" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F3')">F<!-- -->3</text>
+            <polygon points="630,675.499814951862 615.0000000000001,753.4421012924615 547.5000000000001,740.4517202356949 555.0000000000001,649.5190528383289" fill="#769656" onclick="sendValue('F2')"></polygon>
+            <text x="578.75" y="710.4805770653952" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F2')">F<!-- -->2</text>
+            <polygon points="615.0000000000001,753.4421012924615 600,831.3843876330609 540.0000000000001,831.384387633061 547.5000000000001,740.4517202356949" fill="#EEEED2" onclick="sendValue('F1')"></polygon>
+            <text x="567.5000000000001" y="794.9180539343779" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F1')">F<!-- -->1</text>
+            <polygon points="795,311.7691453623978 870,259.8076211353315 839.9999999999999,207.84609690826517 750,259.8076211353315" fill="#EEEED2" onclick="sendValue('E12')"></polygon>
+            <text x="800" y="268.8076211353315" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E12')">E<!-- -->12</text>
+            <polygon points="720,363.7306695894641 795,311.7691453623978 750,259.8076211353315 660,311.7691453623978" fill="#769656" onclick="sendValue('E11')"></polygon>
+            <text x="717.5" y="320.7691453623978" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E11')">E<!-- -->11</text>
+            <polygon points="645,415.69219381653045 720,363.7306695894641 660,311.7691453623978 570,363.7306695894642" fill="#EEEED2" onclick="sendValue('E10')"></polygon>
+            <text x="635" y="372.7306695894641" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E10')">E<!-- -->10</text>
+            <polygon points="570,467.6537180435968 645,415.69219381653045 570,363.7306695894642 480,415.6921938165305" fill="#769656" onclick="sendValue('E9')"></polygon>
+            <text x="552.5" y="424.6921938165305" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E9')">E<!-- -->9</text>
+            <polygon points="570,467.6537180435968 562.5,558.5863854409629 480,519.6152422706631 480,415.6921938165305" fill="#EEEED2" onclick="sendValue('E4')"></polygon>
+            <text x="515" y="496.1392896287467" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E4')">E<!-- -->4</text>
+            <polygon points="562.5,558.5863854409629 555.0000000000001,649.5190528383289 480.00000000000006,623.5382907247957 480,519.6152422706631" fill="#769656" onclick="sendValue('E3')"></polygon>
+            <text x="511.25" y="593.5671475544959" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E3')">E<!-- -->3</text>
+            <polygon points="555.0000000000001,649.5190528383289 547.5000000000001,740.4517202356949 480.00000000000006,727.4613391789285 480.00000000000006,623.5382907247957" fill="#EEEED2" onclick="sendValue('E2')"></polygon>
+            <text x="507.5000000000001" y="690.9950054802453" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E2')">E<!-- -->2</text>
+            <polygon points="547.5000000000001,740.4517202356949 540.0000000000001,831.384387633061 480.0000000000001,831.384387633061 480.00000000000006,727.4613391789285" fill="#769656" onclick="sendValue('E1')"></polygon>
+            <text x="503.7500000000001" y="788.4228634059948" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E1')">E<!-- -->1</text>
+            <polygon points="210.00000000000023,779.4228634059948 240.00000000000023,831.3843876330611 300.0000000000002,831.3843876330611 277.5000000000002,766.4324823492282" fill="#769656" onclick="sendValue('A1')"></polygon>
+            <text x="245.00000000000023" y="807.9084349911446" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A1')">A<!-- -->1</text>
+            <polygon points="180.00000000000017,727.4613391789285 210.00000000000023,779.4228634059948 277.5000000000002,766.4324823492282 255.00000000000017,701.4805770653954" fill="#EEEED2" onclick="sendValue('A2')"></polygon>
+            <text x="218.7500000000002" y="749.4517202356951" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A2')">A<!-- -->2</text>
+            <polygon points="150.0000000000001,675.4998149518622 180.00000000000017,727.4613391789285 255.00000000000017,701.4805770653954 232.50000000000014,636.5286717815625" fill="#769656" onclick="sendValue('A3')"></polygon>
+            <text x="192.50000000000014" y="690.9950054802455" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A3')">A<!-- -->3</text>
+            <polygon points="120.00000000000011,623.538290724796 150.0000000000001,675.4998149518622 232.50000000000014,636.5286717815625 210.0000000000001,571.5767664977295" fill="#EEEED2" onclick="sendValue('A4')"></polygon>
+            <text x="166.2500000000001" y="632.5382907247958" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A4')">A<!-- -->4</text>
+            <polygon points="120.00000000000011,623.538290724796 90.00000000000011,571.5767664977296 165.0000000000001,519.6152422706633 210.0000000000001,571.5767664977295" fill="#769656" onclick="sendValue('A5')"></polygon>
+            <text x="140.0000000000001" y="580.5767664977296" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A5')">A<!-- -->5</text>
+            <polygon points="90.00000000000011,571.5767664977296 60.00000000000006,519.6152422706633 120.00000000000006,467.653718043597 165.0000000000001,519.6152422706633" fill="#EEEED2" onclick="sendValue('A6')"></polygon>
+            <text x="102.50000000000009" y="528.6152422706633" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A6')">A<!-- -->6</text>
+            <polygon points="60.00000000000006,519.6152422706633 30,467.653718043597 75,415.6921938165307 120.00000000000006,467.653718043597" fill="#769656" onclick="sendValue('A7')"></polygon>
+            <text x="65.00000000000003" y="476.653718043597" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A7')">A<!-- -->7</text>
+            <polygon points="30,467.653718043597 0,415.6921938165307 30,363.73066958946436 75,415.6921938165307" fill="#EEEED2" onclick="sendValue('A8')"></polygon>
+            <text x="27.5" y="424.6921938165307" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A8')">A<!-- -->8</text>
+            <polygon points="277.5000000000002,766.4324823492282 300.0000000000002,831.3843876330611 360.0000000000002,831.3843876330611 345.0000000000001,753.4421012924618" fill="#EEEED2" onclick="sendValue('B1')"></polygon>
+            <text x="308.7500000000002" y="801.4132444627614" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B1')">B<!-- -->1</text>
+            <polygon points="255.00000000000017,701.4805770653954 277.5000000000002,766.4324823492282 345.0000000000001,753.4421012924618 330.0000000000001,675.4998149518622" fill="#769656" onclick="sendValue('B2')"></polygon>
+            <text x="290.0000000000001" y="729.9661486505452" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B2')">B<!-- -->2</text>
+            <polygon points="232.50000000000014,636.5286717815625 255.00000000000017,701.4805770653954 330.0000000000001,675.4998149518622 315.0000000000001,597.5575286112627" fill="#EEEED2" onclick="sendValue('B3')"></polygon>
+            <text x="271.2500000000001" y="658.5190528383291" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B3')">B<!-- -->3</text>
+            <polygon points="210.0000000000001,571.5767664977295 232.50000000000014,636.5286717815625 315.0000000000001,597.5575286112627 300.00000000000006,519.6152422706632" fill="#769656" onclick="sendValue('B4')"></polygon>
+            <text x="252.5000000000001" y="587.0719570261128" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B4')">B<!-- -->4</text>
+            <polygon points="210.0000000000001,571.5767664977295 165.0000000000001,519.6152422706633 240.00000000000003,467.65371804359694 300.00000000000006,519.6152422706632" fill="#EEEED2" onclick="sendValue('B5')"></polygon>
+            <text x="222.50000000000009" y="528.6152422706632" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B5')">B<!-- -->5</text>
+            <polygon points="165.0000000000001,519.6152422706633 120.00000000000006,467.653718043597 179.99999999999994,415.6921938165307 240.00000000000003,467.65371804359694" fill="#769656" onclick="sendValue('B6')"></polygon>
+            <text x="170.00000000000006" y="476.653718043597" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B6')">B<!-- -->6</text>
+            <polygon points="120.00000000000006,467.653718043597 75,415.6921938165307 119.99999999999994,363.73066958946436 179.99999999999994,415.6921938165307" fill="#EEEED2" onclick="sendValue('B7')"></polygon>
+            <text x="117.49999999999997" y="424.6921938165307" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B7')">B<!-- -->7</text>
+            <polygon points="75,415.6921938165307 30,363.73066958946436 60,311.76914536239804 119.99999999999994,363.73066958946436" fill="#769656" onclick="sendValue('B8')"></polygon>
+            <text x="64.99999999999997" y="372.73066958946436" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B8')">B<!-- -->8</text>
+            <polygon points="345.0000000000001,753.4421012924618 360.0000000000002,831.3843876330611 420.00000000000017,831.3843876330611 412.5000000000001,740.4517202356951" fill="#769656" onclick="sendValue('C1')"></polygon>
+            <text x="372.5000000000001" y="794.9180539343781" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C1')">C<!-- -->1</text>
+            <polygon points="330.0000000000001,675.4998149518622 345.0000000000001,753.4421012924618 412.5000000000001,740.4517202356951 405.0000000000001,649.519052838329" fill="#EEEED2" onclick="sendValue('C2')"></polygon>
+            <text x="361.2500000000001" y="710.4805770653954" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C2')">C<!-- -->2</text>
+            <polygon points="315.0000000000001,597.5575286112627 330.0000000000001,675.4998149518622 405.0000000000001,649.519052838329 397.50000000000006,558.5863854409629" fill="#769656" onclick="sendValue('C3')"></polygon>
+            <text x="350.0000000000001" y="626.0431001964125" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C3')">C<!-- -->3</text>
+            <polygon points="300.00000000000006,519.6152422706632 315.0000000000001,597.5575286112627 397.50000000000006,558.5863854409629 390,467.6537180435969" fill="#EEEED2" onclick="sendValue('C4')"></polygon>
+            <text x="338.75000000000006" y="541.6056233274298" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C4')">C<!-- -->4</text>
+            <polygon points="300.00000000000006,519.6152422706632 240.00000000000003,467.65371804359694 315,415.69219381653056 390,467.6537180435969" fill="#769656" onclick="sendValue('C5')"></polygon>
+            <text x="305" y="476.6537180435969" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C5')">C<!-- -->5</text>
+            <polygon points="240.00000000000003,467.65371804359694 179.99999999999994,415.6921938165307 239.99999999999994,363.7306695894643 315,415.69219381653056" fill="#EEEED2" onclick="sendValue('C6')"></polygon>
+            <text x="237.49999999999997" y="424.6921938165306" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C6')">C<!-- -->6</text>
+            <polygon points="179.99999999999994,415.6921938165307 119.99999999999994,363.73066958946436 164.9999999999999,311.76914536239804 239.99999999999994,363.7306695894643" fill="#769656" onclick="sendValue('C7')"></polygon>
+            <text x="169.99999999999994" y="372.73066958946436" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C7')">C<!-- -->7</text>
+            <polygon points="119.99999999999994,363.73066958946436 60,311.76914536239804 89.99999999999989,259.8076211353317 164.9999999999999,311.76914536239804" fill="#EEEED2" onclick="sendValue('C8')"></polygon>
+            <text x="102.49999999999994" y="320.76914536239804" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C8')">C<!-- -->8</text>
+            <polygon points="412.5000000000001,740.4517202356951 420.00000000000017,831.3843876330611 480.0000000000002,831.3843876330611 480.0000000000001,727.4613391789285" fill="#EEEED2" onclick="sendValue('D1')"></polygon>
+            <text x="436.25000000000017" y="788.4228634059948" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D1')">D<!-- -->1</text>
+            <polygon points="405.0000000000001,649.519052838329 412.5000000000001,740.4517202356951 480.0000000000001,727.4613391789285 480.0000000000001,623.5382907247958" fill="#769656" onclick="sendValue('D2')"></polygon>
+            <text x="432.5000000000001" y="690.9950054802455" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D2')">D<!-- -->2</text>
+            <polygon points="397.50000000000006,558.5863854409629 405.0000000000001,649.519052838329 480.0000000000001,623.5382907247958 480.00000000000006,519.6152422706632" fill="#EEEED2" onclick="sendValue('D3')"></polygon>
+            <text x="428.7500000000001" y="593.5671475544962" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D3')">D<!-- -->3</text>
+            <polygon points="390,467.6537180435969 397.50000000000006,558.5863854409629 480.00000000000006,519.6152422706632 480,415.6921938165305" fill="#769656" onclick="sendValue('D4')"></polygon>
+            <text x="425" y="496.1392896287467" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D4')">D<!-- -->4</text>
+            <polygon points="390,467.6537180435969 315,415.69219381653056 390,363.73066958946424 480,415.6921938165305" fill="#EEEED2" onclick="sendValue('D5')"></polygon>
+            <text x="387.5" y="424.69219381653056" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D5')">D<!-- -->5</text>
+            <polygon points="315,415.69219381653056 239.99999999999994,363.7306695894643 299.99999999999994,311.7691453623979 390,363.73066958946424" fill="#769656" onclick="sendValue('D6')"></polygon>
+            <text x="305" y="372.73066958946424" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D6')">D<!-- -->6</text>
+            <polygon points="239.99999999999994,363.7306695894643 164.9999999999999,311.76914536239804 209.9999999999999,259.80762113533166 299.99999999999994,311.7691453623979" fill="#EEEED2" onclick="sendValue('D7')"></polygon>
+            <text x="222.49999999999991" y="320.769145362398" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D7')">D<!-- -->7</text>
+            <polygon points="164.9999999999999,311.76914536239804 89.99999999999989,259.8076211353317 119.99999999999989,207.84609690826534 209.9999999999999,259.80762113533166" fill="#769656" onclick="sendValue('D8')"></polygon>
+            <text x="139.9999999999999" y="268.8076211353317" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D8')">D<!-- -->8</text>
+            </svg>
+                </svg>
     </main>
     <script>
-        
+        function sendValue(maValeur) {
+
+            fetch('/receive', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ value: maValeur })
+            })
+            .then(res => res.json())
+            .then(data => {document.getElementById("resultat").textContent = data.reponse;})
+            .catch(error => console.error('Erreur:', error));
+        }
     </script>
 </body>
 
