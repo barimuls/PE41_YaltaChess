@@ -15,7 +15,8 @@ class Arete:
 class Case:
     def __init__(self, nom, piece=None):
         self.nom = nom
-        self.piece = piece  # {'couleur': 0, 'role': 1}, etc.
+        self.piece = piece  # cav, tour, fou, reine, roi, pion
+        self.couleur = None  # couleur du joueur possédant la pièce
         self.aretes = []    # liste d'arêtes (vers autres cases)
 
     def ajouter_arete(self, orientation, sommet_arrive):
@@ -267,22 +268,39 @@ class Graph:
 
     def afficher(self):
         """
-        Affiche le plateau et les arêtes de chaque case
+        Affiche le plateau et les pieces présentes sur chaque case dans la couleur correspondante.
+        0 : vert
+        1 : noir
+        2 : rouge
         """
-        print("=== STRUCTURE DU PLATEAU ===\n")
+        print("=== PLATEAU ACTUEL ===\n")
 
-        # 1️⃣ Affichage du plateau sous forme de grille
-        noms = list(self.sommets.keys())
-        noms.sort(key=lambda x: (int(x[1:]), x[0]))
-        lignes = sorted(set(int(n[1:]) for n in noms))
+        for ligne in range(1, 13):
+            ligne_cases = []
+            for lettre in 'abcdefghijkl':
+                nom_case = f"{lettre}{ligne}"
+                if nom_case in self.sommets:
+                    case = self.sommets[nom_case]
+                    if case.piece is None:
+                        print(f"{nom_case}:  . ", end=" ")
+                    else:
+                        couleur = case.couleur
+                        piece = case.piece
+                        if couleur == 0:
+                            print(f"\033[32m {nom_case}: {piece} \033[0m", end=" ")
+                        elif couleur == 1:
+                            print(f"\033[34m {nom_case}: {piece} \033[0m", end=" ")
+                        elif couleur == 2:
+                            print(f"\033[31m {nom_case}: {piece} \033[0m", end=" ")
 
-        for ligne in lignes:
-            cases_ligne = [self.sommets[n] for n in noms if int(n[1:]) == ligne]
-            ligne_str = "  ".join(f"{c.nom}:{'x' if c.piece is None else c.piece}" for c in cases_ligne)
-            print(ligne_str)
+            print(" ")
+        
+        
         print("\n")
 
-        # 2️⃣ Affichage des arêtes pour chaque case
+        
+
+    def afficher_aretes(self):
         print("=== ARÊTES DU GRAPHE ===\n")
         for nom, case in sorted(self.sommets.items(), key=lambda x: (int(x[0][1:]), x[0][0])):
             if case.aretes:
@@ -291,7 +309,6 @@ class Graph:
                 aretes_str = "—"
             print(f"{nom:>4} → {aretes_str}")
 
-    
     def arete_appartient_graph(sommet_depart,arete):
         return sommet_depart.aretes_appartient_case(arete)
         
@@ -355,12 +372,46 @@ def creer_plateau():
             plateau.ajouter_case(f"{col}{ligne}")
     return plateau
 
+def coup_est_valide(plateau, piece, depart, arrivee):
+    #à compléter
+    return True
+
+def verifier_victoire(plateau, joueur):
+    #à compléter
+    return False
+
+def tour_de_jeu(plateau, joueur):
+    #récuperer le coup
+    print (f"C'est le tour du joueur {joueur}.");
+    piece = input ("Entrez la pièce à jouer : ");
+    depart = input ("Entrez la case de départ : ");
+    arrivee = input ("Entrez la case d'arrivée : ");
+    #vérifier la validité du coup
+    if not coup_est_valide(plateau, piece, depart, arrivee):
+        print("Coup invalide. Veuillez réessayer.")
+        return tour_de_jeu(plateau, joueur)
+    #effectuer le coup
+    plateau.sommets[depart].piece = None;
+    plateau.sommets[arrivee].piece = piece;
+    plateau.sommets[arrivee].couleur = joueur;
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        print(f"Le joueur {joueur} a gagné la partie!")
+        return ;
+    
+    #afficher le plateau
+    plateau.afficher();
+
+    #passer au joueur suivant
+    tour_de_jeu(plateau, (joueur+1) %3);
 
 #----------------------Test----------------------
 if __name__ == "__main__":
     plateau = creer_plateau()
     plateau.remplir_arete()
     plateau.afficher()
+    tour_de_jeu(plateau, 0)
     #print(plateau.sommets['e9'].aretes)
     #print(f"\nNombre total de cases : {len(plateau.sommets)}")
 
