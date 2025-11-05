@@ -22,13 +22,6 @@ class Case:
     def ajouter_arete(self, orientation, sommet_arrive):
         self.aretes.append(Arete(orientation, sommet_arrive))
 
-    def recuperer_arete_oriente(self,orientation):
-        sortie = []
-        taille = len(self.aretes)
-        for i in range (0,taille-1):
-            if (self.aretes[i].orientation == orientation) :
-                sortie.append(self.aretes[i])
-        return sortie
 
     def voisin_arete_tour_par_lettre(self):
         voisins=[]
@@ -270,8 +263,8 @@ class Graph:
         """
         Affiche le plateau et les pieces présentes sur chaque case dans la couleur correspondante.
         0 : vert
-        1 : noir
-        2 : rouge
+        1 : rouge
+        2 : noir
         """
         print("=== PLATEAU ACTUEL ===\n")
 
@@ -289,16 +282,81 @@ class Graph:
                         if couleur == 0:
                             print(f"\033[32m {nom_case}: {piece} \033[0m", end=" ")
                         elif couleur == 1:
-                            print(f"\033[34m {nom_case}: {piece} \033[0m", end=" ")
-                        elif couleur == 2:
                             print(f"\033[31m {nom_case}: {piece} \033[0m", end=" ")
+                        elif couleur == 2:
+                            print(f"\033[34m {nom_case}: {piece} \033[0m", end=" ")
 
             print(" ")
         
         
         print("\n")
 
-        
+    def remplir_pieces_initiales(self):
+        #les piece blanches
+        self.sommets['a1'].piece='tour'
+        self.sommets['a1'].couleur=0
+        self.sommets['b1'].piece='cavalier'
+        self.sommets['b1'].couleur=0
+        self.sommets['c1'].piece='fou'
+        self.sommets['c1'].couleur=0
+        self.sommets['d1'].piece='reine'
+        self.sommets['d1'].couleur=0
+        self.sommets['e1'].piece='roi'
+        self.sommets['e1'].couleur=0
+        self.sommets['f1'].piece='fou'
+        self.sommets['f1'].couleur=0
+        self.sommets['g1'].piece='cavalier'
+        self.sommets['g1'].couleur=0
+        self.sommets['h1'].piece='tour'
+        self.sommets['h1'].couleur=0
+        for lettre in 'abcdefgh':
+            nom_case = f"{lettre}2"
+            self.sommets[nom_case].piece='pion'
+            self.sommets[nom_case].couleur=0
+
+        #les pieces rouges
+        self.sommets['a8'].piece='tour' 
+        self.sommets['a8'].couleur=1
+        self.sommets['b8'].piece='cavalier'
+        self.sommets['b8'].couleur=1
+        self.sommets['c8'].piece='fou'
+        self.sommets['c8'].couleur=1
+        self.sommets['d8'].piece='roi'
+        self.sommets['d8'].couleur=1
+        self.sommets['i8'].piece='reine'
+        self.sommets['i8'].couleur=1
+        self.sommets['j8'].piece='fou'
+        self.sommets['j8'].couleur=1
+        self.sommets['k8'].piece='cavalier'
+        self.sommets['k8'].couleur=1
+        self.sommets['l8'].piece='tour'
+        self.sommets['l8'].couleur=1
+        for lettre in 'abcdijkl':
+            nom_case = f"{lettre}7"
+            self.sommets[nom_case].piece='pion'
+            self.sommets[nom_case].couleur=1
+
+        #les pieces noires
+        self.sommets['h12'].piece='tour'
+        self.sommets['h12'].couleur=2
+        self.sommets['g12'].piece='cavalier'
+        self.sommets['g12'].couleur=2
+        self.sommets['f12'].piece='fou'
+        self.sommets['f12'].couleur=2
+        self.sommets['e12'].piece='reine'
+        self.sommets['e12'].couleur=2
+        self.sommets['i12'].piece='roi'
+        self.sommets['i12'].couleur=2
+        self.sommets['j12'].piece='fou'
+        self.sommets['j12'].couleur=2
+        self.sommets['k12'].piece='cavalier'
+        self.sommets['k12'].couleur=2
+        self.sommets['l12'].piece='tour'
+        self.sommets['l12'].couleur=2
+        for lettre in 'efghijkl':
+            nom_case = f"{lettre}11"
+            self.sommets[nom_case].piece='pion'
+            self.sommets[nom_case].couleur=2
 
     def afficher_aretes(self):
         print("=== ARÊTES DU GRAPHE ===\n")
@@ -344,6 +402,55 @@ class Graph:
         self.remplir_arete_fou_a1()
         self.remplir_arete_fou_h1()
 
+    #--------------------Coup possible pour chaque pièce------------------
+    def coup_possible_tour_chiffre(self,actuel,couleur,list_coup,deja_vu=[],est_initial=False):
+        if actuel in deja_vu:
+            return;
+        deja_vu.append(actuel);
+
+        #verifier que la case actuelle est disponible
+        if self.sommets[actuel].piece is None and not est_initial:
+            list_coup.append(actuel);
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
+                self.coup_possible_tour_chiffre(coup_potentiel,couleur,list_coup,deja_vu)
+            return;
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
+            return;
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
+            list_coup.append(actuel);
+            return;
+        else: #est_initial == True
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
+                self.coup_possible_tour_chiffre(coup_potentiel,couleur,list_coup,deja_vu)
+            return;
+
+    def coup_possible_tour_lettre(self,actuel,couleur,list_coup,deja_vu=[],est_initial=False):
+        if actuel in deja_vu:
+            return;
+        deja_vu.append(actuel);
+
+        #verifier que la case actuelle est disponible
+        if self.sommets[actuel].piece is None and not est_initial:
+            list_coup.append(actuel);
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
+                self.coup_possible_tour_lettre(coup_potentiel,couleur,list_coup,deja_vu)
+            return;
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
+            return;
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
+            list_coup.append(actuel);
+            return;
+        else: #est_initial == True
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
+                self.coup_possible_tour_lettre(coup_potentiel,couleur,list_coup,deja_vu)
+            return;
+
+    def coup_possible_tour(self,depart):
+        couleur = self.sommets[depart].couleur
+        coups = []
+        self.coup_possible_tour_chiffre(depart,couleur,coups,est_initial=True);
+        self.coup_possible_tour_lettre(depart,couleur, coups,est_initial=True);
+        return coups
 
 #------Initialisation du plateau hexagonal carré (type Yalta)------
 
@@ -373,12 +480,26 @@ def creer_plateau():
     return plateau
 
 def coup_est_valide(plateau, piece, depart, arrivee):
-    #à compléter
+    #vérifier que la pièce existe à la case de départ
+    if depart not in plateau.sommets or arrivee not in plateau.sommets:
+        return False
+    if plateau.sommets[depart].piece != piece:
+        return False
+    #différentes règles de déplacement selon la pièce
+    if piece == 'tour':
+        coups_possibles = plateau.coup_possible_tour(depart)
+        if arrivee not in coups_possibles:
+            return False
+        
     return True
 
 def verifier_victoire(plateau, joueur):
-    #à compléter
-    return False
+    #verifier que un roi adverse est capturé
+    nbr_roi = 0
+    for case in plateau.sommets.values():
+        if case.piece == 'roi':
+            nbr_roi += 1
+    return nbr_roi < 3
 
 def tour_de_jeu(plateau, joueur):
     #récuperer le coup
@@ -410,6 +531,7 @@ def tour_de_jeu(plateau, joueur):
 if __name__ == "__main__":
     plateau = creer_plateau()
     plateau.remplir_arete()
+    plateau.remplir_pieces_initiales()
     plateau.afficher()
     tour_de_jeu(plateau, 0)
     #print(plateau.sommets['e9'].aretes)
