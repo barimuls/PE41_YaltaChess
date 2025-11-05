@@ -38,6 +38,7 @@
             border-bottom: 1px solid #444;
         }
 
+
         nav ul {
             list-style: none;
             padding: 0;
@@ -66,6 +67,8 @@
             /* espace pour le menu */
             padding: 20px;
             flex-grow: 1;
+            position: relative;
+
         }
 
         .mon-bouton {
@@ -85,6 +88,7 @@
             height: 70px;
             display: block;
             margin: 30px auto 0 auto;
+            
         }
 
         .bouton-fermer {
@@ -183,17 +187,18 @@
     <!-- Bandeau avec logo et menu -->
     <nav>
         <div class="logo">
-            <img src="C:\Users\ouvre\Documents\python\Html\logo.jpg" alt="Logo" width="100">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
         </div>
         <ul>
-            <li><a href="index">Accueil</a></li>
-            <li><a href="test">À propos</a></li>
-            <li><a href="test2">Services</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="{{ url_for('index') }}">Accueil</a></li>
+            <li><a href="{{ url_for('test') }}">À propos</a></li>
+            <li><a href="{{ url_for('test2') }}">Services</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
         </ul>
         <div class="ecl">
-            <img src="2024_LOGO-CENTRALE-H_BLANC.png" alt="ECL" width="160">
+            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
         </div>
+        
     </nav>
 
     <!-- Contenu principal -->
@@ -201,41 +206,46 @@
         <h1>Bienvenue sur PE41 Echecs Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
         <div class="bloc-boutons">
-            <button class="mon-bouton" onclick="window.location.href='jeu.html'">Jouer</button>
-            <button class="mon-bouton" onclick="openModal()">Tutoriel</button>
+            <button class="mon-bouton" onclick="openModal2()">Jouer</button>
+            <button class="mon-bouton" onclick="openModal1()">Tutoriel</button>
         </div>
+
         <p id="message"></p>
 
-        <div class="overlay" id="overlay">
+        <div class="overlay" id="overlay1">
             <div class="modal">
-                <span class="bouton-fermer" onclick="closeModal()">×</span>
+                <span class="bouton-fermer" onclick="closeModal1()">×</span>
                 <h2>Tutoriel</h2>
                 <p>Voici la page du tutoriel.</p>
             </div>
         </div>
+
+        <div class="overlay" id="overlay2">
+            <div class="modal" style="max-width: 600px; max-height: 400px;">
+                <span class="bouton-fermer" onclick="closeModal2()">×</span>
+                <h2>Jeu</h2>
+                <p>Voici la page du jeu.</p>
+                <button class="mon-bouton" onclick="window.location.href='{{ url_for('jeu') }}'" style="margin-top: 50px; width: 180px;">En ligne</button>
+                <button class="mon-bouton" onclick="window.location.href='{{ url_for('jeu') }}'" style="margin-top: 40px; width: 180px;">En locale</button>
+            </div>
+        </div>
     </main>
     <script>
-        // Déclaration d'une variable
-        const y = 10;
 
-        // Affichage dans la console
-        console.log("Valeur de y * 10 :", y * 10);
-
-        // Fonction appelée quand on clique sur le bouton
-        function afficherMessage() {
-            // Affiche le résultat dans la page
-            document.getElementById("message").innerText = "y * 10 = " + (y * 10);
-
-            // Affiche également dans la console
-            console.log("Image cliquée, y * 10 =", y * 10);
+        function openModal1() {
+            document.getElementById('overlay1').style.display = 'flex';
         }
 
-        function openModal() {
-            document.getElementById('overlay').style.display = 'flex';
+        function closeModal1() {
+            document.getElementById('overlay1').style.display = 'none';
         }
 
-        function closeModal() {
-            document.getElementById('overlay').style.display = 'none';
+        function openModal2() {
+            document.getElementById('overlay2').style.display = 'flex';
+        }
+
+        function closeModal2() {
+            document.getElementById('overlay2').style.display = 'none';
         }
     </script>
 </body>
