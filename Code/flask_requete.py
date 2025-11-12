@@ -46,7 +46,6 @@ def jeu():
 
 @app.route('/receive', methods=['POST'])
 def receive():
-    def receive():
     global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau
     data = request.get_json()
     value = data.get('value')
