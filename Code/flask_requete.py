@@ -2,7 +2,12 @@ from flask import Flask, request, jsonify, render_template
 from Plateau import *
 
 app = Flask(__name__)
-
+compteur = 0
+L_requete = [0,0]
+plateau = creer_plateau()
+plateau.remplir_arete()
+plateau.remplir_pieces_initiales()
+plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
 
 @app.context_processor
 def inject_plateau_piece():
@@ -41,15 +46,22 @@ def jeu():
 
 @app.route('/receive', methods=['POST'])
 def receive():
+    def receive():
+    global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau
     data = request.get_json()
     value = data.get('value')
+    L_requete[compteur%2] = value.lower()
     print(f"Valeur reçue : {value}")
+    print(compteur)
+    depart = L_requete[0]
+    arrivee = L_requete[1]
+    if compteur % 2 == 1:
+        if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
+            return jsonify({"reponse": "Mouvement invalide"})
+    compteur += 1
+    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     return jsonify({"reponse": value})
 
 
 if __name__ == '__main__':
-    plateau = creer_plateau()
-    plateau.remplir_arete()
-    lancer_partie(plateau)
-    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     app.run(debug=True)

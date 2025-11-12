@@ -818,6 +818,23 @@ def tour_de_jeu(plateau, joueur):
     #passer au joueur suivant
     tour_de_jeu(plateau, (joueur+1) %3);
 
+def tour_de_jeu_web(plateau, joueur, depart, arrivee):
+    #vérifier la validité du coup
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
+    #effectuer le coup
+
+    piece = plateau.sommets[depart].piece;
+    plateau.sommets[depart].piece = None;
+    plateau.sommets[arrivee].piece = piece;
+    plateau.sommets[arrivee].couleur = joueur;
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    return None
+
 def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
     plateau.afficher()
