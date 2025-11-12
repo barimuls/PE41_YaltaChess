@@ -825,8 +825,18 @@ def lancer_partie(plateau):
 
 
 def afficher_plateau_sur_site(plateau):
-    #autre groupe
-    pass
+    plateau_pieces = {}
+    plateau_couleurs = {}
+    case = list(plateau.sommets.keys())
+    Case = [i.upper() for i in case]
+    inttohex = ["#00FF00","#FF0000","#0000FF"]
+    for i in range(len(case)):
+        plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
+        if plateau.sommets[case[i]].couleur != None:
+            plateau_couleurs[Case[i]] = inttohex[plateau.sommets[case[i]].couleur]
+        else:
+            plateau_couleurs[Case[i]] = plateau.sommets[case[i]].couleur
+    return plateau_pieces, plateau_couleurs
 #----------------------Test----------------------
 if __name__ == "__main__":
     plateau = creer_plateau()

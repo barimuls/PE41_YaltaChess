@@ -1,26 +1,43 @@
 from flask import Flask, request, jsonify, render_template
+from Plateau import *
 
 app = Flask(__name__)
+
+
+@app.context_processor
+def inject_plateau_piece():
+    return dict(plateau_pieces=plateau_pieces)
+
+
+@app.context_processor
+def inject_plateau_couleur():
+    return dict(plateau_couleurs=plateau_couleurs)
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/test')
 def test():
     return render_template('test.html')
+
 
 @app.route('/test2')
 def test2():
     return render_template('test2.html')
 
+
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
 
+
 @app.route('/jeu')
 def jeu():
     return render_template('jeu.html')
+
 
 @app.route('/receive', methods=['POST'])
 def receive():
@@ -31,5 +48,8 @@ def receive():
 
 
 if __name__ == '__main__':
+    plateau = creer_plateau()
+    plateau.remplir_arete()
+    lancer_partie(plateau)
+    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     app.run(debug=True)
-    
