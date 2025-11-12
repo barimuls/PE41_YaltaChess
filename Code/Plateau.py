@@ -401,7 +401,7 @@ class Graph:
         self.remplir_arete_tour_lettre()
         self.remplir_arete_fou_a1()
         self.remplir_arete_fou_h1()
-
+    
     #--------------------Coup possible pour chaque pièce------------------
     def coup_possible_tour_lettre(self,actuel,couleur,deja_vu=[],est_initial=False):
         if actuel in deja_vu:
@@ -501,8 +501,226 @@ class Graph:
         coups += self.coup_possible_fou_h1(depart,couleur,est_initial=True);
         return coups
 
+    def coup_possible_dame(self, depart):
+        couleur = self.sommets[depart].couleur
 
-#------Initialisation du plateau hexagonal carré (type Yalta)------
+        coups = self.coup_possible_tour_chiffre(depart,couleur,est_initial=True);
+        coups += self.coup_possible_tour_lettre(depart,couleur,est_initial=True);
+        coups += self.coup_possible_fou_a1(depart,couleur,est_initial=True);
+        coups += self.coup_possible_fou_h1(depart,couleur,est_initial=True);
+        return coups
+    
+    def coup_possible_roi(self, depart):
+
+        coups = self.sommets[depart].voisin_arete_tour_par_chiffre();
+        coups += self.sommets[depart].voisin_arete_tour_par_lettre();
+        coups += self.sommets[depart].voisin_arete_fou_a1();
+        coups += self.sommets[depart].voisin_arete_fou_h1();    
+        return coups
+    #cavalier
+    def coup_possible_cavalier_ccl(self, depart):
+        voisins1 = self.sommets[depart].voisin_arete_tour_par_chiffre();
+
+        voisins2 = []
+        for v in voisins1:
+            voisins2 = list(set(( self.sommets[v].voisin_arete_tour_par_chiffre()) + voisins2))
+        voisins2.remove(depart)
+
+        voisins3 = []
+        for v in voisins2:
+            voisins3 += self.sommets[v].voisin_arete_tour_par_lettre()
+
+        return voisins3
+    
+    def coup_possible_cavalier_llc(self, depart):
+        voisins1 = self.sommets[depart].voisin_arete_tour_par_lettre();
+
+        voisins2 = []
+        for v in voisins1:
+            voisins2 = list(set(( self.sommets[v].voisin_arete_tour_par_lettre()) + voisins2))
+        voisins2.remove(depart)
+
+        voisins3 = []
+        for v in voisins2:
+            voisins3 += self.sommets[v].voisin_arete_tour_par_chiffre()
+
+        return voisins3
+    
+    def coup_possible_cavalier_cll(self, depart):
+        voisins1 = self.sommets[depart].voisin_arete_tour_par_chiffre();
+        voisins2 = []
+        for v in voisins1:
+            voisins2 += self.sommets[v].voisin_arete_tour_par_lettre() 
+        voisins3 = []
+        for v in voisins2:
+            voisins3 = list(set(( self.sommets[v].voisin_arete_tour_par_lettre()) + voisins3))
+        
+        for v in voisins1:
+            if v in voisins3:
+                voisins3.remove(v)
+        
+        return voisins3
+    
+    def coup_possible_cavalier_lcc(self, depart):
+        voisins1 = self.sommets[depart].voisin_arete_tour_par_lettre();
+        voisins2 = []
+        for v in voisins1:
+            voisins2 += self.sommets[v].voisin_arete_tour_par_chiffre() 
+        voisins3 = []
+        for v in voisins2:
+            voisins3 = list(set(( self.sommets[v].voisin_arete_tour_par_chiffre()) + voisins3))
+        
+        for v in voisins1:
+            if v in voisins3:
+                voisins3.remove(v)
+        
+        return voisins3
+        
+    def coup_possible_cavalier(self, depart):
+        coups = self.coup_possible_cavalier_ccl(depart);
+        coups = list(set(coups + self.coup_possible_cavalier_llc(depart)));
+        coups = list(set(coups + self.coup_possible_cavalier_cll(depart)));
+        coups = list(set(coups + self.coup_possible_cavalier_lcc(depart)));
+
+        #verifier que les coups sont valides (case vide ou case occupée par une pièce adverse)
+        couleur = self.sommets[depart].couleur
+        for coup in coups:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur == couleur:
+                coups.remove(coup)
+
+        return coups;
+
+    #pion
+    def coup_possible_pion_blanc(self, depart):
+        lettre=str(depart[0])
+        chiffre=int(depart[1:])
+
+        liste_coups=[]
+        #----------------on ajoute les coups potentiels
+        #----cas ou on avance 
+        liste_coups_avance=[]
+        #cas où le pion est sur sa position initiale
+        if chiffre==2:
+            liste_coups_avance.append(lettre+str(chiffre+2))
+        #cas avancer d'une case
+        liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
+        #verification que la case est libre
+        for coup in liste_coups_avance:
+            if self.sommets[coup].piece is None:
+                liste_coups.append(coup)
+        
+        #----cas ou on mange
+        liste_coups_mange=[]
+        liste_coups_mange += self.sommets[depart].voisin_arete_fou_a1()
+        liste_coups_mange += self.sommets[depart].voisin_arete_fou_h1()
+        #verification que la case est occupée par une pièce adverse
+        for coup in liste_coups_mange:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=0:
+                liste_coups.append(coup)
+        
+        #----------------on filtre les coups qui reculent
+        for coup in liste_coups:
+            chiffre_coup=int(coup[1:])
+            if chiffre_coup <= chiffre:
+                liste_coups.remove(coup)
+        
+        return liste_coups
+
+    def coup_possible_pion_rouge(self, depart):
+        lettre=str(depart[0])
+        chiffre=int(depart[1:])
+
+        liste_coups=[]
+        #----------------on ajoute les coups potentiels
+        #----cas ou on avance 
+        liste_coups_avance=[]
+        #cas où le pion est sur sa position initiale
+        if chiffre==7:
+            liste_coups_avance.append(lettre+'5')
+        #cas avancer d'une case
+        liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
+        #verification que la case est libre
+        for coup in liste_coups_avance:
+            if self.sommets[coup].piece is None:
+                liste_coups.append(coup)
+        
+        #----cas ou on mange
+        liste_coups_mange=[]
+        liste_coups_mange += self.sommets[depart].voisin_arete_fou_a1()
+        liste_coups_mange += self.sommets[depart].voisin_arete_fou_h1()
+        #verification que la case est occupée par une pièce adverse
+        for coup in liste_coups_mange:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=1:
+                liste_coups.append(coup)
+        
+        #----------------on filtre les coups qui reculent
+        for coup in liste_coups:
+            chiffre_coup=int(coup[1:])
+            if chiffre == 5:
+                if chiffre_coup ==6:
+                    liste_coups.remove(coup)
+            elif chiffre >= 9:
+                if chiffre_coup <= chiffre:
+                    liste_coups.remove(coup)
+            else:
+                if chiffre_coup >= chiffre:
+                    liste_coups.remove(coup)
+        
+        return liste_coups
+    
+    def coup_possible_pion_noir(self, depart):
+        lettre=str(depart[0])
+        chiffre=int(depart[1:])
+
+        liste_coups=[]
+        #----------------on ajoute les coups potentiels
+        #----cas ou on avance 
+        liste_coups_avance=[]
+        #cas où le pion est sur sa position initiale
+        if chiffre==11:
+            liste_coups_avance.append(lettre+'9')
+        #cas avancer d'une case
+        liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
+        #verification que la case est libre
+        for coup in liste_coups_avance:
+            if self.sommets[coup].piece is None:
+                liste_coups.append(coup)
+        
+        #----cas ou on mange
+        liste_coups_mange=[]
+        liste_coups_mange += self.sommets[depart].voisin_arete_fou_a1()
+        liste_coups_mange += self.sommets[depart].voisin_arete_fou_h1()
+        #verification que la case est occupée par une pièce adverse
+        for coup in liste_coups_mange:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=2:
+                liste_coups.append(coup)
+        
+        #----------------on filtre les coups qui reculent
+        for coup in liste_coups:
+            chiffre_coup=int(coup[1:])
+            if chiffre == 5:
+                if chiffre_coup ==9:
+                    liste_coups.remove(coup)
+            elif chiffre <= 8:
+                if chiffre_coup <= chiffre:
+                    liste_coups.remove(coup)
+            else:
+                if chiffre_coup >= chiffre:
+                    liste_coups.remove(coup)
+    
+            return liste_coups   
+
+    def coup_possible_pion(self, depart):
+        couleur = self.sommets[depart].couleur
+
+        if couleur ==0:
+            return self.coup_possible_pion_blanc(depart)
+        elif couleur ==1:
+            return self.coup_possible_pion_rouge(depart)
+        else:
+            return self.coup_possible_pion_noir(depart)
+
+#------Initialisation du plateau------
 
 def creer_plateau():
     plateau = Graph()
@@ -529,18 +747,40 @@ def creer_plateau():
             plateau.ajouter_case(f"{col}{ligne}")
     return plateau
 
-def coup_est_valide(plateau, piece, depart, arrivee,joueur):
+def coup_est_valide(plateau, depart, arrivee,joueur):
     #vérifier que la pièce existe à la case de départ
-    if depart not in plateau.sommets or arrivee not in plateau.sommets[depart].couleur != joueur:
+
+    if depart not in plateau.sommets or plateau.sommets[depart].piece is None or  plateau.sommets[depart].couleur != joueur:
         return False
-    if plateau.sommets[depart].piece != piece or plateau.sommets:
-        return False
+    
+    
+    piece = plateau.sommets[depart].piece;
+
     #différentes règles de déplacement selon la pièce
     if piece == 'tour':
         coups_possibles = plateau.coup_possible_tour(depart)
         if arrivee not in coups_possibles:
             return False
-        
+    elif piece == 'fou':
+        coups_possibles = plateau.coup_possible_fou(depart)
+        if arrivee not in coups_possibles:
+            return False
+    elif piece == 'dame':
+        coups_possibles = plateau.coup_possible_dame(depart)
+        if arrivee not in coups_possibles:
+            return False
+    elif piece == 'roi':
+        coups_possibles = plateau.coup_possible_roi(depart)
+        if arrivee not in coups_possibles:
+            return False
+    elif piece == 'cavalier':
+        coups_possibles = plateau.coup_possible_cavalier(depart)
+        if arrivee not in coups_possibles:
+            return False
+    elif piece == 'pion':
+        coups_possibles = plateau.coup_possible_pion(depart)
+        if arrivee not in coups_possibles:
+            return False
     return True
 
 def verifier_victoire(plateau, joueur):
@@ -554,14 +794,15 @@ def verifier_victoire(plateau, joueur):
 def tour_de_jeu(plateau, joueur):
     #récuperer le coup
     print (f"C'est le tour du joueur {joueur}.");
-    piece = input ("Entrez la pièce à jouer : ");
     depart = input ("Entrez la case de départ : ");
     arrivee = input ("Entrez la case d'arrivée : ");
     #vérifier la validité du coup
-    if not coup_est_valide(plateau, piece, depart, arrivee, joueur):
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
         print("Coup invalide. Veuillez réessayer.")
         return tour_de_jeu(plateau, joueur)
     #effectuer le coup
+
+    piece = plateau.sommets[depart].piece;
     plateau.sommets[depart].piece = None;
     plateau.sommets[arrivee].piece = piece;
     plateau.sommets[arrivee].couleur = joueur;
@@ -577,19 +818,25 @@ def tour_de_jeu(plateau, joueur):
     #passer au joueur suivant
     tour_de_jeu(plateau, (joueur+1) %3);
 
+def lancer_partie(plateau):
+    plateau.remplir_pieces_initiales()
+    plateau.afficher()
+    tour_de_jeu(plateau, 0)
+
+
+def afficher_plateau_sur_site(plateau):
+    #autre groupe
+    pass
 #----------------------Test----------------------
 if __name__ == "__main__":
     plateau = creer_plateau()
     plateau.remplir_arete()
-    #plateau.remplir_pieces_initiales()
-    plateau.afficher()
+    
+    #lancer_partie(plateau)
 
-    plateau.sommets['d4'].piece='fou'
-    plateau.sommets['d4'].couleur=0
+    plateau.coup_possible_cavalier_ccl('d4')
 
-    print(plateau.coup_possible_fou('d4'))
-    #tour_de_jeu(plateau, 0)
-
+    #print(plateau.coup_possible_fou('d4'))
     #print(plateau.sommets['e9'].aretes)
     #print(f"\nNombre total de cases : {len(plateau.sommets)}")
 
