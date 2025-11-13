@@ -183,7 +183,10 @@ class Case:
         if (lettre=='a' and chiffre==1)or(lettre=='h' and chiffre==12)or(lettre=='l' and chiffre==8):
             return voisins
         elif lettre=='a' or chiffre==8:
-            voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+            if lettre=='d' and chiffre==8:
+                voisins.append('i'+str(7))
+            else:
+                voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
         elif lettre=='h' or chiffre==1 :
             if chiffre ==4:
                 voisins.append('g'+str(9))
@@ -842,13 +845,14 @@ def lancer_partie(plateau):
 
 
 def afficher_plateau_sur_site(plateau):
+    dico = {"tour":"♖","cavalier":"♘","fou":"♗","reine":"♕","roi":"♔","pion":"♙", None:None}
     plateau_pieces = {}
     plateau_couleurs = {}
     case = list(plateau.sommets.keys())
     Case = [i.upper() for i in case]
     inttohex = ["#00FF00","#FF0000","#0000FF"]
     for i in range(len(case)):
-        plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
+        plateau_pieces[Case[i]] = dico[plateau.sommets[case[i]].piece]
         if plateau.sommets[case[i]].couleur != None:
             plateau_couleurs[Case[i]] = inttohex[plateau.sommets[case[i]].couleur]
         else:

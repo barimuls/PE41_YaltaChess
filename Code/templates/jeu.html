@@ -663,18 +663,66 @@
         </svg>
         </svg>
     </main>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
         function sendValue(maValeur) {
-
             fetch('/receive', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ value: maValeur })
             })
-                .then(res => res.json())
-                .then(data => { document.getElementById("resultat").textContent = data.reponse; })
-                .catch(error => console.error('Erreur:', error));
+            .then(res => res.json())
+            .then(data => {
+                // Affiche la réponse du serveur (par exemple "Mouvement invalide")
+                const resultEl = document.getElementById("resultat");
+                if (resultEl) resultEl.textContent = data.reponse;
+                console.log("Valeur envoyée :", maValeur);
+            })
+            .catch(error => console.error('Erreur lors de l’envoi :', error));
         }
+
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log("✅ Connecté à SocketIO");
+        });
+
+        // ---  Réception des mises à jour automatiques du plateau ---
+        socket.on('update', data => {
+            console.log("Mise à jour reçue :", data);
+
+            const pieces = data.plateau_pieces;
+            const couleurs = data.plateau_couleurs;
+
+            for (const [caseName, piece] of Object.entries(pieces)) {
+			    const textEl = document.querySelector(`text[onclick="sendValue('${caseName}')"]`);
+			    const polyEl = document.querySelector(`polygon[onclick="sendValue('${caseName}')"]`);
+			    if (!textEl || !polyEl) continue; // ignore si la case n’existe pas
+
+			    // --- récupérer la couleur du polygone pour cases vides ---
+			    const polyColor = polyEl.getAttribute("fill");
+
+			    let textColor;
+			    if (piece === null || piece === undefined) {
+				    // Case vide → couleur du texte contrastée par rapport au fond
+				    if (polyColor === "#EEEED2" || polyColor.toLowerCase() === "#eeeed2") {
+					    textColor = "#769656"; // fond clair → texte foncé
+				    } else if (polyColor === "#769656" || polyColor.toLowerCase() === "#769656") {
+					    textColor = "#EEEED2"; // fond foncé → texte clair
+				    } else {
+					    textColor = "#000000"; // par défaut
+				    }
+				    textEl.textContent = caseName; // affiche le nom de la case
+			    } else {
+				    // Case avec pièce → couleur du joueur envoyée par le serveur
+				    textColor = couleurs[caseName] || "#000000"; // si pas définie, noir
+				    textEl.textContent = piece;
+			    }
+
+			    // --- appliquer la couleur au texte ---
+			    textEl.setAttribute("fill", textColor);
+		    }
+        });
     </script>
 </body>
 

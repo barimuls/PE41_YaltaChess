@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, render_template
 from Plateau import *
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 compteur = 0
 L_requete = [0,0]
 plateau = creer_plateau()
@@ -61,6 +63,16 @@ def receive():
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     return jsonify({"reponse": value})
 
+@socketio.on('connect')
+def handle_connect():
+    emit('update', {'message': 'Connexion établie'})
+
+def envoyer_mise_a_jour():
+    global plateau_pieces, plateau_couleurs
+    while True:
+        socketio.emit('update', {'plateau_pieces': plateau_pieces, 'plateau_couleurs': plateau_couleurs})
+        socketio.sleep(1)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.start_background_task(envoyer_mise_a_jour)
+    socketio.run(app, debug=True)
