@@ -253,6 +253,7 @@ class Case:
 class Graph:
     def __init__(self):
         self.sommets = {}
+        self.prise_en_passant = [None,None,None]  # Pour chaque couleur, la case où un pion peut être pris en passant
 
     def ajouter_case(self, nom, piece=None):
         if nom not in self.sommets:
@@ -620,6 +621,8 @@ class Graph:
         for coup in liste_coups_mange:
             if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=0:
                 liste_coups.append(coup)
+            if coup in self.prise_en_passant[1] or coup in self.prise_en_passant[2]: #prise en passant
+                liste_coups.append(coup)
         
         #----------------on filtre les coups qui reculent
         for coup in liste_coups:
@@ -654,6 +657,8 @@ class Graph:
         #verification que la case est occupée par une pièce adverse
         for coup in liste_coups_mange:
             if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=1:
+                liste_coups.append(coup)
+            if coup in self.prise_en_passant[0] or coup in self.prise_en_passant[2]: #prise en passant
                 liste_coups.append(coup)
         
         #----------------on filtre les coups qui reculent
@@ -696,6 +701,8 @@ class Graph:
         #verification que la case est occupée par une pièce adverse
         for coup in liste_coups_mange:
             if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=2:
+                liste_coups.append(coup)
+            if coup in self.prise_en_passant[0] or coup in self.prise_en_passant[1]: #prise en passant
                 liste_coups.append(coup)
         
         #----------------on filtre les coups qui reculent
@@ -809,6 +816,24 @@ def tour_de_jeu(plateau, joueur):
     plateau.sommets[depart].piece = None;
     plateau.sommets[arrivee].piece = piece;
     plateau.sommets[arrivee].couleur = joueur;
+
+    #remplir la prise en passant si le coup est un double avancée de pion
+    if piece == 'pion':
+        lettre_depart = depart[0]
+        chiffre_depart = int(depart[1:])
+        lettre_arrivee = arrivee[0]
+        chiffre_arrivee = int(arrivee[1:])
+
+        if joueur ==0 and chiffre_depart ==2 and chiffre_arrivee ==4:
+            plateau.prise_en_passant[joueur] = lettre_arrivee + '3'
+        elif joueur ==1 and chiffre_depart ==7 and chiffre_arrivee ==5:
+            plateau.prise_en_passant[joueur] = lettre_arrivee + '6'
+        elif joueur ==2 and chiffre_depart ==11 and chiffre_arrivee ==9:
+            plateau.prise_en_passant[joueur] = lettre_arrivee + '10'
+        else:
+            plateau.prise_en_passant[joueur] = None
+    else:
+        plateau.prise_en_passant[joueur] = None
 
     #verifier la condition de victoire
     if verifier_victoire(plateau, joueur):
