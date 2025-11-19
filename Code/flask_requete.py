@@ -58,11 +58,11 @@ def receive():
     arrivee = L_requete[1]
     if compteur % 2 == 1:
         if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
-            compteur += -2
+            compteur += -1
+            plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
             return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-    print(plateau_couleurs['D2'])
     return jsonify({"reponse": value})
 
 @socketio.on('connect')
@@ -73,7 +73,7 @@ def envoyer_mise_a_jour():
     global plateau_pieces, plateau_couleurs
     while True:
         socketio.emit('update', {'plateau_pieces': plateau_pieces, 'plateau_couleurs': plateau_couleurs})
-        socketio.sleep(1)
+        socketio.sleep(0.5)
 
 if __name__ == '__main__':
     socketio.start_background_task(envoyer_mise_a_jour)
