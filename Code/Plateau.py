@@ -998,7 +998,7 @@ def tour_de_jeu_web(plateau, joueur, depart, arrivee):
     
     return None
 
-def tour_de_jeu_avec_IA(plateau,joueur):
+#def tour_de_jeu_avec_IA(plateau,joueur):
     
 
 
