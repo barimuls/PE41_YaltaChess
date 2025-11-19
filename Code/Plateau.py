@@ -106,20 +106,25 @@ class Case:
             return voisins
         elif lettre=='a' or chiffre==1:
             voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
-        elif lettre=='h' or chiffre==12 :
-            if lettre =='i':
-                voisins.append('e'+str(11))
-            elif chiffre ==9:
+        elif lettre =='h':
+            if chiffre == 9:
                 voisins.append('g'+str(4))
-            elif lettre =='e':
-                voisins.append('i'+str(11))
             else:
                 voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
+        elif chiffre==12:
+            if lettre =='e':
+                voisins.append('i'+str(11))
+            elif lettre in {'f','g','h'}:
+                voisins.append(chr(ord(lettre)-1)+str(11))
+            else: #i,j,k
+                voisins.append(chr(ord(lettre)+1)+str(11))
         elif lettre=='l' or chiffre==8:
             if lettre =='i':
                 voisins.append('d'+str(7))
             elif chiffre ==5:
                 voisins.append('k'+str(9))
+            elif chiffre in {9,10,11}:
+                voisins.append('k'+str(chiffre+1))
             else:
                 voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
         else:
@@ -136,7 +141,7 @@ class Case:
                 voisins.append(chr(ord(lettre)+1)+str(10))
                 if lettre =='e':
                     voisins.append('i'+str(5))
-            elif lettre == 'e' and chiffre in {9,10,11}:
+            elif lettre == 'e' and chiffre in {10,11}:
                 voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
                 voisins.append('i'+str(chiffre-1))
             elif lettre == 'i' and chiffre in {9,10,11}:
@@ -145,12 +150,9 @@ class Case:
                     voisins.append('j'+str(5))
                 else :
                     voisins.append('j'+str(chiffre-1))
-            elif chiffre ==9 and lettre in {'i','j','k'}:
+            elif chiffre ==9 and lettre in {'j','k'}:
                 voisins.append(chr(ord(lettre)+1)+str(5))
-                if lettre =='i':
-                    voisins.append('e'+str(10))
-                else:
-                    voisins.append(chr(ord(lettre)-1)+str(10))
+                voisins.append(chr(ord(lettre)-1)+str(10))
             elif chiffre ==5 and lettre in {'i','j','k'}:
                 voisins.append(chr(ord(lettre)+1)+str(6))
                 if lettre =='i':
@@ -158,21 +160,21 @@ class Case:
                     voisins.append('d'+str(4))
                 else:
                     voisins.append(chr(ord(lettre)-1)+str(9))
-            elif lettre == 'i' and chiffre in {5,6,7}:
+            elif lettre == 'i' and chiffre in {6,7}:
                 voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
-                if chiffre ==5:
-                    voisins.append('e'+str(9))
-                    voisins.append('d'+str(4))
-                else:
-                    voisins.append('d'+str(chiffre-1))
+                voisins.append('d'+str(chiffre-1))
             elif lettre == 'd'and chiffre in {5,6,7}:
                 voisins.append('i'+str(chiffre+1))
                 voisins.append('c'+str(chiffre-1))
 
             
             else:
-                voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
-                voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+                if lettre in {'j','k'} and chiffre in {10,11}:
+                    voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+                    voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+                else:
+                    voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
+                    voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
         return voisins
     
     def voisin_arete_fou_h1(self):
@@ -192,11 +194,22 @@ class Case:
                 voisins.append('g'+str(9))
             else:
                 voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
-        elif lettre=='l' or chiffre==12:
-            if chiffre ==9:
+
+        elif lettre=='l':
+            if chiffre==9:
                 voisins.append('k'+str(5))
-            else:
-                voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+            elif chiffre in {10,11,12}:
+                voisins.append('k'+str(chiffre-1))
+            else:# 5,6,7
+                voisins.append('k'+str(chiffre+1))
+        elif chiffre ==12:
+            if lettre =='i':
+                voisins.append('e'+str(11))
+            elif lettre in {'j','k'}:
+                voisins.append(chr(ord(lettre)-1)+str(11))
+            else:# e,f,g 
+                voisins.append(chr(ord(lettre)+1)+str(11))
+        
         
         elif chiffre ==4 and lettre in {'f','g'}:
             voisins.append(chr(ord(lettre)-1)+str(9))
@@ -236,13 +249,18 @@ class Case:
         elif lettre == 'd'and chiffre in {6,7}:
             voisins.append('i'+str(chiffre-1))
             voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
-        elif chiffre ==5 and lettre ==5:
-            voisins.append('d'+str(4))
+        elif chiffre ==5 and lettre == 'd':
+            voisins.append('e'+str(4))
             voisins.append('i'+str(9))
             voisins.append('c'+str(6))
+        #cas interieur
         else:
-            voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
-            voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
+            if lettre in {'j','k'} and chiffre in {10,11}:
+                voisins.append(chr(ord(lettre)+1)+str(chiffre+1))
+                voisins.append(chr(ord(lettre)-1)+str(chiffre-1))
+            else:
+                voisins.append(chr(ord(lettre)+1)+str(chiffre-1))
+                voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
 
         return voisins
     def aretes_appartient_case(self,arete):
@@ -460,7 +478,6 @@ class Graph:
             return [];
         deja_vu.append(actuel);
 
-        print(actuel)
 
         list_coup = []
 
@@ -482,7 +499,6 @@ class Graph:
             return [];
         deja_vu.append(actuel);
 
-        print(actuel)
 
         list_coup = []
 
