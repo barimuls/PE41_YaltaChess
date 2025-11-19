@@ -1012,14 +1012,13 @@ def lancer_partie(plateau):
     tour_de_jeu(plateau, 0)
 
 def afficher_plateau_sur_site(plateau):
-    dico = {"tour":"♖","cavalier":"♘","fou":"♗","dame":"♕","roi":"♔","pion":"♙", None:None}
     plateau_pieces = {}
     plateau_couleurs = {}
     case = list(plateau.sommets.keys())
     Case = [i.upper() for i in case]
-    inttohex = ["#00FF00","#FF0000","#0000FF"]
+    inttohex = ["blanc","noir","rouge"]
     for i in range(len(case)):
-        plateau_pieces[Case[i]] = dico[plateau.sommets[case[i]].piece]
+        plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
         if plateau.sommets[case[i]].couleur != None:
             plateau_couleurs[Case[i]] = inttohex[plateau.sommets[case[i]].couleur]
         else:
