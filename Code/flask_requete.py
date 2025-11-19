@@ -58,9 +58,11 @@ def receive():
     arrivee = L_requete[1]
     if compteur % 2 == 1:
         if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
+            compteur += -2
             return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+    print(plateau_couleurs['D2'])
     return jsonify({"reponse": value})
 
 @socketio.on('connect')
