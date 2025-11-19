@@ -69,8 +69,7 @@
             /* pleine hauteur */
             display: flex;
             flex-direction: column;
-            position: fixed;
-            right: 0;
+            position: fixed; right: 0;
             /* reste en place même si on scrolle */
         }
 
@@ -104,7 +103,7 @@
             height: 70px;
             display: block;
             margin: 30px auto 0 auto;
-
+            
         }
 
         .bouton-fermer {
@@ -188,8 +187,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 500px;
-            /* ajuste selon l'espace que tu veux */
+            height: 500px;/* ajuste selon l'espace que tu veux */
         }
 
         .bloc-boutons button {
@@ -205,6 +203,7 @@
             position: absolute;
             z-index: 2;
         }
+
     </style>
 </head>
 
@@ -215,7 +214,7 @@
             <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
         </div>
         <ul>
-            <li><a href="{{ url_for('index') }}">Accueil</a></li>
+            <li><a href="{{ url_for('index') }}">Accueil</a></li> 
             <li><a href="{{ url_for('test') }}">À propos</a></li>
             <li><a href="{{ url_for('test2') }}">Services</a></li>
             <li><a href="{{ url_for('contact') }}">Contact</a></li>
@@ -223,812 +222,338 @@
         <div class="ecl">
             <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
         </div>
-
+        
     </nav>
     <div class="nav-droite">
         <p id="resultat"></p>
 
-
+    
     </div>
 
     <!-- Contenu principal -->
     <main>
-        <div class="pion_rouge">
-            <img id="pion_r1" src="{{ url_for('static', filename='images/pion_rouge.svg') }}" alt="Pion Rouge"
-                width="25" pointer-events="none">
-            <img id="pion_r2" src="{{ url_for('static', filename='images/pion_rouge.svg') }}" alt="Pion Rouge"
-                width="25" pointer-events="none">
-        </div>
         <svg class="plateau" viewBox="0 0 960 831.3843876330611">
-            <polygon id="L8" points="300,0 240,0 210,51.96152422706632 277.5,64.9519052838329" fill="#769656"
-                onclick="sendValue('L8')"></polygon>
-            <text x="245" y="41.47595264191645"
-                fill="{{plateau_couleurs.L8 if plateau_couleurs.L8 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L8')">{{plateau_pieces.L8 if
-                plateau_pieces.L8 is not none else "L8"}}</text>
-            <polygon id="L7" points="360,0 300,0 277.5,64.9519052838329 345,77.94228634059948" fill="#EEEED2"
-                onclick="sendValue('L7')"></polygon>
-            <text x="308.75" y="47.97114317029974"
-                fill="{{plateau_couleurs.L7 if plateau_couleurs.L7 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L7')">{{plateau_pieces.L7 if
-                plateau_pieces.L7 is not none else "L7"}}</text>
-            <polygon id="L6" points="420,0 360,0 345,77.94228634059948 412.5,90.93266739736606" fill="#769656"
-                onclick="sendValue('L6')"></polygon>
-            <text x="372.5" y="54.46633369868303"
-                fill="{{plateau_couleurs.L6 if plateau_couleurs.L6 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L6')">{{plateau_pieces.L6 if
-                plateau_pieces.L6 is not none else "L6"}}</text>
-            <polygon id="L5" points="480,0 420,0 412.5,90.93266739736606 480,103.92304845413264" fill="#EEEED2"
-                onclick="sendValue('L5')"></polygon>
-            <text x="436.25" y="60.96152422706632"
-                fill="{{plateau_couleurs.L5 if plateau_couleurs.L5 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L5')">{{plateau_pieces.L5 if
-                plateau_pieces.L5 is not none else "L5"}}</text>
-            <polygon id="L9" points="480,0 540,0 547.5,90.93266739736606 480,103.92304845413264" fill="#769656"
-                onclick="sendValue('L9')"></polygon>
-            <text x="503.75" y="60.96152422706632"
-                fill="{{plateau_couleurs.L9 if plateau_couleurs.L9 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L9')">{{plateau_pieces.L9 if
-                plateau_pieces.L9 is not none else "L9"}}</text>
-            <polygon id="L10" points="540,0 600,0 615,77.94228634059948 547.5,90.93266739736606" fill="#EEEED2"
-                onclick="sendValue('L10')"></polygon>
-            <text x="567.5" y="54.46633369868303"
-                fill="{{plateau_couleurs.L10 if plateau_couleurs.L10 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L10')">{{plateau_pieces.L10 if
-                plateau_pieces.L10 is not none else "L10"}}</text>
-            <polygon id="L11" points="600,0 660,0 682.5,64.9519052838329 615,77.94228634059948" fill="#769656"
-                onclick="sendValue('L11')"></polygon>
-            <text x="631.25" y="47.97114317029974"
-                fill="{{plateau_couleurs.L11 if plateau_couleurs.L11 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L11')">{{plateau_pieces.L11 if
-                plateau_pieces.L11 is not none else "L11"}}</text>
-            <polygon id="L12" points="660,0 720,0 750,51.96152422706632 682.5,64.9519052838329" fill="#EEEED2"
-                onclick="sendValue('L12')"></polygon>
-            <text x="695" y="41.47595264191645"
-                fill="{{plateau_couleurs.L12 if plateau_couleurs.L12 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('L12')">{{plateau_pieces.L12 if
-                plateau_pieces.L12 is not none else "L12"}}</text>
-            <polygon id="K8"
-                points="277.5,64.9519052838329 210,51.96152422706632 180,103.92304845413264 255,129.90381056766574"
-                fill="#EEEED2" onclick="sendValue('K8')"></polygon>
-            <text x="218.75" y="99.93266739736603"
-                fill="{{plateau_couleurs.K8 if plateau_couleurs.K8 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K8')">{{plateau_pieces.K8 if
-                plateau_pieces.K8 is not none else "K8"}}</text>
-            <polygon id="K7"
-                points="345,77.94228634059948 277.5,64.9519052838329 255,129.90381056766574 330,155.8845726811989"
-                fill="#769656" onclick="sendValue('K7')"></polygon>
-            <text x="290" y="119.4182389825159"
-                fill="{{plateau_couleurs.K7 if plateau_couleurs.K7 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K7')">{{plateau_pieces.K7 if
-                plateau_pieces.K7 is not none else "K7"}}</text>
-            <polygon id="K6"
-                points="412.5,90.93266739736606 345,77.94228634059948 330,155.8845726811989 405,181.8653347947321"
-                fill="#EEEED2" onclick="sendValue('K6')"></polygon>
-            <text x="361.25" y="138.9038105676658"
-                fill="{{plateau_couleurs.K6 if plateau_couleurs.K6 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K6')">{{plateau_pieces.K6 if
-                plateau_pieces.K6 is not none else "K6"}}</text>
-            <polygon id="K5"
-                points="480,103.92304845413264 412.5,90.93266739736606 405,181.8653347947321 480,207.84609690826525"
-                fill="#769656" onclick="sendValue('K5')"></polygon>
-            <text x="432.5" y="158.38938215281564"
-                fill="{{plateau_couleurs.K5 if plateau_couleurs.K5 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K5')">{{plateau_pieces.K5 if
-                plateau_pieces.K5 is not none else "K5"}}</text>
-            <polygon id="K9"
-                points="480,103.92304845413264 547.5,90.93266739736606 555,181.8653347947321 480,207.84609690826525"
-                fill="#EEEED2" onclick="sendValue('K9')"></polygon>
-            <text x="507.5" y="158.38938215281564"
-                fill="{{plateau_couleurs.K9 if plateau_couleurs.K9 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K9')">{{plateau_pieces.K9 if
-                plateau_pieces.K9 is not none else "K9"}}</text>
-            <polygon id="K10"
-                points="547.5,90.93266739736606 615,77.94228634059948 630,155.8845726811989 555,181.8653347947321"
-                fill="#769656" onclick="sendValue('K10')"></polygon>
-            <text x="578.75" y="138.9038105676658"
-                fill="{{plateau_couleurs.K10 if plateau_couleurs.K10 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K10')">{{plateau_pieces.K10 if
-                plateau_pieces.K10 is not none else "K10"}}</text>
-            <polygon id="K11"
-                points="615,77.94228634059948 682.5,64.9519052838329 705,129.90381056766574 630,155.8845726811989"
-                fill="#EEEED2" onclick="sendValue('K11')"></polygon>
-            <text x="650" y="119.4182389825159"
-                fill="{{plateau_couleurs.K11 if plateau_couleurs.K11 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K11')">{{plateau_pieces.K11 if
-                plateau_pieces.K11 is not none else "K11"}}</text>
-            <polygon id="K12"
-                points="682.5,64.9519052838329 750,51.96152422706632 780,103.92304845413264 705,129.90381056766574"
-                fill="#769656" onclick="sendValue('K12')"></polygon>
-            <text x="721.25" y="99.93266739736603"
-                fill="{{plateau_couleurs.K12 if plateau_couleurs.K12 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('K12')">{{plateau_pieces.K12 if
-                plateau_pieces.K12 is not none else "K12"}}</text>
-            <polygon id="J8"
-                points="255,129.90381056766574 180,103.92304845413264 150,155.8845726811989 232.5,194.85571585149864"
-                fill="#769656" onclick="sendValue('J8')"></polygon>
-            <text x="192.5" y="158.38938215281564"
-                fill="{{plateau_couleurs.J8 if plateau_couleurs.J8 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J8')">{{plateau_pieces.J8 if
-                plateau_pieces.J8 is not none else "J8"}}</text>
-            <polygon id="J7"
-                points="330,155.8845726811989 255,129.90381056766574 232.5,194.85571585149864 315,233.82685902179838"
-                fill="#EEEED2" onclick="sendValue('J7')"></polygon>
-            <text x="271.25" y="190.86533479473206"
-                fill="{{plateau_couleurs.J7 if plateau_couleurs.J7 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J7')">{{plateau_pieces.J7 if
-                plateau_pieces.J7 is not none else "J7"}}</text>
-            <polygon id="J6"
-                points="405,181.8653347947321 330,155.8845726811989 315,233.82685902179838 397.5,272.7980021920981"
-                fill="#769656" onclick="sendValue('J6')"></polygon>
-            <text x="350" y="223.3412874366485"
-                fill="{{plateau_couleurs.J6 if plateau_couleurs.J6 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J6')">{{plateau_pieces.J6 if
-                plateau_pieces.J6 is not none else "J6"}}</text>
-            <polygon id="J5"
-                points="480,207.84609690826525 405,181.8653347947321 397.5,272.7980021920981 480,311.76914536239786"
-                fill="#EEEED2" onclick="sendValue('J5')"></polygon>
-            <text x="428.75" y="255.81724007856496"
-                fill="{{plateau_couleurs.J5 if plateau_couleurs.J5 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J5')">{{plateau_pieces.J5 if
-                plateau_pieces.J5 is not none else "J5"}}</text>
-            <polygon id="J9"
-                points="480,207.84609690826525 555,181.8653347947321 562.5,272.7980021920981 480,311.76914536239786"
-                fill="#769656" onclick="sendValue('J9')"></polygon>
-            <text x="511.25" y="255.81724007856496"
-                fill="{{plateau_couleurs.J9 if plateau_couleurs.J9 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J9')">{{plateau_pieces.J9 if
-                plateau_pieces.J9 is not none else "J9"}}</text>
-            <polygon id="J10"
-                points="555,181.8653347947321 630,155.8845726811989 645,233.82685902179838 562.5,272.7980021920981"
-                fill="#EEEED2" onclick="sendValue('J10')"></polygon>
-            <text x="590" y="223.3412874366485"
-                fill="{{plateau_couleurs.J10 if plateau_couleurs.J10 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J10')">{{plateau_pieces.J10 if
-                plateau_pieces.J10 is not none else "J10"}}</text>
-            <polygon id="J11"
-                points="630,155.8845726811989 705,129.90381056766574 727.5,194.85571585149864 645,233.82685902179838"
-                fill="#769656" onclick="sendValue('J11')"></polygon>
-            <text x="668.75" y="190.86533479473206"
-                fill="{{plateau_couleurs.J11 if plateau_couleurs.J11 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J11')">{{plateau_pieces.J11 if
-                plateau_pieces.J11 is not none else "J11"}}</text>
-            <polygon id="J12"
-                points="705,129.90381056766574 780,103.92304845413264 810,155.8845726811989 727.5,194.85571585149864"
-                fill="#EEEED2" onclick="sendValue('J12')"></polygon>
-            <text x="747.5" y="158.38938215281564"
-                fill="{{plateau_couleurs.J12 if plateau_couleurs.J12 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('J12')">{{plateau_pieces.J12 if
-                plateau_pieces.J12 is not none else "J12"}}</text>
-            <polygon id="I8"
-                points="232.5,194.85571585149864 150,155.8845726811989 120,207.84609690826525 210,259.80762113533154"
-                fill="#EEEED2" onclick="sendValue('I8')"></polygon>
-            <text x="166.25" y="216.84609690826522"
-                fill="{{plateau_couleurs.I8 if plateau_couleurs.I8 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I8')">{{plateau_pieces.I8 if
-                plateau_pieces.I8 is not none else "I8"}}</text>
-            <polygon id="I7"
-                points="315,233.82685902179838 232.5,194.85571585149864 210,259.80762113533154 300,311.76914536239786"
-                fill="#769656" onclick="sendValue('I7')"></polygon>
-            <text x="252.5" y="262.3124306069483"
-                fill="{{plateau_couleurs.I7 if plateau_couleurs.I7 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I7')">{{plateau_pieces.I7 if
-                plateau_pieces.I7 is not none else "I7"}}</text>
-            <polygon id="I6"
-                points="397.5,272.7980021920981 315,233.82685902179838 300,311.76914536239786 390,363.7306695894642"
-                fill="#EEEED2" onclick="sendValue('I6')"></polygon>
-            <text x="338.75" y="307.7787643056313"
-                fill="{{plateau_couleurs.I6 if plateau_couleurs.I6 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I6')">{{plateau_pieces.I6 if
-                plateau_pieces.I6 is not none else "I6"}}</text>
-            <polygon id="I5"
-                points="480,311.76914536239786 397.5,272.7980021920981 390,363.7306695894642 480,415.6921938165305"
-                fill="#769656" onclick="sendValue('I5')"></polygon>
-            <text x="425" y="353.2450980043143"
-                fill="{{plateau_couleurs.I5 if plateau_couleurs.I5 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I5')">{{plateau_pieces.I5 if
-                plateau_pieces.I5 is not none else "I5"}}</text>
-            <polygon id="I9"
-                points="480,311.76914536239786 562.5,272.7980021920981 570,363.7306695894642 480,415.6921938165305"
-                fill="#EEEED2" onclick="sendValue('I9')"></polygon>
-            <text x="515" y="353.2450980043143"
-                fill="{{plateau_couleurs.I9 if plateau_couleurs.I9 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I9')">{{plateau_pieces.I9 if
-                plateau_pieces.I9 is not none else "I9"}}</text>
-            <polygon id="I10"
-                points="562.5,272.7980021920981 645,233.82685902179838 660,311.76914536239786 570,363.7306695894642"
-                fill="#769656" onclick="sendValue('I10')"></polygon>
-            <text x="601.25" y="307.7787643056313"
-                fill="{{plateau_couleurs.I10 if plateau_couleurs.I10 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I10')">{{plateau_pieces.I10 if
-                plateau_pieces.I10 is not none else "I10"}}</text>
-            <polygon id="I11"
-                points="645,233.82685902179838 727.5,194.85571585149864 750,259.80762113533154 660,311.76914536239786"
-                fill="#EEEED2" onclick="sendValue('I11')"></polygon>
-            <text x="687.5" y="262.3124306069483"
-                fill="{{plateau_couleurs.I11 if plateau_couleurs.I11 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I11')">{{plateau_pieces.I11 if
-                plateau_pieces.I11 is not none else "I11"}}</text>
-            <polygon id="I12"
-                points="727.5,194.85571585149864 810,155.8845726811989 840,207.84609690826525 750,259.80762113533154"
-                fill="#769656" onclick="sendValue('I12')"></polygon>
-            <text x="773.75" y="216.84609690826522"
-                fill="{{plateau_couleurs.I12 if plateau_couleurs.I12 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('I12')">{{plateau_pieces.I12 if
-                plateau_pieces.I12 is not none else "I12"}}</text>
-            <polygon id="H12"
-                points="930,467.6537180435967 960,415.6921938165304 930,363.73066958946407 885,415.6921938165304"
-                fill="#769656" onclick="sendValue('H12')"></polygon>
-            <text x="912.5" y="424.6921938165304"
-                fill="{{plateau_couleurs.H12 if plateau_couleurs.H12 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H12')">{{plateau_pieces.H12 if
-                plateau_pieces.H12 is not none else "H12"}}</text>
-            <polygon id="H11"
-                points="900,519.615242270663 930,467.6537180435967 885,415.6921938165304 840,467.6537180435967"
-                fill="#EEEED2" onclick="sendValue('H11')"></polygon>
-            <text x="875" y="476.65371804359665"
-                fill="{{plateau_couleurs.H11 if plateau_couleurs.H11 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H11')">{{plateau_pieces.H11 if
-                plateau_pieces.H11 is not none else "H11"}}</text>
-            <polygon id="H10"
-                points="870,571.5767664977293 900,519.615242270663 840,467.6537180435967 795,519.615242270663"
-                fill="#769656" onclick="sendValue('H10')"></polygon>
-            <text x="837.5" y="528.615242270663"
-                fill="{{plateau_couleurs.H10 if plateau_couleurs.H10 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H10')">{{plateau_pieces.H10 if
-                plateau_pieces.H10 is not none else "H10"}}</text>
-            <polygon id="H9"
-                points="840,623.5382907247956 870,571.5767664977293 795,519.615242270663 750,571.5767664977294"
-                fill="#EEEED2" onclick="sendValue('H9')"></polygon>
-            <text x="800" y="580.5767664977293"
-                fill="{{plateau_couleurs.H9 if plateau_couleurs.H9 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H9')">{{plateau_pieces.H9 if
-                plateau_pieces.H9 is not none else "H9"}}</text>
-            <polygon id="H4"
-                points="840,623.5382907247956 810,675.4998149518619 727.5,636.5286717815623 750,571.5767664977294"
-                fill="#769656" onclick="sendValue('H4')"></polygon>
-            <text x="773.75" y="632.5382907247956"
-                fill="{{plateau_couleurs.H4 if plateau_couleurs.H4 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H4')">{{plateau_pieces.H4 if
-                plateau_pieces.H4 is not none else "H4"}}</text>
-            <polygon id="H3"
-                points="810,675.4998149518619 780,727.4613391789283 705,701.4805770653952 727.5,636.5286717815623"
-                fill="#EEEED2" onclick="sendValue('H3')"></polygon>
-            <text x="747.5" y="690.9950054802453"
-                fill="{{plateau_couleurs.H3 if plateau_couleurs.H3 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H3')">{{plateau_pieces.H3 if
-                plateau_pieces.H3 is not none else "H3"}}</text>
-            <polygon id="H2"
-                points="780,727.4613391789283 750,779.4228634059946 682.5,766.432482349228 705,701.4805770653952"
-                fill="#769656" onclick="sendValue('H2')"></polygon>
-            <text x="721.25" y="749.4517202356949"
-                fill="{{plateau_couleurs.H2 if plateau_couleurs.H2 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H2')">{{plateau_pieces.H2 if
-                plateau_pieces.H2 is not none else "H2"}}</text>
-            <polygon id="H1"
-                points="750,779.4228634059946 720,831.3843876330609 660,831.3843876330609 682.5,766.432482349228"
-                fill="#EEEED2" onclick="sendValue('H1')"></polygon>
-            <text x="695" y="807.9084349911445"
-                fill="{{plateau_couleurs.H1 if plateau_couleurs.H1 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('H1')">{{plateau_pieces.H1 if
-                plateau_pieces.H1 is not none else "H1"}}</text>
-            <polygon id="G12"
-                points="885,415.6921938165304 930,363.73066958946407 900,311.7691453623978 840,363.7306695894641"
-                fill="#EEEED2" onclick="sendValue('G12')"></polygon>
-            <text x="875" y="372.7306695894641"
-                fill="{{plateau_couleurs.G12 if plateau_couleurs.G12 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G12')">{{plateau_pieces.G12 if
-                plateau_pieces.G12 is not none else "G12"}}</text>
-            <polygon id="G11"
-                points="840,467.6537180435967 885,415.6921938165304 840,363.7306695894641 780,415.69219381653045"
-                fill="#769656" onclick="sendValue('G11')"></polygon>
-            <text x="822.5" y="424.69219381653045"
-                fill="{{plateau_couleurs.G11 if plateau_couleurs.G11 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G11')">{{plateau_pieces.G11 if
-                plateau_pieces.G11 is not none else "G11"}}</text>
-            <polygon id="G10"
-                points="795,519.615242270663 840,467.6537180435967 780,415.69219381653045 720,467.65371804359677"
-                fill="#EEEED2" onclick="sendValue('G10')"></polygon>
-            <text x="770" y="476.6537180435967"
-                fill="{{plateau_couleurs.G10 if plateau_couleurs.G10 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G10')">{{plateau_pieces.G10 if
-                plateau_pieces.G10 is not none else "G10"}}</text>
-            <polygon id="G9"
-                points="750,571.5767664977294 795,519.615242270663 720,467.65371804359677 660,519.6152422706631"
-                fill="#769656" onclick="sendValue('G9')"></polygon>
-            <text x="717.5" y="528.6152422706631"
-                fill="{{plateau_couleurs.G9 if plateau_couleurs.G9 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G9')">{{plateau_pieces.G9 if
-                plateau_pieces.G9 is not none else "G9"}}</text>
-            <polygon id="G4"
-                points="750,571.5767664977294 727.5,636.5286717815623 645,597.5575286112626 660,519.6152422706631"
-                fill="#EEEED2" onclick="sendValue('G4')"></polygon>
-            <text x="687.5" y="587.0719570261126"
-                fill="{{plateau_couleurs.G4 if plateau_couleurs.G4 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G4')">{{plateau_pieces.G4 if
-                plateau_pieces.G4 is not none else "G4"}}</text>
-            <polygon id="G3"
-                points="727.5,636.5286717815623 705,701.4805770653952 630,675.499814951862 645,597.5575286112626"
-                fill="#769656" onclick="sendValue('G3')"></polygon>
-            <text x="668.75" y="658.5190528383289"
-                fill="{{plateau_couleurs.G3 if plateau_couleurs.G3 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G3')">{{plateau_pieces.G3 if
-                plateau_pieces.G3 is not none else "G3"}}</text>
-            <polygon id="G2"
-                points="705,701.4805770653952 682.5,766.432482349228 615.0000000000001,753.4421012924615 630,675.499814951862"
-                fill="#EEEED2" onclick="sendValue('G2')"></polygon>
-            <text x="650" y="729.966148650545"
-                fill="{{plateau_couleurs.G2 if plateau_couleurs.G2 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G2')">{{plateau_pieces.G2 if
-                plateau_pieces.G2 is not none else "G2"}}</text>
-            <polygon id="G1"
-                points="682.5,766.432482349228 660,831.3843876330609 600,831.3843876330609 615.0000000000001,753.4421012924615"
-                fill="#769656" onclick="sendValue('G1')"></polygon>
-            <text x="631.25" y="801.4132444627612"
-                fill="{{plateau_couleurs.G1 if plateau_couleurs.G1 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('G1')">{{plateau_pieces.G1 if
-                plateau_pieces.G1 is not none else "G1"}}</text>
-            <polygon id="F12"
-                points="840,363.7306695894641 900,311.7691453623978 870,259.8076211353315 795,311.7691453623978"
-                fill="#769656" onclick="sendValue('F12')"></polygon>
-            <text x="837.5" y="320.7691453623978"
-                fill="{{plateau_couleurs.F12 if plateau_couleurs.F12 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F12')">{{plateau_pieces.F12 if
-                plateau_pieces.F12 is not none else "F12"}}</text>
-            <polygon id="F11"
-                points="780,415.69219381653045 840,363.7306695894641 795,311.7691453623978 720,363.7306695894641"
-                fill="#EEEED2" onclick="sendValue('F11')"></polygon>
-            <text x="770" y="372.7306695894641"
-                fill="{{plateau_couleurs.F11 if plateau_couleurs.F11 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F11')">{{plateau_pieces.F11 if
-                plateau_pieces.F11 is not none else "F11"}}</text>
-            <polygon id="F10"
-                points="720,467.65371804359677 780,415.69219381653045 720,363.7306695894641 645,415.69219381653045"
-                fill="#769656" onclick="sendValue('F10')"></polygon>
-            <text x="702.5" y="424.69219381653045"
-                fill="{{plateau_couleurs.F10 if plateau_couleurs.F10 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F10')">{{plateau_pieces.F10 if
-                plateau_pieces.F10 is not none else "F10"}}</text>
-            <polygon id="F9"
-                points="660,519.6152422706631 720,467.65371804359677 645,415.69219381653045 570,467.6537180435968"
-                fill="#EEEED2" onclick="sendValue('F9')"></polygon>
-            <text x="635" y="476.65371804359677"
-                fill="{{plateau_couleurs.F9 if plateau_couleurs.F9 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F9')">{{plateau_pieces.F9 if
-                plateau_pieces.F9 is not none else "F9"}}</text>
-            <polygon id="F4"
-                points="660,519.6152422706631 645,597.5575286112626 562.5,558.5863854409629 570,467.6537180435968"
-                fill="#769656" onclick="sendValue('F4')"></polygon>
-            <text x="601.25" y="541.6056233274297"
-                fill="{{plateau_couleurs.F4 if plateau_couleurs.F4 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F4')">{{plateau_pieces.F4 if
-                plateau_pieces.F4 is not none else "F4"}}</text>
-            <polygon id="F3"
-                points="645,597.5575286112626 630,675.499814951862 555.0000000000001,649.5190528383289 562.5,558.5863854409629"
-                fill="#EEEED2" onclick="sendValue('F3')"></polygon>
-            <text x="590" y="626.0431001964125"
-                fill="{{plateau_couleurs.F3 if plateau_couleurs.F3 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F3')">{{plateau_pieces.F3 if
-                plateau_pieces.F3 is not none else "F3"}}</text>
-            <polygon id="F2"
-                points="630,675.499814951862 615.0000000000001,753.4421012924615 547.5000000000001,740.4517202356949 555.0000000000001,649.5190528383289"
-                fill="#769656" onclick="sendValue('F2')"></polygon>
-            <text x="578.75" y="710.4805770653952"
-                fill="{{plateau_couleurs.F2 if plateau_couleurs.F2 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F2')">{{plateau_pieces.F2 if
-                plateau_pieces.F2 is not none else "F2"}}</text>
-            <polygon id="F1"
-                points="615.0000000000001,753.4421012924615 600,831.3843876330609 540.0000000000001,831.384387633061 547.5000000000001,740.4517202356949"
-                fill="#EEEED2" onclick="sendValue('F1')"></polygon>
-            <text x="567.5000000000001" y="794.9180539343779"
-                fill="{{plateau_couleurs.F1 if plateau_couleurs.F1 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('F1')">{{plateau_pieces.F1 if
-                plateau_pieces.F1 is not none else "F1"}}</text>
-            <polygon id="E12"
-                points="795,311.7691453623978 870,259.8076211353315 839.9999999999999,207.84609690826517 750,259.8076211353315"
-                fill="#EEEED2" onclick="sendValue('E12')"></polygon>
-            <text x="800" y="268.8076211353315"
-                fill="{{plateau_couleurs.E12 if plateau_couleurs.E12 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E12')">{{plateau_pieces.E12 if
-                plateau_pieces.E12 is not none else "E12"}}</text>
-            <polygon id="E11"
-                points="720,363.7306695894641 795,311.7691453623978 750,259.8076211353315 660,311.7691453623978"
-                fill="#769656" onclick="sendValue('E11')"></polygon>
-            <text x="717.5" y="320.7691453623978"
-                fill="{{plateau_couleurs.E11 if plateau_couleurs.E11 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E11')">{{plateau_pieces.E11 if
-                plateau_pieces.E11 is not none else "E11"}}</text>
-            <polygon id="E10"
-                points="645,415.69219381653045 720,363.7306695894641 660,311.7691453623978 570,363.7306695894642"
-                fill="#EEEED2" onclick="sendValue('E10')"></polygon>
-            <text x="635" y="372.7306695894641"
-                fill="{{plateau_couleurs.E10 if plateau_couleurs.E10 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E10')">{{plateau_pieces.E10 if
-                plateau_pieces.E10 is not none else "E10"}}</text>
-            <polygon id="E9"
-                points="570,467.6537180435968 645,415.69219381653045 570,363.7306695894642 480,415.6921938165305"
-                fill="#769656" onclick="sendValue('E9')"></polygon>
-            <text x="552.5" y="424.6921938165305"
-                fill="{{plateau_couleurs.E9 if plateau_couleurs.E9 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E9')">{{plateau_pieces.E9 if
-                plateau_pieces.E9 is not none else "E9"}}</text>
-            <polygon id="E4"
-                points="570,467.6537180435968 562.5,558.5863854409629 480,519.6152422706631 480,415.6921938165305"
-                fill="#EEEED2" onclick="sendValue('E4')"></polygon>
-            <text x="515" y="496.1392896287467"
-                fill="{{plateau_couleurs.E4 if plateau_couleurs.E4 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E4')">{{plateau_pieces.E4 if
-                plateau_pieces.E4 is not none else "E4"}}</text>
-            <polygon id="E3"
-                points="562.5,558.5863854409629 555.0000000000001,649.5190528383289 480.00000000000006,623.5382907247957 480,519.6152422706631"
-                fill="#769656" onclick="sendValue('E3')"></polygon>
-            <text x="511.25" y="593.5671475544959"
-                fill="{{plateau_couleurs.E3 if plateau_couleurs.E3 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E3')">{{plateau_pieces.E3 if
-                plateau_pieces.E3 is not none else "E3"}}</text>
-            <polygon id="E2"
-                points="555.0000000000001,649.5190528383289 547.5000000000001,740.4517202356949 480.00000000000006,727.4613391789285 480.00000000000006,623.5382907247957"
-                fill="#EEEED2" onclick="sendValue('E2')"></polygon>
-            <text x="507.5000000000001" y="690.9950054802453"
-                fill="{{plateau_couleurs.E2 if plateau_couleurs.E2 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E2')">{{plateau_pieces.E2 if
-                plateau_pieces.E2 is not none else "E2"}}</text>
-            <polygon id="E1"
-                points="547.5000000000001,740.4517202356949 540.0000000000001,831.384387633061 480.0000000000001,831.384387633061 480.00000000000006,727.4613391789285"
-                fill="#769656" onclick="sendValue('E1')"></polygon>
-            <text x="503.7500000000001" y="788.4228634059948"
-                fill="{{plateau_couleurs.E1 if plateau_couleurs.E1 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('E1')">{{plateau_pieces.E1 if
-                plateau_pieces.E1 is not none else "E1"}}</text>
-            <polygon id="A1"
-                points="210.00000000000023,779.4228634059948 240.00000000000023,831.3843876330611 300.0000000000002,831.3843876330611 277.5000000000002,766.4324823492282"
-                fill="#769656" onclick="sendValue('A1')"></polygon>
-            <text x="245.00000000000023" y="807.9084349911446"
-                fill="{{plateau_couleurs.A1 if plateau_couleurs.A1 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A1')">{{plateau_pieces.A1 if
-                plateau_pieces.A1 is not none else "A1"}}</text>
-            <polygon id="A2"
-                points="180.00000000000017,727.4613391789285 210.00000000000023,779.4228634059948 277.5000000000002,766.4324823492282 255.00000000000017,701.4805770653954"
-                fill="#EEEED2" onclick="sendValue('A2')"></polygon>
-            <text x="218.7500000000002" y="749.4517202356951"
-                fill="{{plateau_couleurs.A2 if plateau_couleurs.A2 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A2')">{{plateau_pieces.A2 if
-                plateau_pieces.A2 is not none else "A2"}}</text>
-            <polygon id="A3"
-                points="150.0000000000001,675.4998149518622 180.00000000000017,727.4613391789285 255.00000000000017,701.4805770653954 232.50000000000014,636.5286717815625"
-                fill="#769656" onclick="sendValue('A3')"></polygon>
-            <text x="192.50000000000014" y="690.9950054802455"
-                fill="{{plateau_couleurs.A3 if plateau_couleurs.A3 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A3')">{{plateau_pieces.A3 if
-                plateau_pieces.A3 is not none else "A3"}}</text>
-            <polygon id="A4"
-                points="120.00000000000011,623.538290724796 150.0000000000001,675.4998149518622 232.50000000000014,636.5286717815625 210.0000000000001,571.5767664977295"
-                fill="#EEEED2" onclick="sendValue('A4')"></polygon>
-            <text x="166.2500000000001" y="632.5382907247958"
-                fill="{{plateau_couleurs.A4 if plateau_couleurs.A4 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A4')">{{plateau_pieces.A4 if
-                plateau_pieces.A4 is not none else "A4"}}</text>
-            <polygon id="A5"
-                points="120.00000000000011,623.538290724796 90.00000000000011,571.5767664977296 165.0000000000001,519.6152422706633 210.0000000000001,571.5767664977295"
-                fill="#769656" onclick="sendValue('A5')"></polygon>
-            <text x="140.0000000000001" y="580.5767664977296"
-                fill="{{plateau_couleurs.A5 if plateau_couleurs.A5 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A5')">{{plateau_pieces.A5 if
-                plateau_pieces.A5 is not none else "A5"}}</text>
-            <polygon id="A6"
-                points="90.00000000000011,571.5767664977296 60.00000000000006,519.6152422706633 120.00000000000006,467.653718043597 165.0000000000001,519.6152422706633"
-                fill="#EEEED2" onclick="sendValue('A6')"></polygon>
-            <text x="102.50000000000009" y="528.6152422706633"
-                fill="{{plateau_couleurs.A6 if plateau_couleurs.A6 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A6')">{{plateau_pieces.A6 if
-                plateau_pieces.A6 is not none else "A6"}}</text>
-            <polygon id="A7"
-                points="60.00000000000006,519.6152422706633 30,467.653718043597 75,415.6921938165307 120.00000000000006,467.653718043597"
-                fill="#769656" onclick="sendValue('A7')"></polygon>
-            <text x="65.00000000000003" y="476.653718043597"
-                fill="{{plateau_couleurs.A7 if plateau_couleurs.A7 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A7')">{{plateau_pieces.A7 if
-                plateau_pieces.A7 is not none else "A7"}}</text>
-            <polygon id="A8" points="30,467.653718043597 0,415.6921938165307 30,363.73066958946436 75,415.6921938165307"
-                fill="#EEEED2" onclick="sendValue('A8')"></polygon>
-            <text x="27.5" y="424.6921938165307"
-                fill="{{plateau_couleurs.A8 if plateau_couleurs.A8 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('A8')">{{plateau_pieces.A8 if
-                plateau_pieces.A8 is not none else "A8"}}</text>
-            <polygon id="B1"
-                points="277.5000000000002,766.4324823492282 300.0000000000002,831.3843876330611 360.0000000000002,831.3843876330611 345.0000000000001,753.4421012924618"
-                fill="#EEEED2" onclick="sendValue('B1')"></polygon>
-            <text x="308.7500000000002" y="801.4132444627614"
-                fill="{{plateau_couleurs.B1 if plateau_couleurs.B1 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B1')">{{plateau_pieces.B1 if
-                plateau_pieces.B1 is not none else "B1"}}</text>
-            <polygon id="B2"
-                points="255.00000000000017,701.4805770653954 277.5000000000002,766.4324823492282 345.0000000000001,753.4421012924618 330.0000000000001,675.4998149518622"
-                fill="#769656" onclick="sendValue('B2')"></polygon>
-            <text x="290.0000000000001" y="729.9661486505452"
-                fill="{{plateau_couleurs.B2 if plateau_couleurs.B2 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B2')">{{plateau_pieces.B2 if
-                plateau_pieces.B2 is not none else "B2"}}</text>
-            <polygon id="B3"
-                points="232.50000000000014,636.5286717815625 255.00000000000017,701.4805770653954 330.0000000000001,675.4998149518622 315.0000000000001,597.5575286112627"
-                fill="#EEEED2" onclick="sendValue('B3')"></polygon>
-            <text x="271.2500000000001" y="658.5190528383291"
-                fill="{{plateau_couleurs.B3 if plateau_couleurs.B3 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B3')">{{plateau_pieces.B3 if
-                plateau_pieces.B3 is not none else "B3"}}</text>
-            <polygon id="B4"
-                points="210.0000000000001,571.5767664977295 232.50000000000014,636.5286717815625 315.0000000000001,597.5575286112627 300.00000000000006,519.6152422706632"
-                fill="#769656" onclick="sendValue('B4')"></polygon>
-            <text x="252.5000000000001" y="587.0719570261128"
-                fill="{{plateau_couleurs.B4 if plateau_couleurs.B4 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B4')">{{plateau_pieces.B4 if
-                plateau_pieces.B4 is not none else "B4"}}</text>
-            <polygon id="B5"
-                points="210.0000000000001,571.5767664977295 165.0000000000001,519.6152422706633 240.00000000000003,467.65371804359694 300.00000000000006,519.6152422706632"
-                fill="#EEEED2" onclick="sendValue('B5')"></polygon>
-            <text x="222.50000000000009" y="528.6152422706632"
-                fill="{{plateau_couleurs.B5 if plateau_couleurs.B5 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B5')">{{plateau_pieces.B5 if
-                plateau_pieces.B5 is not none else "B5"}}</text>
-            <polygon id="B6"
-                points="165.0000000000001,519.6152422706633 120.00000000000006,467.653718043597 179.99999999999994,415.6921938165307 240.00000000000003,467.65371804359694"
-                fill="#769656" onclick="sendValue('B6')"></polygon>
-            <text x="170.00000000000006" y="476.653718043597"
-                fill="{{plateau_couleurs.B6 if plateau_couleurs.B6 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B6')">{{plateau_pieces.B6 if
-                plateau_pieces.B6 is not none else "B6"}}</text>
-            <polygon id="B7"
-                points="120.00000000000006,467.653718043597 75,415.6921938165307 119.99999999999994,363.73066958946436 179.99999999999994,415.6921938165307"
-                fill="#EEEED2" onclick="sendValue('B7')"></polygon>
-            <text x="117.49999999999997" y="424.6921938165307"
-                fill="{{plateau_couleurs.B7 if plateau_couleurs.B7 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B7')">{{plateau_pieces.B7 if
-                plateau_pieces.B7 is not none else "B7"}}</text>
-            <polygon id="B8"
-                points="75,415.6921938165307 30,363.73066958946436 60,311.76914536239804 119.99999999999994,363.73066958946436"
-                fill="#769656" onclick="sendValue('B8')"></polygon>
-            <text x="64.99999999999997" y="372.73066958946436"
-                fill="{{plateau_couleurs.B8 if plateau_couleurs.B8 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('B8')">{{plateau_pieces.B8 if
-                plateau_pieces.B8 is not none else "B8"}}</text>
-            <polygon id="C1"
-                points="345.0000000000001,753.4421012924618 360.0000000000002,831.3843876330611 420.00000000000017,831.3843876330611 412.5000000000001,740.4517202356951"
-                fill="#769656" onclick="sendValue('C1')"></polygon>
-            <text x="372.5000000000001" y="794.9180539343781"
-                fill="{{plateau_couleurs.C1 if plateau_couleurs.C1 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C1')">{{plateau_pieces.C1 if
-                plateau_pieces.C1 is not none else "C1"}}</text>
-            <polygon id="C2"
-                points="330.0000000000001,675.4998149518622 345.0000000000001,753.4421012924618 412.5000000000001,740.4517202356951 405.0000000000001,649.519052838329"
-                fill="#EEEED2" onclick="sendValue('C2')"></polygon>
-            <text x="361.2500000000001" y="710.4805770653954"
-                fill="{{plateau_couleurs.C2 if plateau_couleurs.C2 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C2')">{{plateau_pieces.C2 if
-                plateau_pieces.C2 is not none else "C2"}}</text>
-            <polygon id="C3"
-                points="315.0000000000001,597.5575286112627 330.0000000000001,675.4998149518622 405.0000000000001,649.519052838329 397.50000000000006,558.5863854409629"
-                fill="#769656" onclick="sendValue('C3')"></polygon>
-            <text x="350.0000000000001" y="626.0431001964125"
-                fill="{{plateau_couleurs.C3 if plateau_couleurs.C3 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C3')">{{plateau_pieces.C3 if
-                plateau_pieces.C3 is not none else "C3"}}</text>
-            <polygon id="C4"
-                points="300.00000000000006,519.6152422706632 315.0000000000001,597.5575286112627 397.50000000000006,558.5863854409629 390,467.6537180435969"
-                fill="#EEEED2" onclick="sendValue('C4')"></polygon>
-            <text x="338.75000000000006" y="541.6056233274298"
-                fill="{{plateau_couleurs.C4 if plateau_couleurs.C4 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C4')">{{plateau_pieces.C4 if
-                plateau_pieces.C4 is not none else "C4"}}</text>
-            <polygon id="C5"
-                points="300.00000000000006,519.6152422706632 240.00000000000003,467.65371804359694 315,415.69219381653056 390,467.6537180435969"
-                fill="#769656" onclick="sendValue('C5')"></polygon>
-            <text x="305" y="476.6537180435969"
-                fill="{{plateau_couleurs.C5 if plateau_couleurs.C5 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C5')">{{plateau_pieces.C5 if
-                plateau_pieces.C5 is not none else "C5"}}</text>
-            <polygon id="C6"
-                points="240.00000000000003,467.65371804359694 179.99999999999994,415.6921938165307 239.99999999999994,363.7306695894643 315,415.69219381653056"
-                fill="#EEEED2" onclick="sendValue('C6')"></polygon>
-            <text x="237.49999999999997" y="424.6921938165306"
-                fill="{{plateau_couleurs.C6 if plateau_couleurs.C6 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C6')">{{plateau_pieces.C6 if
-                plateau_pieces.C6 is not none else "C6"}}</text>
-            <polygon id="C7"
-                points="179.99999999999994,415.6921938165307 119.99999999999994,363.73066958946436 164.9999999999999,311.76914536239804 239.99999999999994,363.7306695894643"
-                fill="#769656" onclick="sendValue('C7')"></polygon>
-            <text x="169.99999999999994" y="372.73066958946436"
-                fill="{{plateau_couleurs.C7 if plateau_couleurs.C7 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C7')">{{plateau_pieces.C7 if
-                plateau_pieces.C7 is not none else "C7"}}</text>
-            <polygon id="C8"
-                points="119.99999999999994,363.73066958946436 60,311.76914536239804 89.99999999999989,259.8076211353317 164.9999999999999,311.76914536239804"
-                fill="#EEEED2" onclick="sendValue('C8')"></polygon>
-            <text x="102.49999999999994" y="320.76914536239804"
-                fill="{{plateau_couleurs.C8 if plateau_couleurs.C8 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('C8')">{{plateau_pieces.C8 if
-                plateau_pieces.C8 is not none else "C8"}}</text>
-            <polygon id="D1"
-                points="412.5000000000001,740.4517202356951 420.00000000000017,831.3843876330611 480.0000000000002,831.3843876330611 480.0000000000001,727.4613391789285"
-                fill="#EEEED2" onclick="sendValue('D1')"></polygon>
-            <text x="436.25000000000017" y="788.4228634059948"
-                fill="{{plateau_couleurs.D1 if plateau_couleurs.D1 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D1')">{{plateau_pieces.D1 if
-                plateau_pieces.D1 is not none else "D1"}}</text>
-            <polygon id="D2"
-                points="405.0000000000001,649.519052838329 412.5000000000001,740.4517202356951 480.0000000000001,727.4613391789285 480.0000000000001,623.5382907247958"
-                fill="#769656" onclick="sendValue('D2')"></polygon>
-            <text x="432.5000000000001" y="690.9950054802455"
-                fill="{{plateau_couleurs.D2 if plateau_couleurs.D2 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D2')">{{plateau_pieces.D2 if
-                plateau_pieces.D2 is not none else "D2"}}</text>
-            <polygon id="D3"
-                points="397.50000000000006,558.5863854409629 405.0000000000001,649.519052838329 480.0000000000001,623.5382907247958 480.00000000000006,519.6152422706632"
-                fill="#EEEED2" onclick="sendValue('D3')"></polygon>
-            <text x="428.7500000000001" y="593.5671475544962"
-                fill="{{plateau_couleurs.D3 if plateau_couleurs.D3 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D3')">{{plateau_pieces.D3 if
-                plateau_pieces.D3 is not none else "D3"}}</text>
-            <polygon id="D4"
-                points="390,467.6537180435969 397.50000000000006,558.5863854409629 480.00000000000006,519.6152422706632 480,415.6921938165305"
-                fill="#769656" onclick="sendValue('D4')"></polygon>
-            <text x="425" y="496.1392896287467"
-                fill="{{plateau_couleurs.D4 if plateau_couleurs.D4 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D4')">{{plateau_pieces.D4 if
-                plateau_pieces.D4 is not none else "D4"}}</text>
-            <polygon id="D5"
-                points="390,467.6537180435969 315,415.69219381653056 390,363.73066958946424 480,415.6921938165305"
-                fill="#EEEED2" onclick="sendValue('D5')"></polygon>
-            <text x="387.5" y="424.69219381653056"
-                fill="{{plateau_couleurs.D5 if plateau_couleurs.D5 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D5')">{{plateau_pieces.D5 if
-                plateau_pieces.D5 is not none else "D5"}}</text>
-            <polygon id="D6"
-                points="315,415.69219381653056 239.99999999999994,363.7306695894643 299.99999999999994,311.7691453623979 390,363.73066958946424"
-                fill="#769656" onclick="sendValue('D6')"></polygon>
-            <text x="305" y="372.73066958946424"
-                fill="{{plateau_couleurs.D6 if plateau_couleurs.D6 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D6')">{{plateau_pieces.D6 if
-                plateau_pieces.D6 is not none else "D6"}}</text>
-            <polygon id="D7"
-                points="239.99999999999994,363.7306695894643 164.9999999999999,311.76914536239804 209.9999999999999,259.80762113533166 299.99999999999994,311.7691453623979"
-                fill="#EEEED2" onclick="sendValue('D7')"></polygon>
-            <text x="222.49999999999991" y="320.769145362398"
-                fill="{{plateau_couleurs.D7 if plateau_couleurs.D7 is not none else '#769656' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D7')">{{plateau_pieces.D7 if
-                plateau_pieces.D7 is not none else "D7"}}</text>
-            <polygon id="D8"
-                points="164.9999999999999,311.76914536239804 89.99999999999989,259.8076211353317 119.99999999999989,207.84609690826534 209.9999999999999,259.80762113533166"
-                fill="#769656" onclick="sendValue('D8')"></polygon>
-            <text x="139.9999999999999" y="268.8076211353317"
-                fill="{{plateau_couleurs.D8 if plateau_couleurs.D8 is not none else '#EEEED2' }}"
-                class="pointer-events-none" font-weight="bold" onclick="sendValue('D8')">{{plateau_pieces.D8 if
-                plateau_pieces.D8 is not none else "D8"}}</text>
-        </svg>
-        </svg>
+            <polygon id="L8" points="300,0 240,0 210,51.96152422706632 277.5,64.9519052838329" fill="#769656" onclick="sendValue('L8')"></polygon>
+            <text x="245" y="41.47595264191645" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L8')">{{"L8"}}</text>
+            <polygon id="L7" points="360,0 300,0 277.5,64.9519052838329 345,77.94228634059948" fill="#EEEED2" onclick="sendValue('L7')"></polygon>
+            <text x="308.75" y="47.97114317029974" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L7')">{{"L7"}}</text>
+            <polygon id="L6" points="420,0 360,0 345,77.94228634059948 412.5,90.93266739736606" fill="#769656" onclick="sendValue('L6')"></polygon>
+            <text x="372.5" y="54.46633369868303" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L6')">{{"L6"}}</text>
+            <polygon id="L5" points="480,0 420,0 412.5,90.93266739736606 480,103.92304845413264" fill="#EEEED2" onclick="sendValue('L5')"></polygon>
+            <text x="436.25" y="60.96152422706632" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L5')">{{"L5"}}</text>
+            <polygon id="L9" points="480,0 540,0 547.5,90.93266739736606 480,103.92304845413264" fill="#769656" onclick="sendValue('L9')"></polygon>
+            <text x="503.75" y="60.96152422706632" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L9')">{{"L9"}}</text>
+            <polygon id="L10" points="540,0 600,0 615,77.94228634059948 547.5,90.93266739736606" fill="#EEEED2" onclick="sendValue('L10')"></polygon>
+            <text x="567.5" y="54.46633369868303" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L10')">{{"L10"}}</text>
+            <polygon id="L11" points="600,0 660,0 682.5,64.9519052838329 615,77.94228634059948" fill="#769656" onclick="sendValue('L11')"></polygon>
+            <text x="631.25" y="47.97114317029974" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('L11')">{{"L11"}}</text>
+            <polygon id="L12" points="660,0 720,0 750,51.96152422706632 682.5,64.9519052838329" fill="#EEEED2" onclick="sendValue('L12')"></polygon>
+            <text x="695" y="41.47595264191645" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('L12')">{{"L12"}}</text>
+            <polygon id="K8" points="277.5,64.9519052838329 210,51.96152422706632 180,103.92304845413264 255,129.90381056766574" fill="#EEEED2" onclick="sendValue('K8')"></polygon>
+            <text x="218.75" y="99.93266739736603" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K8')">{{"K8"}}</text>
+            <polygon id="K7" points="345,77.94228634059948 277.5,64.9519052838329 255,129.90381056766574 330,155.8845726811989" fill="#769656" onclick="sendValue('K7')"></polygon>
+            <text x="290" y="119.4182389825159" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K7')">{{"K7"}}</text>
+            <polygon id="K6" points="412.5,90.93266739736606 345,77.94228634059948 330,155.8845726811989 405,181.8653347947321" fill="#EEEED2" onclick="sendValue('K6')"></polygon>
+            <text x="361.25" y="138.9038105676658" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K6')">{{"K6"}}</text>
+            <polygon id="K5" points="480,103.92304845413264 412.5,90.93266739736606 405,181.8653347947321 480,207.84609690826525" fill="#769656" onclick="sendValue('K5')"></polygon>
+            <text x="432.5" y="158.38938215281564" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K5')">{{"K5"}}</text>
+            <polygon id="K9" points="480,103.92304845413264 547.5,90.93266739736606 555,181.8653347947321 480,207.84609690826525" fill="#EEEED2" onclick="sendValue('K9')"></polygon>
+            <text x="507.5" y="158.38938215281564" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K9')">{{"K9"}}</text>
+            <polygon id="K10" points="547.5,90.93266739736606 615,77.94228634059948 630,155.8845726811989 555,181.8653347947321" fill="#769656" onclick="sendValue('K10')"></polygon>
+            <text x="578.75" y="138.9038105676658" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K10')">{{"K10"}}</text>
+            <polygon id="K11" points="615,77.94228634059948 682.5,64.9519052838329 705,129.90381056766574 630,155.8845726811989" fill="#EEEED2" onclick="sendValue('K11')"></polygon>
+            <text x="650" y="119.4182389825159" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('K11')">{{"K11"}}</text>
+            <polygon id="K12" points="682.5,64.9519052838329 750,51.96152422706632 780,103.92304845413264 705,129.90381056766574" fill="#769656" onclick="sendValue('K12')"></polygon>
+            <text x="721.25" y="99.93266739736603" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('K12')">{{"K12"}}</text>
+            <polygon id="J8" points="255,129.90381056766574 180,103.92304845413264 150,155.8845726811989 232.5,194.85571585149864" fill="#769656" onclick="sendValue('J8')"></polygon>
+            <text x="192.5" y="158.38938215281564" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J8')">{{"J8"}}</text>
+            <polygon id="J7" points="330,155.8845726811989 255,129.90381056766574 232.5,194.85571585149864 315,233.82685902179838" fill="#EEEED2" onclick="sendValue('J7')"></polygon>
+            <text x="271.25" y="190.86533479473206" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J7')">{{"J7"}}</text>
+            <polygon id="J6" points="405,181.8653347947321 330,155.8845726811989 315,233.82685902179838 397.5,272.7980021920981" fill="#769656" onclick="sendValue('J6')"></polygon>
+            <text x="350" y="223.3412874366485" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J6')">{{"J6"}}</text>
+            <polygon id="J5" points="480,207.84609690826525 405,181.8653347947321 397.5,272.7980021920981 480,311.76914536239786" fill="#EEEED2" onclick="sendValue('J5')"></polygon>
+            <text x="428.75" y="255.81724007856496" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J5')">{{"J5"}}</text>
+            <polygon id="J9" points="480,207.84609690826525 555,181.8653347947321 562.5,272.7980021920981 480,311.76914536239786" fill="#769656" onclick="sendValue('J9')"></polygon>
+            <text x="511.25" y="255.81724007856496" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J9')">{{"J9"}}</text>
+            <polygon id="J10" points="555,181.8653347947321 630,155.8845726811989 645,233.82685902179838 562.5,272.7980021920981" fill="#EEEED2" onclick="sendValue('J10')"></polygon>
+            <text x="590" y="223.3412874366485" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J10')">{{"J10"}}</text>
+            <polygon id="J11" points="630,155.8845726811989 705,129.90381056766574 727.5,194.85571585149864 645,233.82685902179838" fill="#769656" onclick="sendValue('J11')"></polygon>
+            <text x="668.75" y="190.86533479473206" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('J11')">{{"J11"}}</text>
+            <polygon id="J12" points="705,129.90381056766574 780,103.92304845413264 810,155.8845726811989 727.5,194.85571585149864" fill="#EEEED2" onclick="sendValue('J12')"></polygon>
+            <text x="747.5" y="158.38938215281564" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('J12')">{{"J12"}}</text>
+            <polygon id="I8" points="232.5,194.85571585149864 150,155.8845726811989 120,207.84609690826525 210,259.80762113533154" fill="#EEEED2" onclick="sendValue('I8')"></polygon>
+            <text x="166.25" y="216.84609690826522" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I8')">{{"I8"}}</text>
+            <polygon id="I7" points="315,233.82685902179838 232.5,194.85571585149864 210,259.80762113533154 300,311.76914536239786" fill="#769656" onclick="sendValue('I7')"></polygon>
+            <text x="252.5" y="262.3124306069483" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I7')">{{"I7"}}</text>
+            <polygon id="I6" points="397.5,272.7980021920981 315,233.82685902179838 300,311.76914536239786 390,363.7306695894642" fill="#EEEED2" onclick="sendValue('I6')"></polygon>
+            <text x="338.75" y="307.7787643056313" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I6')">{{"I6"}}</text>
+            <polygon id="I5" points="480,311.76914536239786 397.5,272.7980021920981 390,363.7306695894642 480,415.6921938165305" fill="#769656" onclick="sendValue('I5')"></polygon>
+            <text x="425" y="353.2450980043143" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I5')">{{"I5"}}</text>
+            <polygon id="I9" points="480,311.76914536239786 562.5,272.7980021920981 570,363.7306695894642 480,415.6921938165305" fill="#EEEED2" onclick="sendValue('I9')"></polygon>
+            <text x="515" y="353.2450980043143" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I9')">{{"I9"}}</text>
+            <polygon id="I10" points="562.5,272.7980021920981 645,233.82685902179838 660,311.76914536239786 570,363.7306695894642" fill="#769656" onclick="sendValue('I10')"></polygon>
+            <text x="601.25" y="307.7787643056313" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I10')">{{"I10"}}</text>
+            <polygon id="I11" points="645,233.82685902179838 727.5,194.85571585149864 750,259.80762113533154 660,311.76914536239786" fill="#EEEED2" onclick="sendValue('I11')"></polygon>
+            <text x="687.5" y="262.3124306069483" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('I11')">{{"I11"}}</text>
+            <polygon id="I12" points="727.5,194.85571585149864 810,155.8845726811989 840,207.84609690826525 750,259.80762113533154" fill="#769656" onclick="sendValue('I12')"></polygon>
+            <text x="773.75" y="216.84609690826522" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('I12')">{{"I12"}}</text>
+            <polygon id="H12" points="930,467.6537180435967 960,415.6921938165304 930,363.73066958946407 885,415.6921938165304" fill="#769656" onclick="sendValue('H12')"></polygon>
+            <text x="912.5" y="424.6921938165304" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H12')">{{"H12"}}</text>
+            <polygon id="H11" points="900,519.615242270663 930,467.6537180435967 885,415.6921938165304 840,467.6537180435967" fill="#EEEED2" onclick="sendValue('H11')"></polygon>
+            <text x="875" y="476.65371804359665" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H11')">{{"H11"}}</text>
+            <polygon id="H10" points="870,571.5767664977293 900,519.615242270663 840,467.6537180435967 795,519.615242270663" fill="#769656" onclick="sendValue('H10')"></polygon>
+            <text x="837.5" y="528.615242270663" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H10')">{{"H10"}}</text>
+            <polygon id="H9" points="840,623.5382907247956 870,571.5767664977293 795,519.615242270663 750,571.5767664977294" fill="#EEEED2" onclick="sendValue('H9')"></polygon>
+            <text x="800" y="580.5767664977293" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H9')">{{"H9"}}</text>
+            <polygon id="H4" points="840,623.5382907247956 810,675.4998149518619 727.5,636.5286717815623 750,571.5767664977294" fill="#769656" onclick="sendValue('H4')"></polygon>
+            <text x="773.75" y="632.5382907247956" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H4')">{{"H4"}}</text>
+            <polygon id="H3" points="810,675.4998149518619 780,727.4613391789283 705,701.4805770653952 727.5,636.5286717815623" fill="#EEEED2" onclick="sendValue('H3')"></polygon>
+            <text x="747.5" y="690.9950054802453" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H3')">{{"H3"}}</text>
+            <polygon id="H2" points="780,727.4613391789283 750,779.4228634059946 682.5,766.432482349228 705,701.4805770653952" fill="#769656" onclick="sendValue('H2')"></polygon>
+            <text x="721.25" y="749.4517202356949" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('H2')">{{"H2"}}</text>
+            <polygon id="H1" points="750,779.4228634059946 720,831.3843876330609 660,831.3843876330609 682.5,766.432482349228" fill="#EEEED2" onclick="sendValue('H1')"></polygon>
+            <text x="695" y="807.9084349911445" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('H1')">{{"H1"}}</text>
+            <polygon id="G12" points="885,415.6921938165304 930,363.73066958946407 900,311.7691453623978 840,363.7306695894641" fill="#EEEED2" onclick="sendValue('G12')"></polygon>
+            <text x="875" y="372.7306695894641" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G12')">{{"G12"}}</text>
+            <polygon id="G11" points="840,467.6537180435967 885,415.6921938165304 840,363.7306695894641 780,415.69219381653045" fill="#769656" onclick="sendValue('G11')"></polygon>
+            <text x="822.5" y="424.69219381653045" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G11')">{{"G11"}}</text>
+            <polygon id="G10" points="795,519.615242270663 840,467.6537180435967 780,415.69219381653045 720,467.65371804359677" fill="#EEEED2" onclick="sendValue('G10')"></polygon>
+            <text x="770" y="476.6537180435967" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G10')">{{"G10"}}</text>
+            <polygon id="G9" points="750,571.5767664977294 795,519.615242270663 720,467.65371804359677 660,519.6152422706631" fill="#769656" onclick="sendValue('G9')"></polygon>
+            <text x="717.5" y="528.6152422706631" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G9')">{{"G9"}}</text>
+            <polygon id="G4" points="750,571.5767664977294 727.5,636.5286717815623 645,597.5575286112626 660,519.6152422706631" fill="#EEEED2" onclick="sendValue('G4')"></polygon>
+            <text x="687.5" y="587.0719570261126" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G4')">{{"G4"}}</text>
+            <polygon id="G3" points="727.5,636.5286717815623 705,701.4805770653952 630,675.499814951862 645,597.5575286112626" fill="#769656" onclick="sendValue('G3')"></polygon>
+            <text x="668.75" y="658.5190528383289" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G3')">{{"G3"}}</text>
+            <polygon id="G2" points="705,701.4805770653952 682.5,766.432482349228 615.0000000000001,753.4421012924615 630,675.499814951862" fill="#EEEED2" onclick="sendValue('G2')"></polygon>
+            <text x="650" y="729.966148650545" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('G2')">{{"G2"}}</text>
+            <polygon id="G1" points="682.5,766.432482349228 660,831.3843876330609 600,831.3843876330609 615.0000000000001,753.4421012924615" fill="#769656" onclick="sendValue('G1')"></polygon>
+            <text x="631.25" y="801.4132444627612" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('G1')">{{"G1"}}</text>
+            <polygon id="F12" points="840,363.7306695894641 900,311.7691453623978 870,259.8076211353315 795,311.7691453623978" fill="#769656" onclick="sendValue('F12')"></polygon>
+            <text x="837.5" y="320.7691453623978" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F12')">{{"F12"}}</text>
+            <polygon id="F11" points="780,415.69219381653045 840,363.7306695894641 795,311.7691453623978 720,363.7306695894641" fill="#EEEED2" onclick="sendValue('F11')"></polygon>
+            <text x="770" y="372.7306695894641" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F11')">{{"F11"}}</text>
+            <polygon id="F10" points="720,467.65371804359677 780,415.69219381653045 720,363.7306695894641 645,415.69219381653045" fill="#769656" onclick="sendValue('F10')"></polygon>
+            <text x="702.5" y="424.69219381653045" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F10')">{{"F10"}}</text>
+            <polygon id="F9" points="660,519.6152422706631 720,467.65371804359677 645,415.69219381653045 570,467.6537180435968" fill="#EEEED2" onclick="sendValue('F9')"></polygon>
+            <text x="635" y="476.65371804359677" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F9')">{{"F9"}}</text>
+            <polygon id="F4" points="660,519.6152422706631 645,597.5575286112626 562.5,558.5863854409629 570,467.6537180435968" fill="#769656" onclick="sendValue('F4')"></polygon>
+            <text x="601.25" y="541.6056233274297" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F4')">{{"F4"}}</text>
+            <polygon id="F3" points="645,597.5575286112626 630,675.499814951862 555.0000000000001,649.5190528383289 562.5,558.5863854409629" fill="#EEEED2" onclick="sendValue('F3')"></polygon>
+            <text x="590" y="626.0431001964125" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F3')">{{"F3"}}</text>
+            <polygon id="F2" points="630,675.499814951862 615.0000000000001,753.4421012924615 547.5000000000001,740.4517202356949 555.0000000000001,649.5190528383289" fill="#769656" onclick="sendValue('F2')"></polygon>
+            <text x="578.75" y="710.4805770653952" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('F2')">{{"F2"}}</text>
+            <polygon id="F1" points="615.0000000000001,753.4421012924615 600,831.3843876330609 540.0000000000001,831.384387633061 547.5000000000001,740.4517202356949" fill="#EEEED2" onclick="sendValue('F1')"></polygon>
+            <text x="567.5000000000001" y="794.9180539343779" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('F1')">{{"F1"}}</text>
+            <polygon id="E12" points="795,311.7691453623978 870,259.8076211353315 839.9999999999999,207.84609690826517 750,259.8076211353315" fill="#EEEED2" onclick="sendValue('E12')"></polygon>
+            <text x="800" y="268.8076211353315" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E12')">{{"E12"}}</text>
+            <polygon id="E11" points="720,363.7306695894641 795,311.7691453623978 750,259.8076211353315 660,311.7691453623978" fill="#769656" onclick="sendValue('E11')"></polygon>
+            <text x="717.5" y="320.7691453623978" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E11')">{{"E11"}}</text>
+            <polygon id="E10" points="645,415.69219381653045 720,363.7306695894641 660,311.7691453623978 570,363.7306695894642" fill="#EEEED2" onclick="sendValue('E10')"></polygon>
+            <text x="635" y="372.7306695894641" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E10')">{{"E10"}}</text>
+            <polygon id="E9" points="570,467.6537180435968 645,415.69219381653045 570,363.7306695894642 480,415.6921938165305" fill="#769656" onclick="sendValue('E9')"></polygon>
+            <text x="552.5" y="424.6921938165305" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E9')">{{"E9"}}</text>
+            <polygon id="E4" points="570,467.6537180435968 562.5,558.5863854409629 480,519.6152422706631 480,415.6921938165305" fill="#EEEED2" onclick="sendValue('E4')"></polygon>
+            <text x="515" y="496.1392896287467" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E4')">{{"E4"}}</text>
+            <polygon id="E3" points="562.5,558.5863854409629 555.0000000000001,649.5190528383289 480.00000000000006,623.5382907247957 480,519.6152422706631" fill="#769656" onclick="sendValue('E3')"></polygon>
+            <text x="511.25" y="593.5671475544959" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E3')">{{"E3"}}</text>
+            <polygon id="E2" points="555.0000000000001,649.5190528383289 547.5000000000001,740.4517202356949 480.00000000000006,727.4613391789285 480.00000000000006,623.5382907247957" fill="#EEEED2" onclick="sendValue('E2')"></polygon>
+            <text x="507.5000000000001" y="690.9950054802453" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('E2')">{{"E2"}}</text>
+            <polygon id="E1" points="547.5000000000001,740.4517202356949 540.0000000000001,831.384387633061 480.0000000000001,831.384387633061 480.00000000000006,727.4613391789285" fill="#769656" onclick="sendValue('E1')"></polygon>
+            <text x="503.7500000000001" y="788.4228634059948" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('E1')">{{"E1"}}</text>
+            <polygon id="A1" points="210.00000000000023,779.4228634059948 240.00000000000023,831.3843876330611 300.0000000000002,831.3843876330611 277.5000000000002,766.4324823492282" fill="#769656" onclick="sendValue('A1')"></polygon>
+            <text x="245.00000000000023" y="807.9084349911446" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A1')">{{"A1"}}</text>
+            <polygon id="A2" points="180.00000000000017,727.4613391789285 210.00000000000023,779.4228634059948 277.5000000000002,766.4324823492282 255.00000000000017,701.4805770653954" fill="#EEEED2" onclick="sendValue('A2')"></polygon>
+            <text x="218.7500000000002" y="749.4517202356951" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A2')">{{"A2"}}</text>
+            <polygon id="A3" points="150.0000000000001,675.4998149518622 180.00000000000017,727.4613391789285 255.00000000000017,701.4805770653954 232.50000000000014,636.5286717815625" fill="#769656" onclick="sendValue('A3')"></polygon>
+            <text x="192.50000000000014" y="690.9950054802455" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A3')">{{"A3"}}</text>
+            <polygon id="A4" points="120.00000000000011,623.538290724796 150.0000000000001,675.4998149518622 232.50000000000014,636.5286717815625 210.0000000000001,571.5767664977295" fill="#EEEED2" onclick="sendValue('A4')"></polygon>
+            <text x="166.2500000000001" y="632.5382907247958" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A4')">{{"A4"}}</text>
+            <polygon id="A5" points="120.00000000000011,623.538290724796 90.00000000000011,571.5767664977296 165.0000000000001,519.6152422706633 210.0000000000001,571.5767664977295" fill="#769656" onclick="sendValue('A5')"></polygon>
+            <text x="140.0000000000001" y="580.5767664977296" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A5')">{{"A5"}}</text>
+            <polygon id="A6" points="90.00000000000011,571.5767664977296 60.00000000000006,519.6152422706633 120.00000000000006,467.653718043597 165.0000000000001,519.6152422706633" fill="#EEEED2" onclick="sendValue('A6')"></polygon>
+            <text x="102.50000000000009" y="528.6152422706633" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A6')">{{"A6"}}</text>
+            <polygon id="A7" points="60.00000000000006,519.6152422706633 30,467.653718043597 75,415.6921938165307 120.00000000000006,467.653718043597" fill="#769656" onclick="sendValue('A7')"></polygon>
+            <text x="65.00000000000003" y="476.653718043597" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('A7')">{{"A7"}}</text>
+            <polygon id="A8" points="30,467.653718043597 0,415.6921938165307 30,363.73066958946436 75,415.6921938165307" fill="#EEEED2" onclick="sendValue('A8')"></polygon>
+            <text x="27.5" y="424.6921938165307" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('A8')">{{"A8"}}</text>
+            <polygon id="B1" points="277.5000000000002,766.4324823492282 300.0000000000002,831.3843876330611 360.0000000000002,831.3843876330611 345.0000000000001,753.4421012924618" fill="#EEEED2" onclick="sendValue('B1')"></polygon>
+            <text x="308.7500000000002" y="801.4132444627614" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B1')">{{"B1"}}</text>
+            <polygon id="B2" points="255.00000000000017,701.4805770653954 277.5000000000002,766.4324823492282 345.0000000000001,753.4421012924618 330.0000000000001,675.4998149518622" fill="#769656" onclick="sendValue('B2')"></polygon>
+            <text x="290.0000000000001" y="729.9661486505452" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B2')">{{"B2"}}</text>
+            <polygon id="B3" points="232.50000000000014,636.5286717815625 255.00000000000017,701.4805770653954 330.0000000000001,675.4998149518622 315.0000000000001,597.5575286112627" fill="#EEEED2" onclick="sendValue('B3')"></polygon>
+            <text x="271.2500000000001" y="658.5190528383291" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B3')">{{"B3"}}</text>
+            <polygon id="B4" points="210.0000000000001,571.5767664977295 232.50000000000014,636.5286717815625 315.0000000000001,597.5575286112627 300.00000000000006,519.6152422706632" fill="#769656" onclick="sendValue('B4')"></polygon>
+            <text x="252.5000000000001" y="587.0719570261128" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B4')">{{"B4"}}</text>
+            <polygon id="B5" points="210.0000000000001,571.5767664977295 165.0000000000001,519.6152422706633 240.00000000000003,467.65371804359694 300.00000000000006,519.6152422706632" fill="#EEEED2" onclick="sendValue('B5')"></polygon>
+            <text x="222.50000000000009" y="528.6152422706632" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B5')">{{"B5"}}</text>
+            <polygon id="B6" points="165.0000000000001,519.6152422706633 120.00000000000006,467.653718043597 179.99999999999994,415.6921938165307 240.00000000000003,467.65371804359694" fill="#769656" onclick="sendValue('B6')"></polygon>
+            <text x="170.00000000000006" y="476.653718043597" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B6')">{{"B6"}}</text>
+            <polygon id="B7" points="120.00000000000006,467.653718043597 75,415.6921938165307 119.99999999999994,363.73066958946436 179.99999999999994,415.6921938165307" fill="#EEEED2" onclick="sendValue('B7')"></polygon>
+            <text x="117.49999999999997" y="424.6921938165307" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('B7')">{{"B7"}}</text>
+            <polygon id="B8" points="75,415.6921938165307 30,363.73066958946436 60,311.76914536239804 119.99999999999994,363.73066958946436" fill="#769656" onclick="sendValue('B8')"></polygon>
+            <text x="64.99999999999997" y="372.73066958946436" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('B8')">{{"B8"}}</text>
+            <polygon id="C1" points="345.0000000000001,753.4421012924618 360.0000000000002,831.3843876330611 420.00000000000017,831.3843876330611 412.5000000000001,740.4517202356951" fill="#769656" onclick="sendValue('C1')"></polygon>
+            <text x="372.5000000000001" y="794.9180539343781" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C1')">{{"C1"}}</text>
+            <polygon id="C2" points="330.0000000000001,675.4998149518622 345.0000000000001,753.4421012924618 412.5000000000001,740.4517202356951 405.0000000000001,649.519052838329" fill="#EEEED2" onclick="sendValue('C2')"></polygon>
+            <text x="361.2500000000001" y="710.4805770653954" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C2')">{{"C2"}}</text>
+            <polygon id="C3" points="315.0000000000001,597.5575286112627 330.0000000000001,675.4998149518622 405.0000000000001,649.519052838329 397.50000000000006,558.5863854409629" fill="#769656" onclick="sendValue('C3')"></polygon>
+            <text x="350.0000000000001" y="626.0431001964125" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C3')">{{"C3"}}</text>
+            <polygon id="C4" points="300.00000000000006,519.6152422706632 315.0000000000001,597.5575286112627 397.50000000000006,558.5863854409629 390,467.6537180435969" fill="#EEEED2" onclick="sendValue('C4')"></polygon>
+            <text x="338.75000000000006" y="541.6056233274298" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C4')">{{"C4"}}</text>
+            <polygon id="C5" points="300.00000000000006,519.6152422706632 240.00000000000003,467.65371804359694 315,415.69219381653056 390,467.6537180435969" fill="#769656" onclick="sendValue('C5')"></polygon>
+            <text x="305" y="476.6537180435969" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C5')">{{"C5"}}</text>
+            <polygon id="C6" points="240.00000000000003,467.65371804359694 179.99999999999994,415.6921938165307 239.99999999999994,363.7306695894643 315,415.69219381653056" fill="#EEEED2" onclick="sendValue('C6')"></polygon>
+            <text x="237.49999999999997" y="424.6921938165306" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C6')">{{"C6"}}</text>
+            <polygon id="C7" points="179.99999999999994,415.6921938165307 119.99999999999994,363.73066958946436 164.9999999999999,311.76914536239804 239.99999999999994,363.7306695894643" fill="#769656" onclick="sendValue('C7')"></polygon>
+            <text x="169.99999999999994" y="372.73066958946436" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('C7')">{{"C7"}}</text>
+            <polygon id="C8" points="119.99999999999994,363.73066958946436 60,311.76914536239804 89.99999999999989,259.8076211353317 164.9999999999999,311.76914536239804" fill="#EEEED2" onclick="sendValue('C8')"></polygon>
+            <text x="102.49999999999994" y="320.76914536239804" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('C8')">{{"C8"}}</text>
+            <polygon id="D1" points="412.5000000000001,740.4517202356951 420.00000000000017,831.3843876330611 480.0000000000002,831.3843876330611 480.0000000000001,727.4613391789285" fill="#EEEED2" onclick="sendValue('D1')"></polygon>
+            <text x="436.25000000000017" y="788.4228634059948" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D1')">{{"D1"}}</text>
+            <polygon id="D2" points="405.0000000000001,649.519052838329 412.5000000000001,740.4517202356951 480.0000000000001,727.4613391789285 480.0000000000001,623.5382907247958" fill="#769656" onclick="sendValue('D2')"></polygon>
+            <text x="432.5000000000001" y="690.9950054802455" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D2')">{{"D2"}}</text>
+            <polygon id="D3" points="397.50000000000006,558.5863854409629 405.0000000000001,649.519052838329 480.0000000000001,623.5382907247958 480.00000000000006,519.6152422706632" fill="#EEEED2" onclick="sendValue('D3')"></polygon>
+            <text x="428.7500000000001" y="593.5671475544962" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D3')">{{"D3"}}</text>
+            <polygon id="D4" points="390,467.6537180435969 397.50000000000006,558.5863854409629 480.00000000000006,519.6152422706632 480,415.6921938165305" fill="#769656" onclick="sendValue('D4')"></polygon>
+            <text x="425" y="496.1392896287467" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D4')">{{"D4"}}</text>
+            <polygon id="D5" points="390,467.6537180435969 315,415.69219381653056 390,363.73066958946424 480,415.6921938165305" fill="#EEEED2" onclick="sendValue('D5')"></polygon>
+            <text x="387.5" y="424.69219381653056" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D5')">{{"D5"}}</text>
+            <polygon id="D6" points="315,415.69219381653056 239.99999999999994,363.7306695894643 299.99999999999994,311.7691453623979 390,363.73066958946424" fill="#769656" onclick="sendValue('D6')"></polygon>
+            <text x="305" y="372.73066958946424" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D6')">{{"D6"}}</text>
+            <polygon id="D7" points="239.99999999999994,363.7306695894643 164.9999999999999,311.76914536239804 209.9999999999999,259.80762113533166 299.99999999999994,311.7691453623979" fill="#EEEED2" onclick="sendValue('D7')"></polygon>
+            <text x="222.49999999999991" y="320.769145362398" fill="#769656" class="pointer-events-none" font-weight="bold" onclick="sendValue('D7')">{{"D7"}}</text>
+            <polygon id="D8" points="164.9999999999999,311.76914536239804 89.99999999999989,259.8076211353317 119.99999999999989,207.84609690826534 209.9999999999999,259.80762113533166" fill="#769656" onclick="sendValue('D8')"></polygon>
+            <text x="139.9999999999999" y="268.8076211353317" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D8')">{{"D8"}}</text>
+            </svg>
+                </svg>
     </main>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-        // --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
-        function sendValue(maValeur) {
-            fetch('/receive', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ value: maValeur })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    // Affiche la réponse du serveur (par exemple "Mouvement invalide")
-                    const resultEl = document.getElementById("resultat");
-                    if (resultEl) resultEl.textContent = data.reponse;
-                    console.log("Valeur envoyée :", maValeur);
-                })
-                .catch(error => console.error('Erreur lors de l’envoi :', error));
+    // --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
+    function sendValue(maValeur) {
+        fetch('/receive', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ value: maValeur })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Affiche la réponse du serveur (par exemple "Mouvement invalide")
+            const resultEl = document.getElementById("resultat");
+            if (resultEl) resultEl.textContent = data.reponse;
+            console.log("Valeur envoyée :", maValeur);
+        })
+        .catch(error => console.error('Erreur lors de l’envoi :', error));
+    }
+
+    // --- 2️ Connexion au serveur Socket.IO ---
+    const socket = io();
+
+    socket.on('connect', () => {
+        console.log("✅ Connecté à SocketIO");
+    });
+
+    // ---  Réception des mises à jour automatiques du plateau ---
+    socket.on('update', data => {
+        console.log("Mise à jour reçue :", data);
+
+        const pieces = data.plateau_pieces;
+        const couleurs = data.plateau_couleurs;
+        genererToutesLesPieces(data);
+        
+    
+    });
+
+    function polygonCentroid(points) {
+        let cx = 0, cy = 0;
+        let area = 0;
+
+        for (let i = 0; i < points.length; i++) {
+            const j = (i + 1) % points.length;
+            const cross = points[i].x * points[j].y - points[j].x * points[i].y;
+            area += cross;
+            cx += (points[i].x + points[j].x) * cross;
+            cy += (points[i].y + points[j].y) * cross;
         }
 
-        // --- 2️ Connexion au serveur Socket.IO ---
-        const socket = io();
+        area *= 0.5;
+        cx /= (6 * area);
+        cy /= (6 * area);
 
-        socket.on('connect', () => {
-            console.log("✅ Connecté à SocketIO");
-        });
+        return { x: cx, y: cy };
+    }
 
-        // ---  Réception des mises à jour automatiques du plateau ---
-        socket.on('update', data => {
-            console.log("Mise à jour reçue :", data);
+    function centerHTMLImageOnPolygon(polygonId, imgId) {
+        const polygon = document.getElementById(polygonId);
+        const img = document.getElementById(imgId);
+        const main = document.querySelector("main");
 
-            const pieces = data.plateau_pieces;
-            const couleurs = data.plateau_couleurs;
+        // Lire les points du polygon
+        const points = polygon
+            .getAttribute("points")
+            .trim()
+            .split(/\s+/)
+            .map(p => {
+                const [x, y] = p.split(",").map(Number);
+                return { x, y };
+            });
 
-            for (const [caseName, piece] of Object.entries(pieces)) {
-                const textEl = document.querySelector(`text[onclick="sendValue('${caseName}')"]`);
-                const polyEl = document.querySelector(`polygon[onclick="sendValue('${caseName}')"]`);
-                if (!textEl || !polyEl) continue; // ignore si la case n’existe pas
+        // Calcul du centroïde géométrique
+        const { x: cx, y: cy } = polygonCentroid(points);
 
-                // --- récupérer la couleur du polygone pour cases vides ---
-                const polyColor = polyEl.getAttribute("fill");
+        // Conversion SVG → écran
+        const svg = polygon.ownerSVGElement;
+        const pt = svg.createSVGPoint();
+        pt.x = cx;
+        pt.y = cy;
+        const screenPos = pt.matrixTransform(svg.getScreenCTM());
+        // Décalage par rapport à <main>
+        const mainRect = main.getBoundingClientRect();
+        const trueX = screenPos.x - mainRect.left;
+        const trueY = screenPos.y - mainRect.top;
 
-                let textColor;
-                if (piece === null || piece === undefined) {
-                    // Case vide → couleur du texte contrastée par rapport au fond
-                    if (polyColor === "#EEEED2" || polyColor.toLowerCase() === "#eeeed2") {
-                        textColor = "#769656"; // fond clair → texte foncé
-                    } else if (polyColor === "#769656" || polyColor.toLowerCase() === "#769656") {
-                        textColor = "#EEEED2"; // fond foncé → texte clair
-                    } else {
-                        textColor = "#000000"; // par défaut
-                    }
-                    textEl.textContent = caseName; // affiche le nom de la case
-                } else {
-                    // Case avec pièce → couleur du joueur envoyée par le serveur
-                    textColor = couleurs[caseName] || "#000000"; // si pas définie, noir
-                    textEl.textContent = piece;
-                }
+        // Positionner l'image
+        img.style.position = "absolute";
+        img.style.left = `${trueX}px`;
+        img.style.top = `${trueY}px`;
+        img.style.transform = "translate(-50%, -50%)";
+    }
 
-                // --- appliquer la couleur au texte ---
-                textEl.setAttribute("fill", textColor);
-            }
 
-        });
+    function genererToutesLesPieces(data) {
+    const pieces = data.plateau_pieces;
+    const couleurs = data.plateau_couleurs;
+    const main = document.querySelector("main");
 
-        function polygonCentroid(points) {
-            let cx = 0, cy = 0;
-            let area = 0;
+    // Supprimer toutes les anciennes images
+    document.querySelectorAll("main img").forEach(img => img.remove());
 
-            for (let i = 0; i < points.length; i++) {
-                const j = (i + 1) % points.length;
-                const cross = points[i].x * points[j].y - points[j].x * points[i].y;
-                area += cross;
-                cx += (points[i].x + points[j].x) * cross;
-                cy += (points[i].y + points[j].y) * cross;
-            }
+    for (const caseId in pieces) {
+        const piece = pieces[caseId];
+        const couleur = couleurs[caseId];
 
-            area *= 0.5;
-            cx /= (6 * area);
-            cy /= (6 * area);
+        if (!piece || !couleur) continue;
 
-            return { x: cx, y: cy };
-        }
+        const imgId = piece + "_" + caseId;
 
-        function centerHTMLImageOnPolygon(polygonId, imgId) {
-            const polygon = document.getElementById(polygonId);
-            const img = document.getElementById(imgId);
-            const main = document.querySelector("main");
+        const img = document.createElement("img");
+        img.id = imgId;
+        img.className = piece + "_" + couleur;
+        img.alt = piece;
+        img.width = 27;
+        img.src = `/static/images/${piece}_${couleur}.svg`;
 
-            // Lire les points du polygon
-            const points = polygon
-                .getAttribute("points")
-                .trim()
-                .split(/\s+/)
-                .map(p => {
-                    const [x, y] = p.split(",").map(Number);
-                    return { x, y };
-                });
+        img.style.position = "absolute";
+        img.style.zIndex = "2";
+        img.style.pointerEvents = "none";
+        img.style.transform = "translate(-140%, -130%)";
 
-            // Calcul du centroïde géométrique
-            const { x: cx, y: cy } = polygonCentroid(points);
+        main.appendChild(img);
+        centerHTMLImageOnPolygon(caseId, imgId);
+    }
+}
 
-            // Conversion SVG → écran
-            const svg = polygon.ownerSVGElement;
-            const pt = svg.createSVGPoint();
-            pt.x = cx;
-            pt.y = cy;
-            const screenPos = pt.matrixTransform(svg.getScreenCTM());
-            // Décalage par rapport à <main>
-            const mainRect = main.getBoundingClientRect();
-            const trueX = screenPos.x - mainRect.left;
-            const trueY = screenPos.y - mainRect.top;
-
-            // Positionner l'image
-            img.style.position = "absolute";
-            img.style.left = `${trueX}px`;
-            img.style.top = `${trueY}px`;
-            img.style.transform = "translate(-135%, -125%)";
-        }
-
-        window.onload = () => {
-            centerHTMLImageOnPolygon("K7", "pion_r1");
-            centerHTMLImageOnPolygon("L5", "pion_r2");
-        };
 
     </script>
 </body>
