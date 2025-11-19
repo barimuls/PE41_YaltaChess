@@ -1,6 +1,6 @@
 
 #----------------------Création d'un plateau----------------------
-
+import IA;
 #------création du graphe------
 
 class Arete:
@@ -15,7 +15,7 @@ class Arete:
 class Case:
     def __init__(self, nom, piece=None):
         self.nom = nom
-        self.piece = piece  # cav, tour, fou, reine, roi, pion
+        self.piece = piece  # cav, tour, fou, dame, roi, pion
         self.couleur = None  # couleur du joueur possédant la pièce
         self.aretes = []    # liste d'arêtes (vers autres cases)
 
@@ -266,8 +266,6 @@ class Case:
     def aretes_appartient_case(self,arete):
         return arete in self.aretes
 
-
-
 class Graph:
     def __init__(self):
         self.sommets = {}
@@ -322,7 +320,7 @@ class Graph:
         self.sommets['b1'].couleur=0
         self.sommets['c1'].piece='fou'
         self.sommets['c1'].couleur=0
-        self.sommets['d1'].piece='reine'
+        self.sommets['d1'].piece='dame'
         self.sommets['d1'].couleur=0
         self.sommets['e1'].piece='roi'
         self.sommets['e1'].couleur=0
@@ -346,7 +344,7 @@ class Graph:
         self.sommets['c8'].couleur=1
         self.sommets['d8'].piece='roi'
         self.sommets['d8'].couleur=1
-        self.sommets['i8'].piece='reine'
+        self.sommets['i8'].piece='dame'
         self.sommets['i8'].couleur=1
         self.sommets['j8'].piece='fou'
         self.sommets['j8'].couleur=1
@@ -366,7 +364,7 @@ class Graph:
         self.sommets['g12'].couleur=2
         self.sommets['f12'].piece='fou'
         self.sommets['f12'].couleur=2
-        self.sommets['e12'].piece='reine'
+        self.sommets['e12'].piece='dame'
         self.sommets['e12'].couleur=2
         self.sommets['i12'].piece='roi'
         self.sommets['i12'].couleur=2
@@ -426,6 +424,29 @@ class Graph:
         self.remplir_arete_fou_h1()
     
     #--------------------Coup possible pour chaque pièce------------------
+    def coup_possible(self, depart):
+        
+
+        piece = self.sommets[depart].piece
+
+        if piece == None:
+            return []
+        elif piece == 'tour':
+            return self.coup_possible_tour(depart)
+        elif piece == 'fou':
+            return self.coup_possible_fou(depart)
+        elif piece == 'dame':
+            return self.coup_possible_dame(depart)
+        elif piece == 'cavalier':
+            return self.coup_possible_cavalier(depart)
+        elif piece == 'roi':
+            return self.coup_possible_roi(depart)
+        elif piece == 'pion':
+            return self.coup_possible_pion(depart)
+        else:
+            print("Erreur : pièce inconnue.")
+            return []
+
     def coup_possible_tour_lettre(self,actuel,couleur,deja_vu=[],est_initial=False):
         if actuel in deja_vu:
             return [];
@@ -982,13 +1003,15 @@ def tour_de_jeu_web(plateau, joueur, depart, arrivee):
     
     return None
 
+#def tour_de_jeu_avec_2_IA()
+
 def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
     plateau.afficher()
     tour_de_jeu(plateau, 0)
 
 def afficher_plateau_sur_site(plateau):
-    dico = {"tour":"♖","cavalier":"♘","fou":"♗","reine":"♕","roi":"♔","pion":"♙", None:None}
+    dico = {"tour":"♖","cavalier":"♘","fou":"♗","dame":"♕","roi":"♔","pion":"♙", None:None}
     plateau_pieces = {}
     plateau_couleurs = {}
     case = list(plateau.sommets.keys())
@@ -1006,9 +1029,11 @@ if __name__ == "__main__":
     plateau = creer_plateau()
     plateau.remplir_arete()
     
-    lancer_partie(plateau)
+    #lancer_partie(plateau)
+    plateau.remplir_pieces_initiales()
 
-    
+    coups = IA.choisir_coup_aleatoire(plateau,0);
+    print(coups)
 
     #print(plateau.coup_possible_fou('d4'))
     #print(plateau.sommets['e9'].aretes)
