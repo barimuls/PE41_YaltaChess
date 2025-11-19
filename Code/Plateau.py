@@ -967,11 +967,6 @@ def tour_de_jeu(plateau, joueur):
             elif depart == 'l12':
                 plateau.peut_roquer[joueur][1] = False;
     
-
-        
-
-            
-
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
 
@@ -1003,7 +998,13 @@ def tour_de_jeu_web(plateau, joueur, depart, arrivee):
     
     return None
 
-#def tour_de_jeu_avec_2_IA()
+def tour_de_jeu_avec_IA(plateau,joueur):
+    
+
+
+
+
+    
 
 def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
