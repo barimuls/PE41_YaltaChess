@@ -447,24 +447,27 @@ class Graph:
             print("Erreur : pièce inconnue.")
             return []
 
+#tour
     def coup_possible_tour_lettre(self,actuel,couleur,deja_vu=[],est_initial=False):
+        print("on est a tour lettre :",actuel)
         if actuel in deja_vu:
             return [];
         deja_vu.append(actuel);
 
         list_coup = []
 
-        if self.sommets[actuel].piece is None and not est_initial:
+        if est_initial:
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
+                list_coup += self.coup_possible_tour_lettre(coup_potentiel,couleur,deja_vu)
+        elif self.sommets[actuel].piece is None:
             list_coup.append(actuel);
             for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
                 list_coup += self.coup_possible_tour_lettre(coup_potentiel,couleur,deja_vu)
-        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur and not est_initial:
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
             list_coup += [];
         elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
             list_coup.append(actuel);
-        else: #est_initial == True
-            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
-                list_coup += self.coup_possible_tour_lettre(coup_potentiel,couleur,deja_vu)
+        
         return list_coup;
         
     def coup_possible_tour_chiffre(self,actuel,couleur,deja_vu=[],est_initial=False):
@@ -494,6 +497,7 @@ class Graph:
         coups += self.coup_possible_tour_lettre(depart,couleur,est_initial=True);
         return coups
 
+#fou
     def coup_possible_fou_a1(self, actuel,couleur,deja_vu=[],est_initial=False):
         if actuel in deja_vu:
             return [];
@@ -546,10 +550,12 @@ class Graph:
     def coup_possible_dame(self, depart):
         couleur = self.sommets[depart].couleur
 
-        coups = self.coup_possible_tour_chiffre(depart,couleur,est_initial=True);
+        coups = [];
+        coups += self.coup_possible_tour_chiffre(depart,couleur,est_initial=True);
         coups += self.coup_possible_tour_lettre(depart,couleur,est_initial=True);
         coups += self.coup_possible_fou_a1(depart,couleur,est_initial=True);
         coups += self.coup_possible_fou_h1(depart,couleur,est_initial=True);
+        print("on a les coups dame :",coups)
         return coups
     
     def coup_possible_roi(self, depart):
@@ -584,6 +590,7 @@ class Graph:
                 coups.append('k12')
 
         return coups
+    
     #cavalier
     def coup_possible_cavalier_ccl(self, depart):
         voisins1 = self.sommets[depart].voisin_arete_tour_par_chiffre();
@@ -839,6 +846,7 @@ def coup_est_valide(plateau, depart, arrivee,joueur):
         if arrivee not in coups_possibles:
             return False
     elif piece == 'dame':
+        print("on est a dame");
         coups_possibles = plateau.coup_possible_dame(depart)
         if arrivee not in coups_possibles:
             return False
@@ -890,9 +898,99 @@ def tour_de_jeu(plateau, joueur):
     arrivee = input ("Entrez la case d'arrivée : ");
     #vérifier la validité du coup
     if not coup_est_valide(plateau, depart, arrivee, joueur):
+
+        print("on est a coup est valide");
+
         print("Coup invalide. Veuillez réessayer.")
         return tour_de_jeu(plateau, joueur)
     
+    jouer_le_coup(plateau, depart, arrivee, joueur);
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        print(f"Le joueur {joueur} a gagné la partie!")
+        return ;
+    
+    #afficher le plateau
+    plateau.afficher();
+
+    #passer au joueur suivant
+    tour_de_jeu(plateau, (joueur+1) %3);
+
+def tour_de_jeu_web(plateau, joueur, depart, arrivee):
+    #vérifier la validité du coup
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
+    #effectuer le coup
+
+    jouer_le_coup(plateau, depart, arrivee, joueur);
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    return None
+
+def tour_de_jeu_avec_IA(plateau,joueur):
+    if joueur ==0:# le vrai joueur
+        print (f"C'est le tour du joueur {joueur}.");
+        depart = input ("Entrez la case de départ : ");
+        arrivee = input ("Entrez la case d'arrivée : ");
+        if not coup_est_valide(plateau, depart, arrivee, joueur):
+            print("Coup invalide. Veuillez réessayer.")
+            return tour_de_jeu_avec_IA(plateau, joueur)
+    else: #IA
+        print (f"C'est le tour de l'IA joueur {joueur}.");
+        coups = IA.choisir_coup_aleatoire(plateau,joueur);
+        depart = coups[0];
+        arrivee = coups[1];
+    
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        print(f"Le joueur {joueur} a gagné la partie!")
+        return ;
+    
+    #afficher le plateau
+    plateau.afficher();
+
+    #passer au joueur suivant
+    tour_de_jeu_avec_IA(plateau, (joueur+1) %3);
+
+def tour_de_jeu_avec_IA_web(plateau, depart, arrivee):
+    joueur = 0 #le vrai joueur
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
+
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA
+    joueur =1 #IA
+    coups = IA.choisir_coup_aleatoire(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA 2
+    joueur =2 #IA
+    coups = IA.choisir_coup_aleatoire(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True 
+    
+    return None
+
+def jouer_le_coup(plateau, joueur, depart, arrivee):
     #effectuer le coup
     piece = plateau.sommets[depart].piece;
     plateau.sommets[depart].piece = None;
@@ -970,38 +1068,6 @@ def tour_de_jeu(plateau, joueur):
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
 
-    #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
-        print(f"Le joueur {joueur} a gagné la partie!")
-        return ;
-    
-    #afficher le plateau
-    plateau.afficher();
-
-    #passer au joueur suivant
-    tour_de_jeu(plateau, (joueur+1) %3);
-
-def tour_de_jeu_web(plateau, joueur, depart, arrivee):
-    #vérifier la validité du coup
-    if not coup_est_valide(plateau, depart, arrivee, joueur):
-        return False
-    #effectuer le coup
-
-    piece = plateau.sommets[depart].piece;
-    plateau.sommets[depart].piece = None;
-    plateau.sommets[arrivee].piece = piece;
-    plateau.sommets[arrivee].couleur = joueur;
-
-    #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
-        return True
-    
-    return None
-
-#def tour_de_jeu_avec_IA(plateau,joueur):
-    
-
-
 
 
     
@@ -1010,6 +1076,8 @@ def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
     plateau.afficher()
     tour_de_jeu(plateau, 0)
+
+
 
 def afficher_plateau_sur_site(plateau):
     plateau_pieces = {}
@@ -1029,15 +1097,10 @@ if __name__ == "__main__":
     plateau = creer_plateau()
     plateau.remplir_arete()
     
-    #lancer_partie(plateau)
     plateau.remplir_pieces_initiales()
-
-    coups = IA.choisir_coup_aleatoire(plateau,0);
-    print(coups)
-
-    #print(plateau.coup_possible_fou('d4'))
-    #print(plateau.sommets['e9'].aretes)
-    #print(f"\nNombre total de cases : {len(plateau.sommets)}")
-
+    plateau.afficher()
+    
+    #tour_de_jeu_avec_IA(plateau,0)
+    plateau.afficher_aretes()
 
     
