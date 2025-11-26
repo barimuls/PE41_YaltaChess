@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, emit
 app = Flask(__name__)
 socketio = SocketIO(app)
 compteur = 0
-L_requete = [0,0]
+L_requete = [None,None]
 plateau = creer_plateau()
 plateau.remplir_arete()
 plateau.remplir_pieces_initiales()
@@ -52,30 +52,46 @@ def receive():
     global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau, n_ligne
     data = request.get_json()
     value = data.get('value')
-    L_requete[compteur%2] = value.lower()
-    print(f"Valeur reçue : {value}")
-    print(compteur)
     if value == 'local':
-        n_ligne = True
-    elif value == 'ligne':
         n_ligne = False
+        compteur = 0
+        L_requete = [None,None]
+        plateau = creer_plateau()
+        plateau.remplir_arete()
+        plateau.remplir_pieces_initiales()
+        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+        return jsonify({"reponse": "Mode local activé"})
+    if value == 'ligne':
+        compteur = 0
+        L_requete = [None,None]
+        plateau = creer_plateau()
+        plateau.remplir_arete()
+        plateau.remplir_pieces_initiales()
+        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+        n_ligne = True
+        return jsonify({"reponse": "Mode en ligne activé"})
     if value == 'reset':
         compteur = 0
-        L_requete = [0,0]
+        L_requete = [None,None]
         plateau = creer_plateau()
         plateau.remplir_arete()
         plateau.remplir_pieces_initiales()
         plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
         return jsonify({"reponse": "Partie réinitialisée"})
+    L_requete[compteur%2] = value.lower()
+    print(f"Valeur reçue : {value}")
+    print(compteur)
     depart = L_requete[0]
     arrivee = L_requete[1]
-    if compteur % 2 == 1:
+    print(L_requete)
+    if compteur % 2 == 1 and L_requete[0] is not None and L_requete[1] is not None:
+        print(">>> depart:", depart, "arrivee:", arrivee, "type:", type(arrivee))
         if n_ligne:
             if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
                 compteur += -1
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
                 return jsonify({"reponse": "Mouvement invalide"})
-        else:
+        if not n_ligne:
             if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
                 compteur += -1
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)

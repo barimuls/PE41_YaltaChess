@@ -930,7 +930,7 @@ def tour_de_jeu_web(plateau, joueur, depart, arrivee):
         return False
     #effectuer le coup
 
-    jouer_le_coup(plateau, depart, arrivee, joueur);
+    jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
     if verifier_victoire(plateau, joueur):
