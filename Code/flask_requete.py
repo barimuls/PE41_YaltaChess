@@ -54,6 +54,14 @@ def receive():
     L_requete[compteur%2] = value.lower()
     print(f"Valeur reçue : {value}")
     print(compteur)
+    if value == 'reset':
+        compteur = 0
+        L_requete = [0,0]
+        plateau = creer_plateau()
+        plateau.remplir_arete()
+        plateau.remplir_pieces_initiales()
+        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+        return jsonify({"reponse": "Partie réinitialisée"})
     depart = L_requete[0]
     arrivee = L_requete[1]
     if compteur % 2 == 1:
@@ -63,6 +71,8 @@ def receive():
             return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+    if verifier_victoire(plateau, (compteur//2)%3)==True:
+        return jsonify({"reponse": f"Le joueur {(compteur//2)%3} a gagné!"})
     return jsonify({"reponse": value})
 
 @socketio.on('connect')
