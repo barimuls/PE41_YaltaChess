@@ -10,6 +10,7 @@ plateau = creer_plateau()
 plateau.remplir_arete()
 plateau.remplir_pieces_initiales()
 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+n_ligne = False
 
 @app.context_processor
 def inject_plateau_piece():
@@ -48,12 +49,16 @@ def jeu():
 
 @app.route('/receive', methods=['POST'])
 def receive():
-    global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau
+    global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau, n_ligne
     data = request.get_json()
     value = data.get('value')
     L_requete[compteur%2] = value.lower()
     print(f"Valeur reçue : {value}")
     print(compteur)
+    if value == 'local':
+        n_ligne = True
+    elif value == 'ligne':
+        n_ligne = False
     if value == 'reset':
         compteur = 0
         L_requete = [0,0]
@@ -65,10 +70,16 @@ def receive():
     depart = L_requete[0]
     arrivee = L_requete[1]
     if compteur % 2 == 1:
-        if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
-            compteur += -1
-            plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-            return jsonify({"reponse": "Mouvement invalide"})
+        if n_ligne:
+            if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
+                compteur += -1
+                plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+                return jsonify({"reponse": "Mouvement invalide"})
+        else:
+            if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
+                compteur += -1
+                plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+                return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     if verifier_victoire(plateau, (compteur//2)%3)==True:
