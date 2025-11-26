@@ -448,9 +448,9 @@ class Graph:
             return []
 
 #tour
-    def coup_possible_tour_lettre(self,actuel,couleur,deja_vu=[],est_initial=False):
-        print("on est a tour lettre :",actuel)
+    def coup_possible_tour_lettre(self,actuel,couleur,deja_vu,est_initial=False):
         if actuel in deja_vu:
+
             return [];
         deja_vu.append(actuel);
 
@@ -459,46 +459,45 @@ class Graph:
         if est_initial:
             for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
                 list_coup += self.coup_possible_tour_lettre(coup_potentiel,couleur,deja_vu)
-        elif self.sommets[actuel].piece is None:
+        elif self.sommets[actuel].piece is None :
             list_coup.append(actuel);
             for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
                 list_coup += self.coup_possible_tour_lettre(coup_potentiel,couleur,deja_vu)
         elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
-            list_coup += [];
+            list_coup+=[];
         elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
             list_coup.append(actuel);
-        
         return list_coup;
         
-    def coup_possible_tour_chiffre(self,actuel,couleur,deja_vu=[],est_initial=False):
+    def coup_possible_tour_chiffre(self,actuel,couleur,deja_vu,est_initial=False):
         if actuel in deja_vu:
             return [];
         deja_vu.append(actuel);
 
         list_coup = []
 
-        if self.sommets[actuel].piece is None and not est_initial:
+        if est_initial:
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
+                list_coup += self.coup_possible_tour_chiffre(coup_potentiel,couleur,deja_vu)
+        elif self.sommets[actuel].piece is None :
             list_coup.append(actuel);
             for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
                 list_coup += self.coup_possible_tour_chiffre(coup_potentiel,couleur,deja_vu)
-        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur and not est_initial:
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
             list_coup+=[];
         elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
             list_coup.append(actuel);
-        else: #est_initial == True
-            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
-                list_coup += self.coup_possible_tour_chiffre(coup_potentiel,couleur,deja_vu)
         return list_coup;
 
     def coup_possible_tour(self,depart):
         couleur = self.sommets[depart].couleur
 
-        coups = self.coup_possible_tour_chiffre(depart,couleur,est_initial=True);
-        coups += self.coup_possible_tour_lettre(depart,couleur,est_initial=True);
+        coups = self.coup_possible_tour_chiffre(depart,couleur,[],est_initial=True);
+        coups += self.coup_possible_tour_lettre(depart,couleur,[],est_initial=True);
         return coups
 
 #fou
-    def coup_possible_fou_a1(self, actuel,couleur,deja_vu=[],est_initial=False):
+    def coup_possible_fou_a1(self, actuel,couleur,deja_vu,est_initial=False):
         if actuel in deja_vu:
             return [];
         deja_vu.append(actuel);
@@ -519,7 +518,7 @@ class Graph:
                 list_coup += self.coup_possible_fou_a1(coup_potentiel,couleur,deja_vu)
         return list_coup;
     
-    def coup_possible_fou_h1(self, actuel,couleur,deja_vu=[],est_initial=False):
+    def coup_possible_fou_h1(self, actuel,couleur,deja_vu,est_initial=False):
         if actuel in deja_vu:
             return [];
         deja_vu.append(actuel);
@@ -543,19 +542,19 @@ class Graph:
     def coup_possible_fou(self,depart):
         couleur = self.sommets[depart].couleur
 
-        coups = self.coup_possible_fou_a1(depart,couleur,est_initial=True);
-        coups += self.coup_possible_fou_h1(depart,couleur,est_initial=True);
+        coups = self.coup_possible_fou_a1(depart,couleur,[],est_initial=True);
+        coups += self.coup_possible_fou_h1(depart,couleur,[],est_initial=True);
         return coups
 
     def coup_possible_dame(self, depart):
         couleur = self.sommets[depart].couleur
 
         coups = [];
-        coups += self.coup_possible_tour_chiffre(depart,couleur,est_initial=True);
-        coups += self.coup_possible_tour_lettre(depart,couleur,est_initial=True);
-        coups += self.coup_possible_fou_a1(depart,couleur,est_initial=True);
-        coups += self.coup_possible_fou_h1(depart,couleur,est_initial=True);
-        print("on a les coups dame :",coups)
+        
+        coups += self.coup_possible_tour_lettre(depart,couleur,[],est_initial=True);
+        coups += self.coup_possible_tour_chiffre(depart,couleur,[],est_initial=True);
+        coups += self.coup_possible_fou_a1(depart,couleur,[],est_initial=True);
+        coups += self.coup_possible_fou_h1(depart,couleur,[],est_initial=True);
         return coups
     
     def coup_possible_roi(self, depart):
@@ -565,10 +564,15 @@ class Graph:
         coups += self.sommets[depart].voisin_arete_fou_a1();
         coups += self.sommets[depart].voisin_arete_fou_h1();    
 
+
+
         #enlever les coups où il y a une pièce de la même couleur
+        coups2=[];
         for coup in coups:
-            if self.sommets[coup].piece is not None and self.sommets[coup].couleur == self.sommets[depart].couleur:
-                coups.remove(coup)
+            if not( self.sommets[coup].piece is not None and self.sommets[coup].couleur == self.sommets[depart].couleur ):
+                coups2.append(coup)
+        coups=coups2
+
 
         #cas du roque
         couleur = self.sommets[depart].couleur
@@ -658,9 +662,12 @@ class Graph:
 
         #verifier que les coups sont valides (case vide ou case occupée par une pièce adverse)
         couleur = self.sommets[depart].couleur
+
+        coups2 = [];
         for coup in coups:
-            if self.sommets[coup].piece is not None and self.sommets[coup].couleur == couleur:
-                coups.remove(coup)
+            if not (self.sommets[coup].piece is not None and self.sommets[coup].couleur == couleur):
+                coups2.append(coup)
+        coups = coups2
 
         return coups;
 
@@ -695,10 +702,13 @@ class Graph:
                 liste_coups.append(coup)
         
         #----------------on filtre les coups qui reculent
+        coups2=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
-            if chiffre_coup <= chiffre:
-                liste_coups.remove(coup)
+            if not(chiffre_coup <= chiffre):
+                coups2.append(coup)
+        liste_coups=coups2
+                
         
         return liste_coups
 
@@ -846,7 +856,6 @@ def coup_est_valide(plateau, depart, arrivee,joueur):
         if arrivee not in coups_possibles:
             return False
     elif piece == 'dame':
-        print("on est a dame");
         coups_possibles = plateau.coup_possible_dame(depart)
         if arrivee not in coups_possibles:
             return False
@@ -898,8 +907,6 @@ def tour_de_jeu(plateau, joueur):
     arrivee = input ("Entrez la case d'arrivée : ");
     #vérifier la validité du coup
     if not coup_est_valide(plateau, depart, arrivee, joueur):
-
-        print("on est a coup est valide");
 
         print("Coup invalide. Veuillez réessayer.")
         return tour_de_jeu(plateau, joueur)
@@ -1099,8 +1106,10 @@ if __name__ == "__main__":
     
     plateau.remplir_pieces_initiales()
     plateau.afficher()
-    
+ 
     #tour_de_jeu_avec_IA(plateau,0)
-    plateau.afficher_aretes()
+    #plateau.afficher_aretes()
+
+    
 
     
