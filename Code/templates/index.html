@@ -88,7 +88,7 @@
             height: 70px;
             display: block;
             margin: 30px auto 0 auto;
-            
+
         }
 
         .bouton-fermer {
@@ -172,14 +172,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 500px;/* ajuste selon l'espace que tu veux */
+            height: 500px;
+            /* ajuste selon l'espace que tu veux */
         }
 
         .bloc-boutons button {
             margin-bottom: 20px;
         }
-
-
     </style>
 </head>
 
@@ -198,7 +197,7 @@
         <div class="ecl">
             <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
         </div>
-        
+
     </nav>
 
     <!-- Contenu principal -->
@@ -225,28 +224,30 @@
                 <span class="bouton-fermer" onclick="closeModal2()">×</span>
                 <h2>Jeu</h2>
                 <p>Voici la page du jeu.</p>
-                <button class="mon-bouton" onclick="goToJeu('ligne')" style="margin-top: 50px; width: 180px;">En ligne</button>
-                <button class="mon-bouton" onclick="goToJeu('local')" style="margin-top: 40px; width: 180px;">En locale</button>
+                <button class="mon-bouton" onclick="goToJeu('ligne')" style="margin-top: 50px; width: 180px;">3
+                    joueurs</button>
+                <button class="mon-bouton" onclick="goToJeu('local')" style="margin-top: 40px; width: 180px;">VS
+                    IA</button>
             </div>
         </div>
     </main>
     <script>
 
         function sendValue(maValeur) {
-        fetch('/receive', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ value: maValeur })
-        })
-        .then(res => res.json())
-        .then(data => {
-            // Affiche la réponse du serveur (par exemple "Mouvement invalide")
-            const resultEl = document.getElementById("resultat");
-            if (resultEl) resultEl.textContent = data.reponse;
-            console.log("Valeur envoyée :", maValeur);
-        })
-        .catch(error => console.error('Erreur lors de l’envoi :', error));
-    }
+            fetch('/receive', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ value: maValeur })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    // Affiche la réponse du serveur (par exemple "Mouvement invalide")
+                    const resultEl = document.getElementById("resultat");
+                    if (resultEl) resultEl.textContent = data.reponse;
+                    console.log("Valeur envoyée :", maValeur);
+                })
+                .catch(error => console.error('Erreur lors de l’envoi :', error));
+        }
 
         function openModal1() {
             document.getElementById('overlay1').style.display = 'flex';
