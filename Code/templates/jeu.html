@@ -152,11 +152,12 @@
             padding: 20px;
             border-radius: 8px;
             width: 80%;
-            max-width: 900px;
+            max-width: 400px;
             height: 80%;
-            max-height: 700px;
+            max-height: 90px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             position: relative;
+            z-index: 4;
         }
 
         .overlay {
@@ -169,6 +170,7 @@
             display: none;
             justify-content: center;
             align-items: center;
+            z-index: 3;
         }
 
         .bouton-fermer:hover {
@@ -200,11 +202,6 @@
             z-index: 1;
         }
 
-        .pion_rouge {
-            position: absolute;
-            z-index: 2;
-        }
-
     </style>
 </head>
 
@@ -229,6 +226,7 @@
         <p id="resultat"></p>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="sendValue('reset')">Reset</button>
+            <button class="mon-bouton" onclick="openModal()">Promotion</button>
         </div>
     
     </div>
@@ -430,9 +428,26 @@
             <text x="139.9999999999999" y="268.8076211353317" fill="#EEEED2" class="pointer-events-none" font-weight="bold" onclick="sendValue('D8')">{{"D8"}}</text>
             </svg>
                 </svg>
+        <div class="overlay" id="overlay">
+            <div class="modal" style="max-width: 460px; max-height: 130px;">
+                <img src="/static/images/tour_rouge.svg" alt="tour_rouge" width="70" onclick="closeModal('promotion_tour')" style="margin:20px">
+                <img src="/static/images/fou_rouge.svg" alt="fou_rouge" width="70" onclick="closeModal('promotion_fou')" style="margin:20px">
+                <img src="/static/images/cavalier_rouge.svg" alt="cavalier_rouge" width="70" onclick="closeModal('promotion_cavalier')" style="margin:20px">
+                <img src="/static/images/dame_rouge.svg" alt="dame_rouge" width="70" onclick="closeModal('promotion_dame')" style="margin:20px">
+            </div>
+        </div>
     </main>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
+
+    function openModal() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+    function closeModal(piece) {
+            sendValue(piece);
+            document.getElementById('overlay').style.display = 'none';
+    }
     // --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
     function sendValue(maValeur) {
         fetch('/receive', {
@@ -530,7 +545,8 @@
     const main = document.querySelector("main");
 
     // Supprimer toutes les anciennes images
-    document.querySelectorAll("main img").forEach(img => img.remove());
+    document.querySelectorAll("main img").forEach(img => {if (!img.closest(".modal")) {img.remove();}});
+
 
     for (const caseId in pieces) {
         const piece = pieces[caseId];
@@ -554,6 +570,7 @@
 
         main.appendChild(img);
         centerHTMLImageOnPolygon(caseId, imgId);
+
     }
 }
 
