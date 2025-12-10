@@ -742,17 +742,20 @@ class Graph:
                 liste_coups.append(coup)
         
         #----------------on filtre les coups qui reculent
+        liste_des_coups_a_retirer=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
             if chiffre == 5:
                 if chiffre_coup ==6:
-                    liste_coups.remove(coup)
+                    liste_des_coups_a_retirer.append(coup)
             elif chiffre >= 9:
                 if chiffre_coup <= chiffre:
-                    liste_coups.remove(coup)
+                    liste_des_coups_a_retirer.append(coup)
             else:
                 if chiffre_coup >= chiffre:
-                    liste_coups.remove(coup)
+                    liste_des_coups_a_retirer.append(coup)
+        for coup in liste_des_coups_a_retirer:
+            liste_coups.remove(coup)
         
         return liste_coups
     
@@ -786,19 +789,21 @@ class Graph:
                 liste_coups.append(coup)
         
         #----------------on filtre les coups qui reculent
+        liste_des_coups_a_retirer=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
             if chiffre == 5:
                 if chiffre_coup ==9:
-                    liste_coups.remove(coup)
+                    liste_des_coups_a_retirer.append(coup)
             elif chiffre <= 8:
                 if chiffre_coup <= chiffre:
-                    liste_coups.remove(coup)
+                    liste_des_coups_a_retirer.append(coup)
             else:
                 if chiffre_coup >= chiffre:
-                    liste_coups.remove(coup)
-    
-            return liste_coups   
+                    liste_des_coups_a_retirer.append(coup)
+        for coup in liste_des_coups_a_retirer:
+            liste_coups.remove(coup)   
+        return liste_coups   
 
     def coup_possible_pion(self, depart):
         couleur = self.sommets[depart].couleur
@@ -965,6 +970,33 @@ def tour_de_jeu_avec_IA(plateau,joueur):
     #passer au joueur suivant
     tour_de_jeu_avec_IA(plateau, (joueur+1) %3);
 
+def tour_de_jeu_IA_heuristique(plateau,joueur):
+    if joueur ==0:# le vrai joueur
+        print (f"C'est le tour du joueur {joueur}.");
+        depart = input ("Entrez la case de départ : ");
+        arrivee = input ("Entrez la case d'arrivée : ");
+        if not coup_est_valide(plateau, depart, arrivee, joueur):
+            print("Coup invalide. Veuillez réessayer.")
+            return tour_de_jeu_avec_IA(plateau, joueur)
+    else: #IA
+        print (f"C'est le tour de l'IA joueur {joueur}.");
+        coups = IA.choisir_coup_heuristique(plateau,joueur);
+        depart = coups[0];
+        arrivee = coups[1];
+    
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        print(f"Le joueur {joueur} a gagné la partie!")
+        return ;
+    
+    #afficher le plateau
+    plateau.afficher();
+
+    #passer au joueur suivant
+    tour_de_jeu_IA_heuristique(plateau, (joueur+1) %3);
+
 def tour_de_jeu_avec_IA_web(plateau, depart, arrivee):
     joueur = 0 #le vrai joueur
     if not coup_est_valide(plateau, depart, arrivee, joueur):
@@ -988,6 +1020,38 @@ def tour_de_jeu_avec_IA_web(plateau, depart, arrivee):
     #tour de l'IA 2
     joueur =2 #IA
     coups = IA.choisir_coup_aleatoire(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True 
+    
+    return None
+
+def tour_de_jeu_IA_heuristique_web(plateau, depart, arrivee):
+    joueur = 0 #le vrai joueur
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
+
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA
+    joueur =1 #IA
+    coups = IA.choisir_coup_heuristique(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA 2
+    joueur =2 #IA
+    coups = IA.choisir_coup_heuristique(plateau,joueur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
@@ -1107,7 +1171,7 @@ if __name__ == "__main__":
     plateau.remplir_pieces_initiales()
     plateau.afficher()
  
-    #tour_de_jeu_avec_IA(plateau,0)
+    tour_de_jeu_IA_heuristique(plateau,0)
     #plateau.afficher_aretes()
 
     
