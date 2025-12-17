@@ -86,9 +86,12 @@ def receive():
             'promotion_cavalier': 'cavalier',
             'promotion_dame': 'dame'
         }
-        print(True)
         piece_type = piece_map[value]
-        promotion(plateau, L_requete[1], (compteur//2-1)%3, piece_type)
+        if not n_ligne:
+            couleur = 0
+        if n_ligne:
+            couleur = (compteur//2-1)%3
+        promotion(plateau, L_requete[1], couleur, piece_type)
         plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
         return jsonify({"reponse": f"Pion promu en {piece_type}"})
     L_requete[compteur%2] = value.lower()
