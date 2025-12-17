@@ -271,6 +271,7 @@ class Graph:
         self.sommets = {}
         self.prise_en_passant = [None,None,None]  # Pour chaque couleur, la case où un pion peut être pris en passant
         self.peut_roquer = [[True,True],[True,True],[True,True]] # Pour chaque couleur, si le roi peut encore roquer à gauche et droite
+        self.pile_pieces_mangees = []  # Pile des pièces mangées (pour annuler les coups)
 
     def ajouter_case(self, nom, piece=None):
         if nom not in self.sommets:
@@ -1090,6 +1091,33 @@ def tour_de_jeu_IA_minimax(plateau,joueur):
     #passer au joueur suivant
     tour_de_jeu_IA_minimax(plateau, (joueur+1) %3);
 
+def tour_de_jeu_IA_minimax_ou_on_dejoue(plateau,joueur): 
+    if joueur ==0:# le vrai joueur
+        print (f"C'est le tour du joueur {joueur}.");
+        depart = input ("Entrez la case de départ : ");
+        arrivee = input ("Entrez la case d'arrivée : ");
+        if not coup_est_valide(plateau, depart, arrivee, joueur):
+            print("Coup invalide. Veuillez réessayer.")
+            return tour_de_jeu_avec_IA(plateau, joueur)
+    else: #IA
+        print (f"C'est le tour de l'IA joueur {joueur}.");
+        coups = IA.choisir_coup_minimax_ou_on_dejoue(plateau,joueur);
+        depart = coups[0];
+        arrivee = coups[1];
+    
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        print(f"Le joueur {joueur} a gagné la partie!")
+        return ;
+    
+    #afficher le plateau
+    plateau.afficher();
+
+    #passer au joueur suivant
+    tour_de_jeu_IA_minimax_ou_on_dejoue(plateau, (joueur+1) %3);
+
 def tour_de_jeu_IA_minimax_web(plateau, depart, arrivee):
     joueur = 0 #le vrai joueur
     if not coup_est_valide(plateau, depart, arrivee, joueur):
@@ -1122,11 +1150,45 @@ def tour_de_jeu_IA_minimax_web(plateau, depart, arrivee):
     
     return None
 
+def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
+    joueur = 0 #le vrai joueur
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
+
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA
+    joueur =1 #IA
+    coups = IA.choisir_coup_minimax_ou_on_dejoue(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA 2
+    joueur =2 #IA
+    coups = IA.choisir_coup_minimax_ou_on_dejoue(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True 
+    
+    return None
+
+
 def jouer_le_coup(plateau, joueur, depart, arrivee):
     #effectuer le coup
     piece = plateau.sommets[depart].piece;
     plateau.sommets[depart].piece = None;
     plateau.sommets[depart].couleur = None;
+    plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
     plateau.sommets[arrivee].piece = piece;
     plateau.sommets[arrivee].couleur = joueur;
 
@@ -1164,7 +1226,7 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
             plateau.sommets['l12'].couleur = None;
             plateau.sommets['j12'].piece = 'tour';
             plateau.sommets['j12'].couleur = joueur;
-        
+    
     #cas de la prise en passant
     if piece == 'pion':
         if arrivee == plateau.prise_en_passant[(joueur +1)%3] or arrivee == plateau.prise_en_passant[(joueur +2)%3]:
@@ -1200,6 +1262,19 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
 
+def dejouer_le_coup(plateau,joueur ,depart, arrivee):
+    #annuler le coup
+    piece = plateau.sommets[arrivee].piece;
+
+    piece_mangee = plateau.pile_pieces_mangees.pop();
+    plateau.sommets[arrivee].piece = piece_mangee[0];
+    plateau.sommets[arrivee].couleur = piece_mangee[1];
+
+    plateau.sommets[depart].piece = piece;
+    plateau.sommets[depart].couleur = joueur;
+
+    #attention il y a plein de cas particuliers à gérer (roque, prise en passant, promotion)
+
 def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
     plateau.afficher()
@@ -1226,9 +1301,10 @@ if __name__ == "__main__":
     plateau.remplir_pieces_initiales()
     plateau.afficher()
  
-    tour_de_jeu_IA_minimax(plateau,0)
+    tour_de_jeu_IA_minimax_ou_on_dejoue(plateau,0)
 
     #plateau.afficher_aretes()
+
 
     
 
