@@ -905,6 +905,8 @@ def remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur):
     else:
         plateau.prise_en_passant[joueur] = None
 
+
+#---------------------Les différents tours de jeu---------------------
 def tour_de_jeu(plateau, joueur):
     #récuperer le coup
     print (f"C'est le tour du joueur {joueur}.");
@@ -1061,6 +1063,65 @@ def tour_de_jeu_IA_heuristique_web(plateau, depart, arrivee):
     
     return None
 
+def tour_de_jeu_IA_minimax(plateau,joueur):
+    if joueur ==0:# le vrai joueur
+        print (f"C'est le tour du joueur {joueur}.");
+        depart = input ("Entrez la case de départ : ");
+        arrivee = input ("Entrez la case d'arrivée : ");
+        if not coup_est_valide(plateau, depart, arrivee, joueur):
+            print("Coup invalide. Veuillez réessayer.")
+            return tour_de_jeu_avec_IA(plateau, joueur)
+    else: #IA
+        print (f"C'est le tour de l'IA joueur {joueur}.");
+        coups = IA.choisir_coup_minimax(plateau,joueur);
+        depart = coups[0];
+        arrivee = coups[1];
+    
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        print(f"Le joueur {joueur} a gagné la partie!")
+        return ;
+    
+    #afficher le plateau
+    plateau.afficher();
+
+    #passer au joueur suivant
+    tour_de_jeu_IA_minimax(plateau, (joueur+1) %3);
+
+def tour_de_jeu_IA_minimax_web(plateau, depart, arrivee):
+    joueur = 0 #le vrai joueur
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
+
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA
+    joueur =1 #IA
+    coups = IA.choisir_coup_minimax(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA 2
+    joueur =2 #IA
+    coups = IA.choisir_coup_minimax(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True 
+    
+    return None
+
 def jouer_le_coup(plateau, joueur, depart, arrivee):
     #effectuer le coup
     piece = plateau.sommets[depart].piece;
@@ -1139,16 +1200,10 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
 
-
-
-    
-
 def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
     plateau.afficher()
     tour_de_jeu(plateau, 0)
-
-
 
 def afficher_plateau_sur_site(plateau):
     plateau_pieces = {}
@@ -1171,7 +1226,8 @@ if __name__ == "__main__":
     plateau.remplir_pieces_initiales()
     plateau.afficher()
  
-    tour_de_jeu_IA_heuristique(plateau,0)
+    tour_de_jeu_IA_minimax(plateau,0)
+
     #plateau.afficher_aretes()
 
     
