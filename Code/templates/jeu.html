@@ -429,19 +429,46 @@
             </svg>
                 </svg>
         <div class="overlay" id="overlay">
-            <div class="modal" style="max-width: 460px; max-height: 130px;">
-                <img src="/static/images/tour_rouge.svg" alt="tour_rouge" width="70" onclick="closeModal('promotion_tour')" style="margin:20px">
-                <img src="/static/images/fou_rouge.svg" alt="fou_rouge" width="70" onclick="closeModal('promotion_fou')" style="margin:20px">
-                <img src="/static/images/cavalier_rouge.svg" alt="cavalier_rouge" width="70" onclick="closeModal('promotion_cavalier')" style="margin:20px">
-                <img src="/static/images/dame_rouge.svg" alt="dame_rouge" width="70" onclick="closeModal('promotion_dame')" style="margin:20px">
+            <div class="modal" id="modal" style="max-width: 460px; max-height: 130px;">
+                
             </div>
         </div>
     </main>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-
+    let cl = "blanc";
     function openModal() {
+            document.getElementById('modal').querySelectorAll("img").forEach(img => img.remove());
+            tour = document.createElement("img");
+            tour.src = "/static/images/tour_"+cl+".svg";
+            tour.alt = "tour_"+cl;
+            tour.width = 70;
+            tour.onclick = () => closeModal('promotion_tour');
+            tour.style = "margin:20px";
+            document.getElementById('modal').appendChild(tour);
+            fou = document.createElement("img");
+            fou.src = "/static/images/fou_"+cl+".svg";
+            fou.alt = "fou_"+cl;
+            fou.width = 70;
+            fou.onclick = () => closeModal('promotion_fou');
+            fou.style = "margin:20px";
+            document.getElementById('modal').appendChild(fou);
+            cavalier = document.createElement("img");
+            cavalier.src = "/static/images/cavalier_"+cl+".svg";
+            cavalier.alt = "cavalier_"+cl;
+            cavalier.width = 70;
+            cavalier.onclick = () => closeModal('promotion_cavalier');
+            cavalier.style = "margin:20px";
+            document.getElementById('modal').appendChild(cavalier);
+            dame = document.createElement("img");
+            dame.src = "/static/images/dame_"+cl+".svg";
+            dame.alt = "dame_"+cl;
+            dame.width = 70;
+            dame.onclick = () => closeModal('promotion_dame');
+            dame.style = "margin:20px";
+            document.getElementById('modal').appendChild(dame);
             document.getElementById('overlay').style.display = 'flex';
+            
         }
 
     function closeModal(piece) {
@@ -486,6 +513,7 @@
             const piece = pieces[caseId];
             const couleur = couleurs[caseId];
             const num = +caseId.slice(1,caseId.length);
+            cl = couleur;
             if (piece === "pion") {
             if ([1,8,12].includes(num)) {
                 // Demander une promotion de pion
