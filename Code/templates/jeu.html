@@ -461,6 +461,9 @@
             const resultEl = document.getElementById("resultat");
             if (resultEl) resultEl.textContent = data.reponse;
             console.log("Valeur envoyée :", maValeur);
+            if (maValeur === true) {
+            openModal();
+        }
         })
         .catch(error => console.error('Erreur lors de l’envoi :', error));
     }
@@ -479,7 +482,17 @@
         const pieces = data.plateau_pieces;
         const couleurs = data.plateau_couleurs;
         genererToutesLesPieces(data);
-        
+        for (const caseId in pieces) {
+            const piece = pieces[caseId];
+            const couleur = couleurs[caseId];
+            const num = +caseId.slice(1,caseId.length);
+            if (piece === "pion") {
+            if ([1,8,12].includes(num)) {
+                // Demander une promotion de pion
+                openModal();
+            }
+        }
+        }
     
     });
 

@@ -52,6 +52,7 @@ def receive():
     global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau, n_ligne
     data = request.get_json()
     value = data.get('value')
+    print(value)
     if value == 'local':
         n_ligne = False
         compteur = 0
@@ -78,6 +79,18 @@ def receive():
         plateau.remplir_pieces_initiales()
         plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
         return jsonify({"reponse": "Partie réinitialisée"})
+    if value in ['promotion_tour', 'promotion_fou', 'promotion_cavalier', 'promotion_dame']:
+        piece_map = {
+            'promotion_tour': 'tour',
+            'promotion_fou': 'fou',
+            'promotion_cavalier': 'cavalier',
+            'promotion_dame': 'dame'
+        }
+        print(True)
+        piece_type = piece_map[value]
+        promotion(plateau, L_requete[1], (compteur//2-1)%3, piece_type)
+        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+        return jsonify({"reponse": f"Pion promu en {piece_type}"})
     L_requete[compteur%2] = value.lower()
     print(f"Valeur reçue : {value}")
     print(compteur)
@@ -90,11 +103,13 @@ def receive():
             if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
                 compteur += -1
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+                promo = test_promotion(plateau, L_requete[1], (compteur//2)%3)
                 return jsonify({"reponse": "Mouvement invalide"})
         if not n_ligne:
             if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
                 compteur += -1
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+                promo = test_promotion(plateau, L_requete[1], (compteur//2)%3)
                 return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
