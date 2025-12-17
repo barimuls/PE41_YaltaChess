@@ -103,13 +103,11 @@ def receive():
             if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
                 compteur += -1
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-                promo = test_promotion(plateau, L_requete[1], (compteur//2)%3)
                 return jsonify({"reponse": "Mouvement invalide"})
         if not n_ligne:
             if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
                 compteur += -1
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-                promo = test_promotion(plateau, L_requete[1], (compteur//2)%3)
                 return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)

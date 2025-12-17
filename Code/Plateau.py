@@ -1234,10 +1234,7 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
             lettre_arrivee = arrivee[0];
             plateau.sommets[lettre_arrivee + chiffre_depart].piece = None;
             plateau.sommets[lettre_arrivee + chiffre_depart].couleur = None;
-        #promotion du pion (en dame)
-        chiffre_arrivee = int(arrivee[1:]);
-        if chiffre_arrivee == 12 or chiffre_arrivee ==1 or chiffre_arrivee ==8:
-            plateau.sommets[arrivee].piece = 'dame';
+        
     
     #cas ou on se deroque
     if piece == 'roi':
@@ -1274,6 +1271,17 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee):
     plateau.sommets[depart].couleur = joueur;
 
     #attention il y a plein de cas particuliers à gérer (roque, prise en passant, promotion)
+def promotion(plateau, arrivee, joueur, nouvelle_piece):
+    #changer la pièce à la case d'arrivée
+    plateau.sommets[arrivee].piece = nouvelle_piece
+    plateau.sommets[arrivee].couleur = joueur
+
+def promotion_test(plateau, arrivee, joueur):
+    if plateau.sommets[arrivee].piece == 'pion':
+        chiffre_arrivee = int(arrivee[1:])
+        if chiffre_arrivee == 12 or chiffre_arrivee ==1 or chiffre_arrivee ==8:
+            return True
+    return False
 
 def lancer_partie(plateau):
     plateau.remplir_pieces_initiales()
