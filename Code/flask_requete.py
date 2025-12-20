@@ -115,6 +115,8 @@ def receive():
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     if verifier_victoire(plateau, (compteur//2)%3)==True:
+        if n_ligne:
+            return jsonify({"reponse": f"Le joueur {(compteur//2)%3-1} a gagné!"})
         return jsonify({"reponse": f"Le joueur {(compteur//2)%3} a gagné!"})
     return jsonify({"reponse": value})
 
