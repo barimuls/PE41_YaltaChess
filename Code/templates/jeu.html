@@ -71,7 +71,7 @@
             flex-direction: column;
             position: fixed; right: 0;
             /* reste en place même si on scrolle */
-            margin-right: 10px;
+            align-items: center;
         }
 
         /* Contenu principal */
@@ -223,6 +223,14 @@
         
     </nav>
     <div class="nav-droite">
+        <svg viewBox="0 -40 220 100" xmlns="http://www.w3.org/2000/svg">
+            <rect id="t_blanc" x="20%" y="0" width="50" height="50" rx="15" ry="15" fill="#ffffff" transform="translate(-25, 0)" />
+            <rect id="t_noir" x="50%" y="0" width="50" height="50" rx="15" ry="15" fill="#ffffff" transform="translate(-25, 0)" />
+            <rect id="t_rouge" x="80%" y="0" width="50" height="50" rx="15" ry="15" fill="#ffffff" transform="translate(-25, 0)" />
+            <image href="{{ url_for('static', filename='images/roi_blanc.svg') }}" x="20%" y="0" width="40" height="40" transform="translate(-20, 0)" />
+            <image href="{{ url_for('static', filename='images/roi_noir.svg') }}" x="50%" y="0" width="40" height="40" transform="translate(-20, 0)" />
+            <image href="{{ url_for('static', filename='images/roi_rouge.svg') }}" x="80%" y="0" width="40" height="40" transform="translate(-20, 0)" />
+        </svg>
         <p id="resultat"></p>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="sendValue('reset')">Reset</button>
@@ -436,6 +444,7 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
     let cl = "blanc";
+    let cmpt = 0;
     function openModal() {
             document.getElementById('modal').querySelectorAll("img").forEach(img => img.remove());
             tour = document.createElement("img");
@@ -487,6 +496,15 @@
             const resultEl = document.getElementById("resultat");
             if (resultEl) resultEl.textContent = data.reponse;
             console.log("Valeur envoyée :", maValeur);
+            if (data.reponse.length >= 2 & data.reponse.length <=3) {
+                cmpt += 1;
+            }
+            if (data.reponse === "Partie réinitialisée") {
+                cmpt = 0;
+            }
+            if (data.reponse === "Mouvement invalide") {
+                cmpt += -1;
+            }
             if (maValeur === true) {
             openModal();
         }
@@ -517,8 +535,23 @@
             if ([1,8,12].includes(num)) {
                 // Demander une promotion de pion
                 openModal();
+            
             }
         }
+        }
+        console.log("Compteur de tours :", cmpt);
+        if (cmpt % 6 === 0 || cmpt % 6 === 1) {
+            document.getElementById("t_blanc").setAttribute("fill", "#769656");
+            document.getElementById("t_noir").setAttribute("fill", "#FFFFFF");
+            document.getElementById("t_rouge").setAttribute("fill", "#FFFFFF");
+        } else if (cmpt % 6 === 2 || cmpt % 6 === 3) {
+            document.getElementById("t_blanc").setAttribute("fill", "#FFFFFF");
+            document.getElementById("t_noir").setAttribute("fill", "#769656");
+            document.getElementById("t_rouge").setAttribute("fill", "#FFFFFF");
+        } else {
+            document.getElementById("t_blanc").setAttribute("fill", "#FFFFFF");
+            document.getElementById("t_noir").setAttribute("fill", "#FFFFFF");
+            document.getElementById("t_rouge").setAttribute("fill", "#769656");
         }
     
     });
