@@ -63,13 +63,7 @@ def roi_present(plateau,couleur):
     return False
             
 def gagnant(plateau) :
-    rois_vivants=[]
-    for c in range(3):
-        if roi_present(plateau,c):
-            rois_vivants.append(c)
-    if len(rois_vivants)==2 :
-        c=
-        return 
+  if plateu.verifier_victoire(plateau)
 def nouveau_score(plateau, couleur):
     nouveau_score=0;
     valeur_piece = {'pion':1,'cavalier':3.1,'fou':3.6,'tour':4.6,'dame':7.8,'roi':1000};
