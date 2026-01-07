@@ -913,7 +913,10 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
     piece = plateau.sommets[depart].piece;
     plateau.sommets[depart].piece = None;
     plateau.sommets[depart].couleur = None;
-    plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
+    if plateau.sommets[arrivee].piece is not None:
+        plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
+    else:
+        plateau.pile_pieces_mangees.append(None)
     plateau.sommets[arrivee].piece = piece;
     plateau.sommets[arrivee].couleur = joueur;
 
@@ -1008,8 +1011,12 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee):
     piece = plateau.sommets[arrivee].piece;
 
     piece_mangee = plateau.pile_pieces_mangees.pop();
-    plateau.sommets[arrivee].piece = piece_mangee[0];
-    plateau.sommets[arrivee].couleur = piece_mangee[1];
+    if piece_mangee is not None:
+        plateau.sommets[arrivee].piece = piece_mangee[0];
+        plateau.sommets[arrivee].couleur = piece_mangee[1];
+    else:
+        plateau.sommets[arrivee].piece = None;
+        plateau.sommets[arrivee].couleur = None;
 
     plateau.sommets[depart].piece = piece;
     plateau.sommets[depart].couleur = joueur;
