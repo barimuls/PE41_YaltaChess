@@ -268,7 +268,9 @@ class Graph:
     def __init__(self):
         self.sommets = {}
         self.prise_en_passant = [None,None,None]  # Pour chaque couleur, la case où un pion peut être pris en passant on mets la case où on peut manger
+        self.pile_prise_en_passant= []  # Pile pour annuler les prises en passant, contient pour chaque tour, None ou (couleur, case)
         self.peut_roquer = [[True,True],[True,True],[True,True]] # Pour chaque couleur, si le roi peut encore roquer à gauche et droite
+        self.pile_pour_roque = []  # Pile pour annuler les roques, contient pour chaque tour, None ou (couleur, direction)
         self.pile_pieces_mangees = []  # Pile des pièces mangées (pour annuler les coups) contient pour chaque tour, None ou (piece, couleur)
 
     def ajouter_case(self, nom, piece=None):
@@ -893,14 +895,18 @@ def remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur):
 
         if joueur ==0 and chiffre_depart ==2 and chiffre_arrivee ==4:
             plateau.prise_en_passant[joueur] = lettre_arrivee + '3'
+            plateau.pile_prise_en_passant.append((joueur,plateau.prise_en_passant[joueur]))
         elif joueur ==1 and chiffre_depart ==7 and chiffre_arrivee ==5:
             plateau.prise_en_passant[joueur] = lettre_arrivee + '6'
+            plateau.pile_prise_en_passant.append((joueur,plateau.prise_en_passant[joueur]))
         elif joueur ==2 and chiffre_depart ==11 and chiffre_arrivee ==9:
             plateau.prise_en_passant[joueur] = lettre_arrivee + '10'
+            plateau.pile_prise_en_passant.append((joueur,plateau.prise_en_passant[joueur]))
         else:
             plateau.prise_en_passant[joueur] = None
+            plateau.pile_prise_en_passant.append(None)
     else:
-        plateau.prise_en_passant[joueur] = None
+        plateau.pile_prise_en_passant.append(None)
 
 def jouer_le_coup(plateau, joueur, depart, arrivee):
     #effectuer le coup
@@ -953,28 +959,47 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
             lettre_arrivee = arrivee[0];
             plateau.sommets[lettre_arrivee + chiffre_depart].piece = None;
             plateau.sommets[lettre_arrivee + chiffre_depart].couleur = None;
-        
-    
+           
     #cas ou on se deroque
-    if piece == 'roi':
+    if piece == 'roi' and plateau.peut_roquer[joueur] != [False,False]:
+        if (plateau.peut_roquer[joueur][0] == True) and (plateau.peut_roquer[joueur][1] == True):
+            plateau.pile_pour_roque.append((joueur,-1));
+        elif (plateau.peut_roquer[joueur][0] == True):
+            plateau.pile_pour_roque.append((joueur,0));
+        elif (plateau.peut_roquer[joueur][1] == True):
+            plateau.pile_pour_roque.append((joueur,1));
         plateau.peut_roquer[joueur] = [False,False];
-    if piece == 'tour':
+    else:
+        plateau.pile_pour_roque.append(None);
+    if piece == 'tour' and plateau.peut_roquer[joueur] != [False,False]:
         if joueur ==0:
-            if depart == 'a1':
+            if depart == 'a1' and plateau.peut_roquer[joueur][0] == True:
+                plateau.pile_pour_roque.append((joueur,0));
                 plateau.peut_roquer[joueur][0] = False;
-            elif depart == 'h1':
+            elif depart == 'h1' and plateau.peut_roquer[joueur][1] == True:
                 plateau.peut_roquer[joueur][1] = False;
+                plateau.pile_pour_roque.append((joueur,1));
+            else:
+                plateau.pile_pour_roque.append(None);
         elif joueur ==1:
-            if depart == 'l8':
+            if depart == 'l8' and plateau.peut_roquer[joueur][0] == True:
+                plateau.pile_pour_roque.append((joueur,0));
                 plateau.peut_roquer[joueur][0] = False;
-            elif depart == 'a8':
+            elif depart == 'a8' and plateau.peut_roquer[joueur][1] == True:
+                plateau.pile_pour_roque.append((joueur,1));
                 plateau.peut_roquer[joueur][1] = False;
+            else:
+                plateau.pile_pour_roque.append(None);
         elif joueur ==2:
-            if depart == 'h12':
+            if depart == 'h12' and plateau.peut_roquer[joueur][0] == True:
+                plateau.pile_pour_roque.append((joueur,0));
                 plateau.peut_roquer[joueur][0] = False;
-            elif depart == 'l12':
+            elif depart == 'l12' and plateau.peut_roquer[joueur][1] == True:
+                plateau.pile_pour_roque.append((joueur,1));
                 plateau.peut_roquer[joueur][1] = False;
-    
+    else:
+        plateau.pile_pour_roque.append(None);
+        
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
 
@@ -989,7 +1014,24 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee):
     plateau.sommets[depart].piece = piece;
     plateau.sommets[depart].couleur = joueur;
 
-    #attention il y a plein de cas particuliers à gérer (roque, prise en passant, promotion)
+    #cas ou s'est deroqué
+    deroquer = plateau.pile_pour_roque.pop();
+    if deroquer is not None:
+        (couleur, orientation) = deroquer;
+        if orientation == -1:
+            plateau.peut_roquer[couleur] = [True,True];
+        else:      
+            plateau.peut_roquer[couleur][orientation] = True;
+            
+    #cas de la prise en passant
+    prise_en_passant = plateau.pile_prise_en_passant.pop();
+    if prise_en_passant is not None:
+        (joueur_prise, case) = prise_en_passant;
+        plateau.prise_en_passant[joueur_prise] = case;
+    else:
+        plateau.prise_en_passant[joueur_prise] = None
+
+    #attention il y a plein de cas particuliers à gérer ( promotion)
 
 def promotion(plateau, arrivee, joueur, nouvelle_piece):
     #changer la pièce à la case d'arrivée
