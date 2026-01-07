@@ -11,7 +11,6 @@ class Arete:
     def __repr__(self):
         return f"→ {self.sommet_arrive} ({self.orientation})"
 
-
 class Case:
     def __init__(self, nom, piece=None):
         self.nom = nom
@@ -22,7 +21,7 @@ class Case:
     def ajouter_arete(self, orientation, sommet_arrive):
         self.aretes.append(Arete(orientation, sommet_arrive))
 
-
+    #--------------------Voisins pour les cases------------------
     def voisin_arete_tour_par_lettre(self):
         voisins=[]
         lettre=str(self.nom[0])
@@ -263,15 +262,14 @@ class Case:
                 voisins.append(chr(ord(lettre)-1)+str(chiffre+1))
 
         return voisins
-    def aretes_appartient_case(self,arete):
-        return arete in self.aretes
+
 
 class Graph:
     def __init__(self):
         self.sommets = {}
-        self.prise_en_passant = [None,None,None]  # Pour chaque couleur, la case où un pion peut être pris en passant
+        self.prise_en_passant = [None,None,None]  # Pour chaque couleur, la case où un pion peut être pris en passant on mets la case où on peut manger
         self.peut_roquer = [[True,True],[True,True],[True,True]] # Pour chaque couleur, si le roi peut encore roquer à gauche et droite
-        self.pile_pieces_mangees = []  # Pile des pièces mangées (pour annuler les coups)
+        self.pile_pieces_mangees = []  # Pile des pièces mangées (pour annuler les coups) contient pour chaque tour, None ou (piece, couleur)
 
     def ajouter_case(self, nom, piece=None):
         if nom not in self.sommets:
@@ -388,11 +386,7 @@ class Graph:
             else:
                 aretes_str = "—"
             print(f"{nom:>4} → {aretes_str}")
-
-    def arete_appartient_graph(sommet_depart,arete):
-        return sommet_depart.aretes_appartient_case(arete)
         
-
     #--------------------Remplissage des aretes------------------
     def remplir_arete_tour_chiffre(self):
         for case in self.sommets.values():
@@ -707,7 +701,6 @@ class Graph:
                 coups2.append(coup)
         liste_coups=coups2
                 
-        
         return liste_coups
 
     def coup_possible_pion_rouge(self, depart):
@@ -743,17 +736,19 @@ class Graph:
         liste_des_coups_a_retirer=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
-            if chiffre == 5:
-                if chiffre_coup ==6:
+            if chiffre ==5:
+                if chiffre_coup ==9:
                     liste_des_coups_a_retirer.append(coup)
-            elif chiffre >= 9:
+            elif chiffre in {6,7,8}:
                 if chiffre_coup <= chiffre:
                     liste_des_coups_a_retirer.append(coup)
-            else:
+            else :
                 if chiffre_coup >= chiffre:
                     liste_des_coups_a_retirer.append(coup)
+
         for coup in liste_des_coups_a_retirer:
             liste_coups.remove(coup)
+
         
         return liste_coups
     
@@ -791,17 +786,17 @@ class Graph:
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
             if chiffre == 5:
-                if chiffre_coup ==9:
+                if chiffre_coup ==6:
                     liste_des_coups_a_retirer.append(coup)
-            elif chiffre <= 8:
+            elif chiffre in {9,10,11}:
                 if chiffre_coup <= chiffre:
                     liste_des_coups_a_retirer.append(coup)
             else:
                 if chiffre_coup >= chiffre:
                     liste_des_coups_a_retirer.append(coup)
         for coup in liste_des_coups_a_retirer:
-            liste_coups.remove(coup)   
-        return liste_coups   
+            liste_coups.remove(coup)
+        return liste_coups
 
     def coup_possible_pion(self, depart):
         couleur = self.sommets[depart].couleur
@@ -813,8 +808,10 @@ class Graph:
         else:
             return self.coup_possible_pion_noir(depart)
 
-#------Initialisation du plateau------
 
+
+
+#------Initialisation du plateau------
 def creer_plateau():
     plateau = Graph()
 
