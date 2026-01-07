@@ -87,37 +87,37 @@ def heuristic(plateau, couleur):
         #else
             #h=-10^9;
         
-    scores = [nouveau_score(plateau,0)+score_mobilité(plateau,0),nouveau_score(plateau,1)+score_mobilité(plateau,1),nouveau_score(plateau,2)+score_mobilité(plateau,2)];
-    alpha = 0.6; #coeff au pif un peu
-    beta = 0.2;
-    leader=scores.index(max(scores));
-    h=scores[couleur]-alpha*max(scores[(couleur+1)%3],scores[(couleur+2)%3])-beta*scores[leader];
-    return h;
+    #scores = [nouveau_score(plateau,0)+score_mobilité(plateau,0),nouveau_score(plateau,1)+score_mobilité(plateau,1),nouveau_score(plateau,2)+score_mobilité(plateau,2)];
+    #alpha = 0.6; #coeff au pif un peu
+    #beta = 0.2;
+    #leader=scores.index(max(scores));
+    #h=scores[couleur]-alpha*max(scores[(couleur+1)%3],scores[(couleur+2)%3])-beta*scores[leader];
+    #return h;
     
-def choisir_coup_nouvelle_heuristique(plateau , couleur):
-    liste_coups = [];
-    for case in plateau.sommets.items():
-        if plateau.sommets[case[0]] != None and plateau.sommets[case[0]].couleur == couleur:
-            if plateau.coup_possible(case[0]) != []:
-                liste_coups += [ [case[0],plateau.coup_possible(case[0])] ];
-    meilleur_score = -float('inf');
-    meilleur_coup = None;
-    for coup in liste_coups:
-        depart = coup[0]
-        for arrivee in coup[1]:
+#def choisir_coup_nouvelle_heuristique(plateau , couleur):
+   # liste_coups = [];
+   # for case in plateau.sommets.items():
+      #  if plateau.sommets[case[0]] != None and plateau.sommets[case[0]].couleur == couleur:
+           # if plateau.coup_possible(case[0]) != []:
+               # liste_coups += [ [case[0],plateau.coup_possible(case[0])] ];
+   # meilleur_score = -float('inf');
+  #  meilleur_coup = None;
+   # for coup in liste_coups:
+       # depart = coup[0]
+        #for arrivee in coup[1]:
             # Copie profonde du plateau
-            plateau_copie = copy.deepcopy(plateau)
+            #plateau_copie = copy.deepcopy(plateau)
 
-            Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+           # Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
             # Calculer le score
-            h = nouvelle_heuristique(plateau_copie, couleur)
+            #h = nouvelle_heuristique(plateau_copie, couleur)
             
-            if h > meilleur_score:
-                meilleur_score = h
-                meilleur_coup = (depart, arrivee)
+            #if h > meilleur_score:
+                #meilleur_score = h
+               # meilleur_coup = (depart, arrivee)
 
-    return meilleur_coup;    
+   # return meilleur_coup;    
 def evaluation_rec_heuristique(plateau, couleur, profondeur):
     if profondeur == 0:
         return [score(plateau,0),score(plateau,1),score(plateau,2),None,None];
