@@ -75,17 +75,17 @@ def score_mobilités(plateau,couleur):
     for case in plateau.sommets.items():
         if plateau.sommets[case[0]].piece != None:
             if plateau.sommets[case[0]].couleur == couleur:
-                mobilité+=length(plateau.coup_possible(case[0]));
+                mobilité+=len(plateau.coup_possible(case[0]));
     return 0.05*mobilité;
         
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
-def nouvelle_heuristique(plateau, couleur):
-    if gagnant(plateau) != None 
-        if gagnant==couleur :
-            h=10^9;
-        else
-            h=-10^9;
+#def nouvelle_heuristique(plateau, couleur):
+    #if plateau.gagnant(plateau) != None 
+        #if gagnant==couleur :
+            #h=10^9;
+        #else
+            #h=-10^9;
         
     scores = [nouveau_score(plateau,0)+score_mobilité(plateau,0),nouveau_score(plateau,1)+score_mobilité(plateau,1),nouveau_score(plateau,2)+score_mobilité(plateau,2)];
     alpha = 0.6; #coeff au pif un peu
