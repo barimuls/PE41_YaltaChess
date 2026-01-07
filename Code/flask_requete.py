@@ -132,4 +132,4 @@ def envoyer_mise_a_jour():
 
 if __name__ == '__main__':
     socketio.start_background_task(envoyer_mise_a_jour)
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True,allow_unsafe_werkzeug=True)
