@@ -53,7 +53,7 @@ def receive():
     data = request.get_json()
     value = data.get('value')
     print(value)
-    if value == 'local':
+    if value == 'ia_aleatoire':
         n_ligne = False
         compteur = 0
         L_requete = [None,None]
@@ -62,7 +62,7 @@ def receive():
         plateau.remplir_pieces_initiales()
         plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
         return jsonify({"reponse": "Mode local activé"})
-    if value == 'ligne':
+    if value == '3joueurs':
         compteur = 0
         L_requete = [None,None]
         plateau = creer_plateau()
