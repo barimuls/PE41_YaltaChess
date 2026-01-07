@@ -62,7 +62,7 @@ def roi_present(plateau,couleur):
            return True ;
     return False;
         
-def nouveau_score(plateau, couleur):
+def score_v1(plateau, couleur):
     nouveau_score=0;
     valeur_piece = {'pion':1,'cavalier':3.1,'fou':3.6,'tour':4.6,'dame':7.8,'roi':1000};
     for case in plateau.sommets.items():
@@ -80,14 +80,14 @@ def score_mobilités(plateau,couleur):
         
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
-#def nouvelle_heuristique(plateau, couleur):
+#def heuristique_v1(plateau, couleur):
     #if plateau.gagnant(plateau) != None 
         #if gagnant==couleur :
             #h=10^9;
         #else
             #h=-10^9;
         
-    #scores = [nouveau_score(plateau,0)+score_mobilité(plateau,0),nouveau_score(plateau,1)+score_mobilité(plateau,1),nouveau_score(plateau,2)+score_mobilité(plateau,2)];
+    #scores = [score_v1(plateau,0)+score_mobilité(plateau,0),score_v1(plateau,1)+score_mobilité(plateau,1),score_v1(plateau,2)+score_mobilité(plateau,2)];
     #alpha = 0.6; #coeff au pif un peu
     #beta = 0.2;
     #leader=scores.index(max(scores));
@@ -111,7 +111,7 @@ def heuristic(plateau, couleur):
            # Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
             # Calculer le score
-            #h = nouvelle_heuristique(plateau_copie, couleur)
+            #h = heuristique_v1(plateau_copie, couleur)
             
             #if h > meilleur_score:
                 #meilleur_score = h
