@@ -205,15 +205,16 @@
         <h1>Bienvenue sur PE41 Echecs Yalta !</h1>
         <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
         <div class="bloc-boutons">
-            <button class="mon-bouton" onclick="openModal2()">Jouer</button>
-            <button class="mon-bouton" onclick="openModal1()">Tutoriel</button>
+            <button class="mon-bouton" onclick="openModal(2)" style="margin-top: 30px; width: 250px;">Jouer en local</button>
+            <button class="mon-bouton" onclick="ModalErreur()" style="margin-top: 30px; width: 250px;">Jouer en ligne</button>
+            <button class="mon-bouton" onclick="openModal(1)" style="margin-top: 30px; width: 250px;">Tutoriel</button>
         </div>
 
         <p id="message"></p>
 
         <div class="overlay" id="overlay1">
             <div class="modal">
-                <span class="bouton-fermer" onclick="closeModal1()">×</span>
+                <span class="bouton-fermer" onclick="closeModal(1)">×</span>
                 <h2>Tutoriel</h2>
                 <p>Voici la page du tutoriel.</p>
             </div>
@@ -221,13 +222,38 @@
 
         <div class="overlay" id="overlay2">
             <div class="modal" style="max-width: 600px; max-height: 400px;">
-                <span class="bouton-fermer" onclick="closeModal2()">×</span>
+                <span class="bouton-fermer" onclick="closeModal(2)">×</span>
                 <h2>Jeu</h2>
                 <p>Voici la page du jeu.</p>
-                <button class="mon-bouton" onclick="goToJeu('ligne')" style="margin-top: 50px; width: 180px;">3
-                    joueurs</button>
-                <button class="mon-bouton" onclick="goToJeu('local')" style="margin-top: 40px; width: 180px;">VS
-                    IA</button>
+                <button class="mon-bouton" onclick="goToJeu('3joueurs')" style="margin-top: 50px; width: 180px;">3 joueurs</button>
+                <button class="mon-bouton" onclick="returnModal(2,4)" style="margin-top: 40px; width: 180px;">VS IA</button>
+            </div>
+        </div>
+        <div class="overlay" id="overlay3">
+            <div class="modal" style="max-width: 250px; max-height: 100px;">
+                <span class="bouton-fermer" onclick="closeModal(3)">×</span>
+                <h2>Erreur</h2>
+                <p>Pas encore implémenté</p>
+            </div>
+        </div>
+        <div class="overlay" id="overlay4">
+            <div class="modal" style="max-width: 400px; max-height: 450px;">
+                <span class="bouton-fermer" onclick="returnModal(4,2)">↩</span>
+                <h2>Jeu contre IA</h2>
+                <p>Choisissez le niveau de l'IA :</p>
+                <button class="mon-bouton" onclick="goToJeu('ia_aleatoire')" style="margin-top: 50px; width: 250px;">IA Aleatoire</button>
+                <button class="mon-bouton" onclick="returnModal(4,5)" style="margin-top: 30px; width: 250px;">IA Heuristique</button>
+                <button class="mon-bouton" onclick="ModalErreur(4)" style="margin-top: 30px; width: 250px;">IA Profondeur</button>
+            </div>
+        </div>
+        <div class="overlay" id="overlay5">
+            <div class="modal" style="max-width: 400px; max-height: 450px;">
+                <span class="bouton-fermer" onclick="returnModal(5,4)">↩</span>
+                <h2>Jeu contre IA Heuristique</h2>
+                <p>Choisissez l'heuristique de l'IA :</p>
+                <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 50px; width: 250px;">Heuristique 1</button>
+                <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Heuristique 2</button>
+                <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Heuristique 3</button>
             </div>
         </div>
     </main>
@@ -246,23 +272,27 @@
                     if (resultEl) resultEl.textContent = data.reponse;
                     console.log("Valeur envoyée :", maValeur);
                 })
-                .catch(error => console.error('Erreur lors de l’envoi :', error));
+                .catch(error => console.error("Erreur lors de l’envoi :", error));
         }
 
-        function openModal1() {
-            document.getElementById('overlay1').style.display = 'flex';
+        function openModal(x) {
+            document.getElementById('overlay'+x).style.display = 'flex';
         }
 
-        function closeModal1() {
-            document.getElementById('overlay1').style.display = 'none';
+        function closeModal(x) {
+            document.getElementById('overlay'+x).style.display = 'none';
         }
 
-        function openModal2() {
-            document.getElementById('overlay2').style.display = 'flex';
+        function returnModal(x,y) {
+            closeModal(x);
+            openModal(y);
         }
 
-        function closeModal2() {
-            document.getElementById('overlay2').style.display = 'none';
+        function ModalErreur(x) {
+            if (x != undefined) {
+                closeModal(x);
+            }
+            openModal(3);
         }
 
         function goToJeu(maValeur) {
