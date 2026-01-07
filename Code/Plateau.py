@@ -679,7 +679,7 @@ class Graph:
         #----cas ou on avance 
         liste_coups_avance=[]
         #cas où le pion est sur sa position initiale
-        if chiffre==2:
+        if chiffre==2 and self.sommets[lettre+'3'].piece is None:
             liste_coups_avance.append(lettre+str(chiffre+2))
         #cas avancer d'une case
         liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
@@ -719,7 +719,7 @@ class Graph:
         #----cas ou on avance 
         liste_coups_avance=[]
         #cas où le pion est sur sa position initiale
-        if chiffre==7:
+        if chiffre==7 and self.sommets[lettre+'6'].piece is None:
             liste_coups_avance.append(lettre+'5')
         #cas avancer d'une case
         liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
@@ -766,7 +766,7 @@ class Graph:
         #----cas ou on avance 
         liste_coups_avance=[]
         #cas où le pion est sur sa position initiale
-        if chiffre==11:
+        if chiffre==11 and self.sommets[lettre+'10'].piece is None:
             liste_coups_avance.append(lettre+'9')
         #cas avancer d'une case
         liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
