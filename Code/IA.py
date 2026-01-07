@@ -81,7 +81,7 @@ def score_mobilités(plateau,couleur):
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
 def nouvelle_heuristique(plateau, couleur):
-    if gagnant not None 
+    if gagnant(plateau) != None 
         if gagnant==couleur :
             h=10^9;
         else
