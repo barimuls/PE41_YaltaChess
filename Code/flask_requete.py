@@ -11,6 +11,7 @@ plateau.remplir_arete()
 plateau.remplir_pieces_initiales()
 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
 n_ligne = False
+type_ia = None
 
 @app.context_processor
 def inject_plateau_piece():
@@ -49,19 +50,24 @@ def jeu():
 
 @app.route('/receive', methods=['POST'])
 def receive():
-    global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau, n_ligne
+    global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau, n_ligne, type_ia
     data = request.get_json()
     value = data.get('value')
     print(value)
-    if value == 'ia_aleatoire':
+    if value[:2] == 'ia':
         n_ligne = False
+        type_ia = value
         compteur = 0
         L_requete = [None,None]
         plateau = creer_plateau()
         plateau.remplir_arete()
         plateau.remplir_pieces_initiales()
         plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-        return jsonify({"reponse": "Mode local activé"})
+        if value == 'ia_aleatoire':
+            return jsonify({"reponse": "Mode IA aléatoire activé"})
+        if value == 'ia_heuristique':
+            return jsonify({"reponse": "Mode IA heuristique activé"})
+        
     if value == '3joueurs':
         compteur = 0
         L_requete = [None,None]
@@ -108,16 +114,24 @@ def receive():
                 plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
                 return jsonify({"reponse": "Mouvement invalide"})
         if not n_ligne:
-            if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
-                compteur += -1
-                plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-                return jsonify({"reponse": "Mouvement invalide"})
+            if type_ia == 'ia_aleatoire':
+                if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
+                    compteur += -1
+                    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+                    return jsonify({"reponse": "Mouvement invalide"})
+            if type_ia == 'ia_heuristique':
+                if tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee)==False:
+                    compteur += -1
+                    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+                    return jsonify({"reponse": "Mouvement invalide"})
     compteur += 1
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
     if verifier_victoire(plateau, (compteur//2)%3)==True:
         if n_ligne:
             return jsonify({"reponse": f"Le joueur {(compteur//2)%3-1} a gagné!"})
         return jsonify({"reponse": f"Le joueur {(compteur//2)%3} a gagné!"})
+    if compteur % 2 == 1 and L_requete[0] is not None and L_requete[1] is not None:
+        return jsonify({"reponse": value + " faite votre 2ème action et patientez le tour de l'IA"})
     return jsonify({"reponse": value})
 
 @socketio.on('connect')
