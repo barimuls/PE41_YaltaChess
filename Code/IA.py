@@ -56,10 +56,68 @@ def score(plateau, couleur):
             if plateau.sommets[case[0]].couleur == couleur:
                 score += valeur_piece[plateau.sommets[case[0]].piece];
     return score;
-
+def roi_present(plateau,couleur):
+    for case in plateau.sommets.items():
+        if plateau.sommets[case[0]].couleur ==couleur and plateau.sommets[case[0]].piece =='roi' :
+           return True ;
+    return False;
+        
+def nouveau_score(plateau, couleur):
+    nouveau_score=0;
+    valeur_piece = {'pion':1,'cavalier':3.1,'fou':3.6,'tour':4.6,'dame':7.8,'roi':1000};
+    for case in plateau.sommets.items():
+        if plateau.sommets[case[0]].piece != None:
+            if plateau.sommets[case[0]].couleur == couleur:
+                nouveau_score += valeur_piece[plateau.sommets[case[0]].piece];
+    return nouveau_score;
+def score_mobilités(plateau,couleur):
+    mobilité=0;
+    for case in plateau.sommets.items():
+        if plateau.sommets[case[0]].piece != None:
+            if plateau.sommets[case[0]].couleur == couleur:
+                mobilité+=len(plateau.coup_possible(case[0]));
+    return 0.05*mobilité;
+        
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
+#def nouvelle_heuristique(plateau, couleur):
+    #if plateau.gagnant(plateau) != None 
+        #if gagnant==couleur :
+            #h=10^9;
+        #else
+            #h=-10^9;
+        
+    #scores = [nouveau_score(plateau,0)+score_mobilité(plateau,0),nouveau_score(plateau,1)+score_mobilité(plateau,1),nouveau_score(plateau,2)+score_mobilité(plateau,2)];
+    #alpha = 0.6; #coeff au pif un peu
+    #beta = 0.2;
+    #leader=scores.index(max(scores));
+    #h=scores[couleur]-alpha*max(scores[(couleur+1)%3],scores[(couleur+2)%3])-beta*scores[leader];
+    #return h;
+    
+#def choisir_coup_nouvelle_heuristique(plateau , couleur):
+   # liste_coups = [];
+   # for case in plateau.sommets.items():
+      #  if plateau.sommets[case[0]] != None and plateau.sommets[case[0]].couleur == couleur:
+           # if plateau.coup_possible(case[0]) != []:
+               # liste_coups += [ [case[0],plateau.coup_possible(case[0])] ];
+   # meilleur_score = -float('inf');
+  #  meilleur_coup = None;
+   # for coup in liste_coups:
+       # depart = coup[0]
+        #for arrivee in coup[1]:
+            # Copie profonde du plateau
+            #plateau_copie = copy.deepcopy(plateau)
 
+           # Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+                     
+            # Calculer le score
+            #h = nouvelle_heuristique(plateau_copie, couleur)
+            
+            #if h > meilleur_score:
+                #meilleur_score = h
+               # meilleur_coup = (depart, arrivee)
+
+   # return meilleur_coup;    
 def evaluation_rec_heuristique(plateau, couleur, profondeur):
     if profondeur == 0:
         return [score(plateau,0),score(plateau,1),score(plateau,2),None,None];

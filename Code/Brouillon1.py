@@ -27,3 +27,7 @@ def arete_diaga1(self, case):
     ind = index(lettre, case.nom[0])
     case2 = lettre[ind+1]+str(int(case.nom[1:])+1)
     case1 = lettre[ind-1]+str(int(case.nom[1:])-1)
+
+def gagnant(plateau,joueur) :
+    if verifier_victoire(plateau,joueur)
+    return joueur
