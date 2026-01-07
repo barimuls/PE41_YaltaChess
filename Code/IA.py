@@ -59,11 +59,9 @@ def score(plateau, couleur):
 def roi_present(plateau,couleur):
     for case in plateau.sommets.items():
         if plateau.sommets[case[0]].couleur ==couleur and plateau.sommets[case[0]].piece =='roi' :
-           return True 
-    return False
-            
-def gagnant(plateau) :
-  if plateu.verifier_victoire(plateau)
+           return True ;
+    return False;
+        
 def nouveau_score(plateau, couleur):
     nouveau_score=0;
     valeur_piece = {'pion':1,'cavalier':3.1,'fou':3.6,'tour':4.6,'dame':7.8,'roi':1000};
