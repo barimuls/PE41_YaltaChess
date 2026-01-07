@@ -791,10 +791,10 @@ class Graph:
                 if chiffre_coup ==6:
                     liste_des_coups_a_retirer.append(coup)
             elif chiffre in {9,10,11}:
-                if chiffre_coup <= chiffre:
+                if chiffre_coup >= chiffre:
                     liste_des_coups_a_retirer.append(coup)
             else:
-                if chiffre_coup >= chiffre:
+                if chiffre_coup <= chiffre:
                     liste_des_coups_a_retirer.append(coup)
         for coup in liste_des_coups_a_retirer:
             liste_coups.remove(coup)
