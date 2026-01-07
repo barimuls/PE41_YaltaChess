@@ -565,8 +565,6 @@ class Graph:
         coups += self.sommets[depart].voisin_arete_fou_a1();
         coups += self.sommets[depart].voisin_arete_fou_h1();    
 
-
-
         #enlever les coups où il y a une pièce de la même couleur
         coups2=[];
         for coup in coups:
@@ -574,24 +572,23 @@ class Graph:
                 coups2.append(coup)
         coups=coups2
 
-
-        #cas du roque
+        # ---------  cas du roque
         couleur = self.sommets[depart].couleur
         #roque à gauche possible
         if self.peut_roquer[couleur][0]: 
-            if couleur ==0 and self.sommets['b1'].piece is None and self.sommets['c1'].piece is None and self.sommets['d1'].piece is None:
+            if couleur ==0 and self.sommets['b1'].piece is None and self.sommets['c1'].piece is None and self.sommets['d1'].piece is None and self.sommets['a1'].piece == 'tour' and self.sommets['a1'].couleur == couleur :
                 coups.append('c1')
-            elif couleur ==1 and self.sommets['i8'].piece is None and self.sommets['j8'].piece is None and self.sommets['k8'].piece is None :
+            elif couleur ==1 and self.sommets['i8'].piece is None and self.sommets['j8'].piece is None and self.sommets['k8'].piece is None and self.sommets['l8'].piece == 'tour' and self.sommets['l8'].couleur == couleur:
                 coups.append('j8')
-            elif couleur ==2 and self.sommets['e12'].piece is None and self.sommets['f12'].piece is None and self.sommets['g12'].piece is None:
+            elif couleur ==2 and self.sommets['e12'].piece is None and self.sommets['f12'].piece is None and self.sommets['g12'].piece is None and self.sommets['h12'].piece == 'tour' and self.sommets['h12'].couleur == couleur:
                 coups.append('f12')
         #roque à droite possible
         if self.peut_roquer[couleur][1]:
-            if couleur ==0 and self.sommets['f1'].piece is None and self.sommets['g1'].piece is None:
+            if couleur ==0 and self.sommets['f1'].piece is None and self.sommets['g1'].piece is None and self.sommets['h1'].piece == 'tour' and self.sommets['h1'].couleur == couleur :
                 coups.append('g1')
-            elif couleur ==1 and self.sommets['b8'].piece is None and self.sommets['c8'].piece is None:
+            elif couleur ==1 and self.sommets['b8'].piece is None and self.sommets['c8'].piece is None and self.sommets['a8'].piece == 'tour' and self.sommets['a8'].couleur == couleur:
                 coups.append('b8')
-            elif couleur ==2 and self.sommets['j12'].piece is None and self.sommets['k12'].piece is None:
+            elif couleur ==2 and self.sommets['j12'].piece is None and self.sommets['k12'].piece is None and self.sommets['l12'].piece == 'tour' and self.sommets['l12'].couleur == couleur:
                 coups.append('k12')
 
         return coups
@@ -843,6 +840,8 @@ def creer_plateau():
             plateau.ajouter_case(f"{col}{ligne}")
     return plateau
 
+#-------Fonction pour jouer--------------
+
 def coup_est_valide(plateau, depart, arrivee,joueur):
     #vérifier que la pièce existe à la case de départ
 
@@ -905,6 +904,126 @@ def remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur):
             plateau.prise_en_passant[joueur] = None
     else:
         plateau.prise_en_passant[joueur] = None
+
+def jouer_le_coup(plateau, joueur, depart, arrivee):
+    #effectuer le coup
+    piece = plateau.sommets[depart].piece;
+    plateau.sommets[depart].piece = None;
+    plateau.sommets[depart].couleur = None;
+    plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
+    plateau.sommets[arrivee].piece = piece;
+    plateau.sommets[arrivee].couleur = joueur;
+
+    #cas ou on roque
+    if piece == 'roi':
+        #roque à gauche
+        if arrivee == 'c1' and joueur ==0:
+            plateau.sommets['a1'].piece = None;
+            plateau.sommets['a1'].couleur = None;
+            plateau.sommets['d1'].piece = 'tour';
+            plateau.sommets['d1'].couleur = joueur;
+        elif arrivee == 'j8' and joueur ==1:
+            plateau.sommets['l8'].piece = None;
+            plateau.sommets['l8'].couleur = None;
+            plateau.sommets['i8'].piece = 'tour';
+            plateau.sommets['i8'].couleur = joueur;
+        elif arrivee == 'f12' and joueur ==2:
+            plateau.sommets['h12'].piece = None;
+            plateau.sommets['h12'].couleur = None;
+            plateau.sommets['e12'].piece = 'tour';
+            plateau.sommets['e12'].couleur = joueur;
+        #roque à droite
+        if arrivee == 'g1' and joueur ==0:
+            plateau.sommets['h1'].piece = None;
+            plateau.sommets['h1'].couleur = None;
+            plateau.sommets['f1'].piece = 'tour';
+            plateau.sommets['f1'].couleur = joueur;
+        elif arrivee == 'b8' and joueur ==1:
+            plateau.sommets['a8'].piece = None;
+            plateau.sommets['a8'].couleur = None;
+            plateau.sommets['c8'].piece = 'tour';
+            plateau.sommets['c8'].couleur = joueur;
+        elif arrivee == 'k12' and joueur ==2:
+            plateau.sommets['l12'].piece = None;
+            plateau.sommets['l12'].couleur = None;
+            plateau.sommets['j12'].piece = 'tour';
+            plateau.sommets['j12'].couleur = joueur;
+    
+    #cas de la prise en passant
+    if piece == 'pion':
+        if arrivee == plateau.prise_en_passant[(joueur +1)%3] or arrivee == plateau.prise_en_passant[(joueur +2)%3]:
+            chiffre_depart = depart[1:];
+            lettre_arrivee = arrivee[0];
+            plateau.sommets[lettre_arrivee + chiffre_depart].piece = None;
+            plateau.sommets[lettre_arrivee + chiffre_depart].couleur = None;
+        
+    
+    #cas ou on se deroque
+    if piece == 'roi':
+        plateau.peut_roquer[joueur] = [False,False];
+    if piece == 'tour':
+        if joueur ==0:
+            if depart == 'a1':
+                plateau.peut_roquer[joueur][0] = False;
+            elif depart == 'h1':
+                plateau.peut_roquer[joueur][1] = False;
+        elif joueur ==1:
+            if depart == 'l8':
+                plateau.peut_roquer[joueur][0] = False;
+            elif depart == 'a8':
+                plateau.peut_roquer[joueur][1] = False;
+        elif joueur ==2:
+            if depart == 'h12':
+                plateau.peut_roquer[joueur][0] = False;
+            elif depart == 'l12':
+                plateau.peut_roquer[joueur][1] = False;
+    
+    #mettre à jour la prise en passant
+    remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
+
+def dejouer_le_coup(plateau,joueur ,depart, arrivee):
+    #annuler le coup
+    piece = plateau.sommets[arrivee].piece;
+
+    piece_mangee = plateau.pile_pieces_mangees.pop();
+    plateau.sommets[arrivee].piece = piece_mangee[0];
+    plateau.sommets[arrivee].couleur = piece_mangee[1];
+
+    plateau.sommets[depart].piece = piece;
+    plateau.sommets[depart].couleur = joueur;
+
+    #attention il y a plein de cas particuliers à gérer (roque, prise en passant, promotion)
+
+def promotion(plateau, arrivee, joueur, nouvelle_piece):
+    #changer la pièce à la case d'arrivée
+    plateau.sommets[arrivee].piece = nouvelle_piece
+    plateau.sommets[arrivee].couleur = joueur
+
+def promotion_test(plateau, arrivee, joueur):
+    if plateau.sommets[arrivee].piece == 'pion':
+        chiffre_arrivee = int(arrivee[1:])
+        if chiffre_arrivee == 12 or chiffre_arrivee ==1 or chiffre_arrivee ==8:
+            return True
+    return False
+
+def lancer_partie(plateau):
+    plateau.remplir_pieces_initiales()
+    plateau.afficher()
+    tour_de_jeu(plateau, 0)
+
+def afficher_plateau_sur_site(plateau):
+    plateau_pieces = {}
+    plateau_couleurs = {}
+    case = list(plateau.sommets.keys())
+    Case = [i.upper() for i in case]
+    inttohex = ["blanc","noir","rouge"]
+    for i in range(len(case)):
+        plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
+        if plateau.sommets[case[i]].couleur != None:
+            plateau_couleurs[Case[i]] = inttohex[plateau.sommets[case[i]].couleur]
+        else:
+            plateau_couleurs[Case[i]] = plateau.sommets[case[i]].couleur
+    return plateau_pieces, plateau_couleurs
 
 
 #---------------------Les différents tours de jeu---------------------
@@ -1183,124 +1302,6 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
     return None
 
 
-def jouer_le_coup(plateau, joueur, depart, arrivee):
-    #effectuer le coup
-    piece = plateau.sommets[depart].piece;
-    plateau.sommets[depart].piece = None;
-    plateau.sommets[depart].couleur = None;
-    plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
-    plateau.sommets[arrivee].piece = piece;
-    plateau.sommets[arrivee].couleur = joueur;
-
-    #cas ou on roque
-    if piece == 'roi':
-        #roque à gauche
-        if arrivee == 'c1' and joueur ==0:
-            plateau.sommets['a1'].piece = None;
-            plateau.sommets['a1'].couleur = None;
-            plateau.sommets['d1'].piece = 'tour';
-            plateau.sommets['d1'].couleur = joueur;
-        elif arrivee == 'j8' and joueur ==1:
-            plateau.sommets['l8'].piece = None;
-            plateau.sommets['l8'].couleur = None;
-            plateau.sommets['i8'].piece = 'tour';
-            plateau.sommets['i8'].couleur = joueur;
-        elif arrivee == 'f12' and joueur ==2:
-            plateau.sommets['h12'].piece = None;
-            plateau.sommets['h12'].couleur = None;
-            plateau.sommets['e12'].piece = 'tour';
-            plateau.sommets['e12'].couleur = joueur;
-        #roque à droite
-        if arrivee == 'g1' and joueur ==0:
-            plateau.sommets['h1'].piece = None;
-            plateau.sommets['h1'].couleur = None;
-            plateau.sommets['f1'].piece = 'tour';
-            plateau.sommets['f1'].couleur = joueur;
-        elif arrivee == 'b8' and joueur ==1:
-            plateau.sommets['a8'].piece = None;
-            plateau.sommets['a8'].couleur = None;
-            plateau.sommets['c8'].piece = 'tour';
-            plateau.sommets['c8'].couleur = joueur;
-        elif arrivee == 'k12' and joueur ==2:
-            plateau.sommets['l12'].piece = None;
-            plateau.sommets['l12'].couleur = None;
-            plateau.sommets['j12'].piece = 'tour';
-            plateau.sommets['j12'].couleur = joueur;
-    
-    #cas de la prise en passant
-    if piece == 'pion':
-        if arrivee == plateau.prise_en_passant[(joueur +1)%3] or arrivee == plateau.prise_en_passant[(joueur +2)%3]:
-            chiffre_depart = depart[1:];
-            lettre_arrivee = arrivee[0];
-            plateau.sommets[lettre_arrivee + chiffre_depart].piece = None;
-            plateau.sommets[lettre_arrivee + chiffre_depart].couleur = None;
-        
-    
-    #cas ou on se deroque
-    if piece == 'roi':
-        plateau.peut_roquer[joueur] = [False,False];
-    if piece == 'tour':
-        if joueur ==0:
-            if depart == 'a1':
-                plateau.peut_roquer[joueur][0] = False;
-            elif depart == 'h1':
-                plateau.peut_roquer[joueur][1] = False;
-        elif joueur ==1:
-            if depart == 'l8':
-                plateau.peut_roquer[joueur][0] = False;
-            elif depart == 'a8':
-                plateau.peut_roquer[joueur][1] = False;
-        elif joueur ==2:
-            if depart == 'h12':
-                plateau.peut_roquer[joueur][0] = False;
-            elif depart == 'l12':
-                plateau.peut_roquer[joueur][1] = False;
-    
-    #mettre à jour la prise en passant
-    remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
-
-def dejouer_le_coup(plateau,joueur ,depart, arrivee):
-    #annuler le coup
-    piece = plateau.sommets[arrivee].piece;
-
-    piece_mangee = plateau.pile_pieces_mangees.pop();
-    plateau.sommets[arrivee].piece = piece_mangee[0];
-    plateau.sommets[arrivee].couleur = piece_mangee[1];
-
-    plateau.sommets[depart].piece = piece;
-    plateau.sommets[depart].couleur = joueur;
-
-    #attention il y a plein de cas particuliers à gérer (roque, prise en passant, promotion)
-def promotion(plateau, arrivee, joueur, nouvelle_piece):
-    #changer la pièce à la case d'arrivée
-    plateau.sommets[arrivee].piece = nouvelle_piece
-    plateau.sommets[arrivee].couleur = joueur
-
-def promotion_test(plateau, arrivee, joueur):
-    if plateau.sommets[arrivee].piece == 'pion':
-        chiffre_arrivee = int(arrivee[1:])
-        if chiffre_arrivee == 12 or chiffre_arrivee ==1 or chiffre_arrivee ==8:
-            return True
-    return False
-
-def lancer_partie(plateau):
-    plateau.remplir_pieces_initiales()
-    plateau.afficher()
-    tour_de_jeu(plateau, 0)
-
-def afficher_plateau_sur_site(plateau):
-    plateau_pieces = {}
-    plateau_couleurs = {}
-    case = list(plateau.sommets.keys())
-    Case = [i.upper() for i in case]
-    inttohex = ["blanc","noir","rouge"]
-    for i in range(len(case)):
-        plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
-        if plateau.sommets[case[i]].couleur != None:
-            plateau_couleurs[Case[i]] = inttohex[plateau.sommets[case[i]].couleur]
-        else:
-            plateau_couleurs[Case[i]] = plateau.sommets[case[i]].couleur
-    return plateau_pieces, plateau_couleurs
 #----------------------Test----------------------
 if __name__ == "__main__":
     plateau = creer_plateau()
