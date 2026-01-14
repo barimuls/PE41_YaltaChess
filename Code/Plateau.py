@@ -1062,7 +1062,7 @@ def afficher_plateau_sur_site(plateau):
     plateau_couleurs = {}
     case = list(plateau.sommets.keys())
     Case = [i.upper() for i in case]
-    inttohex = ["blanc","noir","rouge"]
+    inttohex = ["blanc","rouge","noir"]
     for i in range(len(case)):
         plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
         if plateau.sommets[case[i]].couleur != None:
