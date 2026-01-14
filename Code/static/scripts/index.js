@@ -36,5 +36,5 @@ function ModalErreur(x) {
 
 function goToJeu(maValeur) {
     sendValue(maValeur);
-    window.location.href = "{{ url_for('jeu') }}";
+    window.location.href = urljeu;
 }
