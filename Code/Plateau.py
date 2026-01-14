@@ -738,11 +738,11 @@ class Graph:
         liste_des_coups_a_retirer=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
-            if chiffre ==5:
-                if chiffre_coup ==9:
+            if chiffre in {9,10,11,12}:
+                if chiffre_coup < chiffre:
                     liste_des_coups_a_retirer.append(coup)
-            elif chiffre in {6,7,8}:
-                if chiffre_coup <= chiffre:
+            elif chiffre == 5:
+                if chiffre_coup == 6:
                     liste_des_coups_a_retirer.append(coup)
             else :
                 if chiffre_coup >= chiffre:
@@ -787,14 +787,14 @@ class Graph:
         liste_des_coups_a_retirer=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
-            if chiffre == 5:
-                if chiffre_coup ==6:
+            if chiffre in {6,7,8}:
+                if chiffre_coup < chiffre:
                     liste_des_coups_a_retirer.append(coup)
-            elif chiffre in {9,10,11}:
-                if chiffre_coup >= chiffre:
+            elif chiffre ==5:
+                if chiffre_coup == 9:
                     liste_des_coups_a_retirer.append(coup)
             else:
-                if chiffre_coup <= chiffre:
+                if chiffre_coup >= chiffre:
                     liste_des_coups_a_retirer.append(coup)
         for coup in liste_des_coups_a_retirer:
             liste_coups.remove(coup)
