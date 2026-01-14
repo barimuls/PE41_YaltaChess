@@ -130,7 +130,7 @@ def receive():
         if n_ligne:
             return jsonify({"reponse": f"Le joueur {(compteur//2)%3-1} a gagné!"})
         return jsonify({"reponse": f"Le joueur {(compteur//2)%3} a gagné!"})
-    if compteur % 2 == 1 and L_requete[0] is not None and L_requete[1] is not None:
+    if compteur % 2 == 1 and L_requete[0] is not None and L_requete[1] is not None and not n_ligne:
         return jsonify({"reponse": value + " faite votre 2ème action et patientez le tour de l'IA"})
     return jsonify({"reponse": value})
 
