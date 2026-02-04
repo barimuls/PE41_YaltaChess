@@ -61,6 +61,8 @@ def roi_present(plateau,couleur):
         if plateau.sommets[case[0]].couleur ==couleur and plateau.sommets[case[0]].piece =='roi' :
            return True ;
     return False;
+def est_elimine(plateau, couleur):
+    return not roi_present(plateau, couleur)
         
 def score_v1(plateau, couleur):
     nouveau_score=0;
@@ -77,7 +79,19 @@ def score_mobilités(plateau,couleur):
             if plateau.sommets[case[0]].couleur == couleur:
                 mobilité+=len(plateau.coup_possible(case[0]));
     return 0.05*mobilité;
-        
+def score_pression(plateau, couleur):
+    pression = 0
+    for case in plateau.sommets:
+        s = plateau.sommets[case]
+        if s != None and s.couleur != couleur and s.piece != None:
+            # si je peux capturer cette pièce
+            for case2 in plateau.sommets:
+                s2 = plateau.sommets[case2]
+                if s2 != None and s2.couleur == couleur:
+                    if case in plateau.coup_possible(case2):
+                        pression += 0.5
+                        break
+    return pression       
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
 #def heuristique_v1(plateau, couleur):
