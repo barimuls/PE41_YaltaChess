@@ -3,6 +3,8 @@ from Fonctionjeux import *
 import Plateau;
 import random;
 
+# je suis passé par ici
+
 def coup_possible(plateau, couleur):
     liste_coups = [];
     for case in plateau.sommets.items():
