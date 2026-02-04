@@ -1,6 +1,7 @@
 import copy
 
-import Plateau;
+from Plateau import *;
+from FonctionJeux import *;
 import random;
 
 def coup_possible(plateau, couleur):
@@ -37,7 +38,7 @@ def choisir_coup_heuristique(plateau , couleur):
             # Copie profonde du plateau
             plateau_copie = copy.deepcopy(plateau)
 
-            Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+            jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
             # Calculer le score
             h = heuristic(plateau_copie, couleur)
@@ -108,7 +109,7 @@ def heuristic(plateau, couleur):
             # Copie profonde du plateau
             #plateau_copie = copy.deepcopy(plateau)
 
-           # Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+           # jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
             # Calculer le score
             #h = heuristique_v1(plateau_copie, couleur)
@@ -135,7 +136,7 @@ def evaluation_rec_heuristique(plateau, couleur, profondeur):
             # Copie profonde du plateau
             plateau_copie = copy.deepcopy(plateau)
 
-            Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+            jouer_le_coup(plateau_copie, couleur, depart, arrivee)
 
             #Appel récursif pour la couleur suivante
             evaluation = evaluation_rec_heuristique(plateau_copie, (couleur+1)%3, profondeur-1)
@@ -162,7 +163,7 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
         depart = coup[0]
         for arrivee in coup[1]:
 
-            Plateau.jouer_le_coup(plateau, couleur, depart, arrivee)
+            jouer_le_coup(plateau, couleur, depart, arrivee)
 
             #Appel récursif pour la couleur suivante
             evaluation = evaluation_rec_heuristique_ou_on_dejoue(plateau, (couleur+1)%3, profondeur-1)
@@ -172,7 +173,7 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
                 meilleur_score = heuristic
                 meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
 
-            Plateau.dejouer_le_coup(plateau, couleur, depart, arrivee)
+            dejouer_le_coup(plateau, couleur, depart, arrivee)
             
     return meilleur_coup;
 
