@@ -168,11 +168,12 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
 
-def dejouer_le_coup(plateau,joueur ,depart, arrivee):
-    #annuler le coup
-    piece = plateau.sommets[arrivee].piece;
 
-    piece_mangee = plateau.pile_pieces_mangees.pop();
+def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le dernier coup qui a été joué, notament pour les explorations des IAs
+    # depart et arrivée est le coup qui a été joué et doit etre annulé
+
+    piece = plateau.sommets[arrivee].piece;
+    piece_mangee = plateau.pile_pieces_mangees.pop(); # renvoie [piece, couleur]
     if piece_mangee is not None:
         plateau.sommets[arrivee].piece = piece_mangee[0];
         plateau.sommets[arrivee].couleur = piece_mangee[1];
@@ -183,16 +184,16 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee):
     plateau.sommets[depart].piece = piece;
     plateau.sommets[depart].couleur = joueur;
 
-    #cas ou s'est deroqué
+    #cas où on s'est deroqué
     deroquer = plateau.pile_pour_roque.pop();
     if deroquer is not None:
         (couleur, orientation) = deroquer;
-        if orientation == -1:
+        if orientation == -1: # -1 les deux ont été deroqués ce coup ci, 0 à gauche uniquement, 1 à droite uniquement
             plateau.peut_roquer[couleur] = [True,True];
-        else:      
+        else:
             plateau.peut_roquer[couleur][orientation] = True;
             
-    #cas de la prise en passant
+    #cas où on peut ou non prendre en passant
     prise_en_passant = plateau.pile_prise_en_passant.pop();
     if prise_en_passant is not None:
         (joueur_prise, case) = prise_en_passant;
@@ -200,7 +201,7 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee):
     else:
         plateau.prise_en_passant[joueur_prise] = None
 
-    #attention il y a plein de cas particuliers à gérer ( promotion)
+    #attention il y a plein de cas particuliers à gérer (promotion)
 
 def promotion(plateau, arrivee, joueur, nouvelle_piece):
     #changer la pièce à la case d'arrivée
@@ -508,7 +509,8 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
         return True 
     
     return None
-#----------------------fonctions pour l'heuristique----------------------
+
+#fonctions_pour_IA
 def est_attaquee_par(plateau, case, couleur):
     for c in plateau.sommets:
         s = plateau.sommets[c]
