@@ -14,17 +14,15 @@ def nouvelle_partie(mode):
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
 
     return {
-        "compteur": 0,
-        "L_requete": [None, None],
+        "compteur": 0, # Compteur servant à savoir si on est sur sélection départ ou arrivée
+        "L_requete": [None, None], # [case de départ, case d'arrivée]
         "plateau": plateau,
         "plateau_pieces": plateau_pieces,
         "plateau_couleurs": plateau_couleurs,
-        "n_ligne": (mode == "3joueurs"),
-        "type_ia": mode if mode.startswith("ia") else None,
-        "mode": mode
-    }
+        "mode": mode # 3joueurs ou ia_heuristique ou ia_aleatoire  
+        }
 
-games = {}
+games = {} # contiendra l'ensemble de la partie { l'identifiant de la partie: {"compteur":#, ...} }
 
 
 @app.route('/')
@@ -46,16 +44,17 @@ def test2():
 def contact():
     return render_template('contact.html')
 
-
+# renvoie sur la partie d'identifiant: game_id
 @app.route('/jeu/<game_id>')
 def jeu(game_id):
     return render_template("jeu.html", game_id=game_id)
 
+# création d'une nouvelle partie et choix du mode
 @app.route('/new_game', methods=['POST'])
 def new_game():
     data = request.get_json()
     mode = data.get("mode", "reset")
-    game_id = uuid.uuid4().hex[:8]
+    game_id = uuid.uuid4().hex[:8] # génere 64 caracteres aléatoires et selectionne les 8 premiers 
     games[game_id] = nouvelle_partie(mode)
     return jsonify({"game_id": game_id})
 
@@ -67,11 +66,10 @@ def receive(game_id):
     data = request.get_json()
     value = data.get('value')
 
-    envoyer_mise_a_jour(game_id)
-
-    # RESET
+    # RESET la partie dans le meme mode avec le meme identifiant
     if value == 'reset':
         games[game_id] = nouvelle_partie(game["mode"])
+        envoyer_mise_a_jour(game_id)
         return jsonify({"reponse": "Partie réinitialisée"})
 
     # PROMOTION
@@ -83,28 +81,31 @@ def receive(game_id):
             'promotion_dame': 'dame'
         }
         piece_type = piece_map[value]
-        couleur = 0 if not game["n_ligne"] else (game["compteur"]//2 - 1) % 3
+        couleur = 0 if not game["mode"] == "3joueurs" else (game["compteur"]//2 - 1) % 3
         promotion(game["plateau"], game["L_requete"][1], couleur, piece_type)
         game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
+        envoyer_mise_a_jour(game_id)
         return jsonify({"reponse": f"Pion promu en {piece_type}"})
 
-    # MOUVEMENT
+    #  vérifie et fait le mouvement demandé s'il est légal
     game["L_requete"][game["compteur"] % 2] = value.lower()
     depart, arrivee = game["L_requete"]
     if game["compteur"] % 2 == 1 and depart and arrivee:
-        if game["n_ligne"]:
+        if game["mode"]=="3joueurs":
             ok = tour_de_jeu_web(game["plateau"], (game["compteur"]//2)%3, depart, arrivee)
-        else:
-            if game["type_ia"] == "ia_aleatoire":
-                ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
-            else:
-                ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
+        elif game["mode"] == "ia_aleatoire":
+            ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
+        elif game["mode"]=="ia_heuristique":
+            ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
         if not ok:
             game["compteur"] -= 1
             return jsonify({"reponse": "Mouvement invalide"})
     game["compteur"] += 1
     game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
+    envoyer_mise_a_jour(game_id)
+
     return jsonify({"reponse": value})
+
 
 @socketio.on('connect')
 def handle_connect():
