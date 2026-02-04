@@ -1,6 +1,6 @@
 
 #----------------------Création d'un plateau----------------------
-import IA;
+
 #------création du graphe------
 
 class Arete:

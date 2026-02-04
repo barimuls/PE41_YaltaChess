@@ -1,5 +1,5 @@
 import IA;
-import Plateau;
+from Plateau import *;
 
 #-------Fonction pour jouer--------------
 
@@ -512,7 +512,7 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
 
 #----------------------Test----------------------
 if __name__ == "__main__":
-    plateau = Plateau.creer_plateau()
+    plateau = creer_plateau()
     plateau.remplir_arete()
     
     plateau.remplir_pieces_initiales()
