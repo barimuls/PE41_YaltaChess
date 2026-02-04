@@ -1,5 +1,5 @@
 import copy
-from Fonctionjeux import *
+from FonctionJeux import *
 import Plateau;
 import random;
 
@@ -93,22 +93,114 @@ def score_pression(plateau, couleur):
                     if case in plateau.coup_possible(case2):
                         pression += 0.5
                         break
-    return pression       
+    return pression   
+Mate_score=10^9
+def danger_attaquants(n):
+    if n <= 0:
+        return 0
+    if n == 1:
+        return 2
+    if n == 2:
+        return 4
+    return 5
+def score_securite_roi(plateau, couleur):
+
+    # trouver le roi
+    case_roi = None
+    for c in plateau.sommets:
+        s = plateau.sommets[c]
+        if s.piece == 'roi' and s.couleur == couleur:
+            case_roi = c
+            break  
+        if case_roi is None:
+            return -Mate_score  #roi_capturé
+        danger_total = 0
+        voisins = cases_adjacentes_roi(plateau, case_roi)
+
+    for v in voisins:
+
+        att1 = nombre_attaquants(plateau, v, (couleur+1)%3)
+        att2 = nombre_attaquants(plateau, v, (couleur+2)%3)
+        def_ami = nombre_attaquants(plateau, v, couleur)
+
+        danger = 0
+
+        # danger individuel
+        danger += danger_attaquants(att1)
+        danger += danger_attaquants(att2)
+        if att1 > 0 and att2 > 0:
+            danger += 3
+
+        # défense (limitée)
+        danger -= min(def_ami, 2)
+
+        # étouffement par pièces amies
+        if plateau.sommets[v].piece is not None and plateau.sommets[v].couleur == couleur:
+            danger += 1
+
+        danger_total += danger
+
+    return -danger_total
+
+#----------------------Test----------------------
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
-#def heuristique_v1(plateau, couleur):
-    #if plateau.gagnant(plateau) != None 
-        #if gagnant==couleur :
-            #h=10^9;
-        #else
-            #h=-10^9;
-        
-    #scores = [score_v1(plateau,0)+score_mobilité(plateau,0),score_v1(plateau,1)+score_mobilité(plateau,1),score_v1(plateau,2)+score_mobilité(plateau,2)];
-    #alpha = 0.6; #coeff au pif un peu
-    #beta = 0.2;
-    #leader=scores.index(max(scores));
-    #h=scores[couleur]-alpha*max(scores[(couleur+1)%3],scores[(couleur+2)%3])-beta*scores[leader];
-    #return h;
+def heuristique_v1(plateau, couleur):
+    """
+    Évaluation de la position pour le joueur 'couleur' en prenant en compte :
+    - Matériel
+    - Mobilité
+    - Pression sur adversaires
+    - Sécurité du roi
+    - Fin de partie (élimination)
+    
+    L'évaluation renvoie un score relatif par rapport aux adversaires avec coefficients alpha et beta.
+    """
+    
+    Mate_score = 10**9  # valeur pour mat
+    
+    #------------- Vérification fin de partie -------------
+    for c in [0,1,2]:
+        if est_elimine(plateau, c):
+            if c == couleur:
+                return -Mate_score  # je suis éliminé
+            else:
+                 # un adversaire est éliminé déterminer qui a maté et donner les points cohérents
+                attaquant = None
+                for adv in [0,1,2]:
+                    if adv != c:
+                        for case_adv in plateau.sommets.values():
+                            if case_adv.couleur == adv and case_adv.piece is not None:
+                                if 'roi' in plateau.coup_possible(case_adv.nom):
+                                    attaquant = adv
+                                    break
+                        if attaquant is not None:
+                            break 
+                if attaquant == couleur:
+                    return 10**9  # on a maté l'adversaire
+                else:
+                    return -10**9  
+    #------------- Calcul des scores pour chaque joueur -------------
+    scores = []
+    for c in [0,1,2]:
+        s = 0
+        s += score_v1(plateau, c)          # matériel
+        s += score_mobilités(plateau, c)   # mobilité
+        s += score_pression(plateau, c)    # pression
+        s += score_securite_roi(plateau, c) # sécurité du roi
+        scores.append(s)
+
+    #------------- Coefficients alpha et beta -------------
+    alpha = 0.7  # poids sur les adversaires
+    beta = 1-alpha  # poids sur le leader (facultatif mais on peut l'utiliser)
+    
+    pas_leader = scores.index(min(scores))
+    adversaires = [scores[(couleur+1)%3], scores[(couleur+2)%3]]
+    
+    h = scores[couleur] - alpha * max(adversaires) - beta * scores[pas_leader]
+
+    return h
+
     
 #def choisir_coup_nouvelle_heuristique(plateau , couleur):
    # liste_coups = [];
