@@ -65,7 +65,6 @@ def receive(game_id):
     game = games[game_id]
     data = request.get_json()
     value = data.get('value')
-
     # RESET la partie dans le meme mode avec le meme identifiant
     if value == 'reset':
         games[game_id] = nouvelle_partie(game["mode"])
@@ -81,7 +80,10 @@ def receive(game_id):
             'promotion_dame': 'dame'
         }
         piece_type = piece_map[value]
-        couleur = 0 if not game["mode"] == "3joueurs" else (game["compteur"]//2 - 1) % 3
+        if not game["mode"] == "3joueurs":
+            couleur = 0 
+        else:
+            couleur = (game["compteur"]//2 - 1) % 3
         promotion(game["plateau"], game["L_requete"][1], couleur, piece_type)
         game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
         envoyer_mise_a_jour(game_id)
@@ -97,7 +99,7 @@ def receive(game_id):
             ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
         elif game["mode"]=="ia_heuristique":
             ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
-        if not ok:
+        if ok == False:
             game["compteur"] -= 1
             return jsonify({"reponse": "Mouvement invalide"})
     game["compteur"] += 1
