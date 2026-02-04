@@ -1,18 +1,3 @@
-function sendValue(maValeur) {
-    fetch('/receive', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: maValeur })
-    })
-        .then(res => res.json())
-        .then(data => {
-            // Affiche la réponse du serveur (par exemple "Mouvement invalide")
-            const resultEl = document.getElementById("resultat");
-            if (resultEl) resultEl.textContent = data.reponse;
-            console.log("Valeur envoyée :", maValeur);
-        })
-        .catch(error => console.error("Erreur lors de l’envoi :", error));
-}
 
 function openModal(x) {
     document.getElementById('overlay' + x).style.display = 'flex';
@@ -34,7 +19,22 @@ function ModalErreur(x) {
     openModal(3);
 }
 
-function goToJeu(maValeur) {
-    sendValue(maValeur);
-    window.location.href = urljeu;
+function goToJeu(mode) {
+
+    // 1. Créer une nouvelle partie côté serveur
+    fetch("/new_game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: mode })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        const gameId = data.game_id;
+        console.log("Nouvelle partie créée :", gameId);
+
+        // 2. Redirection vers la page du jeu
+        window.location.href = `/jeu/${gameId}`;
+    })
+    .catch(err => console.error("Erreur lors de la création de la partie :", err));
 }

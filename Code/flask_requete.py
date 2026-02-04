@@ -1,26 +1,30 @@
+import uuid
 from flask import Flask, request, jsonify, render_template
 from Plateau import *
 from flask_socketio import SocketIO, emit
+from FonctionJeux import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-compteur = 0
-L_requete = [None,None]
-plateau = creer_plateau()
-plateau.remplir_arete()
-plateau.remplir_pieces_initiales()
-plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-n_ligne = False
-type_ia = None
 
-@app.context_processor
-def inject_plateau_piece():
-    return dict(plateau_pieces=plateau_pieces)
+def nouvelle_partie(mode):
+    plateau = creer_plateau()
+    plateau.remplir_arete()
+    plateau.remplir_pieces_initiales()
+    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
 
+    return {
+        "compteur": 0,
+        "L_requete": [None, None],
+        "plateau": plateau,
+        "plateau_pieces": plateau_pieces,
+        "plateau_couleurs": plateau_couleurs,
+        "n_ligne": (mode == "3joueurs"),
+        "type_ia": mode if mode.startswith("ia") else None,
+        "mode": mode
+    }
 
-@app.context_processor
-def inject_plateau_couleur():
-    return dict(plateau_couleurs=plateau_couleurs)
+games = {}
 
 
 @app.route('/')
@@ -43,48 +47,34 @@ def contact():
     return render_template('contact.html')
 
 
-@app.route('/jeu')
-def jeu():
-    return render_template('jeu.html')
+@app.route('/jeu/<game_id>')
+def jeu(game_id):
+    return render_template("jeu.html", game_id=game_id)
 
+@app.route('/new_game', methods=['POST'])
+def new_game():
+    data = request.get_json()
+    mode = data.get("mode", "reset")
+    game_id = uuid.uuid4().hex[:8]
+    games[game_id] = nouvelle_partie(mode)
+    return jsonify({"game_id": game_id})
 
-@app.route('/receive', methods=['POST'])
-def receive():
-    global compteur, L_requete, plateau_pieces, plateau_couleurs, plateau, n_ligne, type_ia
+@app.route('/receive/<game_id>', methods=['POST'])
+def receive(game_id):
+    if game_id not in games:
+        return jsonify({"error": "Partie inconnue"}), 404
+    game = games[game_id]
     data = request.get_json()
     value = data.get('value')
-    print(value)
-    if value[:2] == 'ia':
-        n_ligne = False
-        type_ia = value
-        compteur = 0
-        L_requete = [None,None]
-        plateau = creer_plateau()
-        plateau.remplir_arete()
-        plateau.remplir_pieces_initiales()
-        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-        if value == 'ia_aleatoire':
-            return jsonify({"reponse": "Mode IA aléatoire activé"})
-        if value == 'ia_heuristique':
-            return jsonify({"reponse": "Mode IA heuristique activé"})
-        
-    if value == '3joueurs':
-        compteur = 0
-        L_requete = [None,None]
-        plateau = creer_plateau()
-        plateau.remplir_arete()
-        plateau.remplir_pieces_initiales()
-        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-        n_ligne = True
-        return jsonify({"reponse": "Mode en ligne activé"})
+
+    envoyer_mise_a_jour(game_id)
+
+    # RESET
     if value == 'reset':
-        compteur = 0
-        L_requete = [None,None]
-        plateau = creer_plateau()
-        plateau.remplir_arete()
-        plateau.remplir_pieces_initiales()
-        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+        games[game_id] = nouvelle_partie(game["mode"])
         return jsonify({"reponse": "Partie réinitialisée"})
+
+    # PROMOTION
     if value in ['promotion_tour', 'promotion_fou', 'promotion_cavalier', 'promotion_dame']:
         piece_map = {
             'promotion_tour': 'tour',
@@ -93,57 +83,46 @@ def receive():
             'promotion_dame': 'dame'
         }
         piece_type = piece_map[value]
-        if not n_ligne:
-            couleur = 0
-        if n_ligne:
-            couleur = (compteur//2-1)%3
-        promotion(plateau, L_requete[1], couleur, piece_type)
-        plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
+        couleur = 0 if not game["n_ligne"] else (game["compteur"]//2 - 1) % 3
+        promotion(game["plateau"], game["L_requete"][1], couleur, piece_type)
+        game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
         return jsonify({"reponse": f"Pion promu en {piece_type}"})
-    L_requete[compteur%2] = value.lower()
-    print(f"Valeur reçue : {value}")
-    print(compteur)
-    depart = L_requete[0]
-    arrivee = L_requete[1]
-    print(L_requete)
-    if compteur % 2 == 1 and L_requete[0] is not None and L_requete[1] is not None:
-        print(">>> depart:", depart, "arrivee:", arrivee, "type:", type(arrivee))
-        if n_ligne:
-            if tour_de_jeu_web(plateau,(compteur//2)%3, depart, arrivee)==False:
-                compteur += -1
-                plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-                return jsonify({"reponse": "Mouvement invalide"})
-        if not n_ligne:
-            if type_ia == 'ia_aleatoire':
-                if tour_de_jeu_avec_IA_web(plateau, depart, arrivee)==False:
-                    compteur += -1
-                    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-                    return jsonify({"reponse": "Mouvement invalide"})
-            if type_ia == 'ia_heuristique':
-                if tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee)==False:
-                    compteur += -1
-                    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-                    return jsonify({"reponse": "Mouvement invalide"})
-    compteur += 1
-    plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
-    if verifier_victoire(plateau, (compteur//2)%3)==True:
-        if n_ligne:
-            return jsonify({"reponse": f"Le joueur {(compteur//2)%3-1} a gagné!"})
-        return jsonify({"reponse": f"Le joueur {(compteur//2)%3} a gagné!"})
-    if compteur % 2 == 1 and L_requete[0] is not None and L_requete[1] is not None and not n_ligne:
-        return jsonify({"reponse": value + " faite votre 2ème action et patientez le tour de l'IA"})
+
+    # MOUVEMENT
+    game["L_requete"][game["compteur"] % 2] = value.lower()
+    depart, arrivee = game["L_requete"]
+    if game["compteur"] % 2 == 1 and depart and arrivee:
+        if game["n_ligne"]:
+            ok = tour_de_jeu_web(game["plateau"], (game["compteur"]//2)%3, depart, arrivee)
+        else:
+            if game["type_ia"] == "ia_aleatoire":
+                ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
+            else:
+                ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
+        if not ok:
+            game["compteur"] -= 1
+            return jsonify({"reponse": "Mouvement invalide"})
+    game["compteur"] += 1
+    game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
     return jsonify({"reponse": value})
 
 @socketio.on('connect')
 def handle_connect():
     emit('update', {'message': 'Connexion établie'})
 
-def envoyer_mise_a_jour():
-    global plateau_pieces, plateau_couleurs
-    while True:
-        socketio.emit('update', {'plateau_pieces': plateau_pieces, 'plateau_couleurs': plateau_couleurs})
-        socketio.sleep(0.5)
+@socketio.on("join_game")
+def join_game(data):
+    game_id = data["game_id"]
+    envoyer_mise_a_jour(game_id)
+
+
+def envoyer_mise_a_jour(game_id):
+    socketio.emit('update', {
+        'game_id': game_id,
+        'plateau_pieces': games[game_id]["plateau_pieces"],
+        'plateau_couleurs': games[game_id]["plateau_couleurs"]
+    })
+
 
 if __name__ == '__main__':
-    socketio.start_background_task(envoyer_mise_a_jour)
-    socketio.run(app, debug=True,allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True,allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)

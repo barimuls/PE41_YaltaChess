@@ -1,3 +1,4 @@
+
 let cl = "blanc";
 let cmpt = 0;
 function openModal() {
@@ -40,7 +41,11 @@ function closeModal(piece) {
 }
 // --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
 function sendValue(maValeur) {
-    fetch('/receive', {
+    if (!gameId) {
+        console.error("ID de jeu non défini !");
+        return;
+    }
+    fetch(`/receive/${gameId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value: maValeur })
@@ -69,13 +74,16 @@ function sendValue(maValeur) {
 const socket = io();
 
 socket.on('connect', () => {
-    console.log("✅ Connecté à SocketIO");
+    console.log("Connecté à SocketIO");
+    socket.emit("join_game", { game_id: gameId });
 });
+
 
 // ---  Réception des mises à jour automatiques du plateau ---
 socket.on('update', data => {
+    if (!gameId || data.game_id !== gameId) return;
     console.log("Mise à jour reçue :", data);
-
+    console.log("Comparaison :", data.game_id, gameId, data.game_id === gameId);
     const pieces = data.plateau_pieces;
     const couleurs = data.plateau_couleurs;
     genererToutesLesPieces(data);
