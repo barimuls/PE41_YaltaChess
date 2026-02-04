@@ -1,5 +1,5 @@
 import copy
-
+from Fonctionjeux import *
 import Plateau;
 import random;
 
