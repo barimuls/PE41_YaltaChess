@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from Plateau import *
 from flask_socketio import SocketIO, emit
 from FonctionJeux import *
+from FonctionJeuxIA import *;
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -108,7 +109,7 @@ def receive(game_id):
             elif game["mode"] == "ia_aleatoire":
                 ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
             elif game["mode"]=="ia_heuristique":
-                ok = tour_de_jeu_IA_minimax_web(game["plateau"], depart, arrivee)
+                ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
             if ok == False:
                 print(depart, arrivee)
                 return jsonify({"reponse": "Mouvement invalide"})
