@@ -86,8 +86,8 @@ def receive(game_id):
         if not game["mode"] == "3joueurs":
             couleur = 0 
         else:
-            couleur = (game["compteur"]//2 - 1) % 3
-        promotion(game["plateau"], game["L_requete"][1], couleur, piece_type)
+            couleur = (game["compteur_tour"]) % 3
+        promotion(game["plateau"], arrivee, couleur, piece_type)
         game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
         envoyer_mise_a_jour(game_id)
         return jsonify({"reponse": f"Pion promu en {piece_type}"})
