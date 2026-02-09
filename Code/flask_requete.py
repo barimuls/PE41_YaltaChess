@@ -14,12 +14,13 @@ def nouvelle_partie(mode):
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
 
     return {
-        "compteur": 0, # Compteur servant à savoir si on est sur sélection départ ou arrivée
-        "L_requete": [None, None], # [case de départ, case d'arrivée]
+        "compteur_clic": 0, # Compteur servant à savoir si on est sur sélection départ ou arrivée
+        "compteur_tour": 0, # Compteur servant à savoir quel joueur doit jouer
         "plateau": plateau,
         "plateau_pieces": plateau_pieces,
         "plateau_couleurs": plateau_couleurs,
-        "mode": mode # 3joueurs ou ia_heuristique ou ia_aleatoire  
+        "mode": mode, # 3joueurs ou ia_heuristique ou ia_aleatoire 
+        "depart": None # Case de départ sélectionnée
         }
 
 games = {} # contiendra l'ensemble de la partie { l'identifiant de la partie: {"compteur":#, ...} }
@@ -65,6 +66,7 @@ def receive(game_id):
     game = games[game_id]
     data = request.get_json()
     value = data.get('value')
+    
     # RESET la partie dans le meme mode avec le meme identifiant
     if value == 'reset':
         games[game_id] = nouvelle_partie(game["mode"])
@@ -88,21 +90,30 @@ def receive(game_id):
         game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
         envoyer_mise_a_jour(game_id)
         return jsonify({"reponse": f"Pion promu en {piece_type}"})
+    
+    if game["compteur_clic"] == 0:
+        game["depart"] = value.lower()
+        game["compteur_clic"] += 1
+        return jsonify({"reponse": f"Case de départ sélectionnée: {value}"})
+    elif game["compteur_clic"] == 1:
+        arrivee = value.lower()
+        depart = game["depart"]
+        game["depart"] = None
 
-    #  vérifie et fait le mouvement demandé s'il est légal
-    game["L_requete"][game["compteur"] % 2] = value.lower()
-    depart, arrivee = game["L_requete"]
-    if game["compteur"] % 2 == 1 and depart and arrivee:
-        if game["mode"]=="3joueurs":
-            ok = tour_de_jeu_web(game["plateau"], (game["compteur"]//2)%3, depart, arrivee)
-        elif game["mode"] == "ia_aleatoire":
-            ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
-        elif game["mode"]=="ia_heuristique":
-            ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
-        if ok == False:
-            game["compteur"] -= 1
-            return jsonify({"reponse": "Mouvement invalide"})
-    game["compteur"] += 1
+        #  vérifie et fait le mouvement demandé s'il est légal
+        if depart and arrivee:
+            game["compteur_clic"] = 0
+            if game["mode"]=="3joueurs":
+                ok = tour_de_jeu_web(game["plateau"], (game["compteur_tour"])%3, depart, arrivee)
+            elif game["mode"] == "ia_aleatoire":
+                ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
+            elif game["mode"]=="ia_heuristique":
+                ok = tour_de_jeu_IA_minimax_web(game["plateau"], depart, arrivee)
+            if ok == False:
+                print(depart, arrivee)
+                return jsonify({"reponse": "Mouvement invalide"})
+    if game["compteur_clic"] == 0:
+        game["compteur_tour"] += 1
     game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
     envoyer_mise_a_jour(game_id)
 
