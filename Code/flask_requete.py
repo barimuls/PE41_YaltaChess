@@ -125,7 +125,7 @@ def receive(game_id):
         if not game["mode"] == "3joueurs":
             couleur = 0 
         else:
-            couleur = (game["compteur_tour"]) % 3
+            couleur = (game["compteur_tour"]+2) % 3
         promotion(game["plateau"], game["arrivee"], couleur, piece_type)
         game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
         envoyer_mise_a_jour(game_id)
