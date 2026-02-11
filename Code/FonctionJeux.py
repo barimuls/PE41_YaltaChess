@@ -1,4 +1,3 @@
-import IA;
 from Plateau import *;
 
 #-------Fonction pour jouer--------------
@@ -57,13 +56,13 @@ def remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur):
 
         if joueur ==0 and chiffre_depart ==2 and chiffre_arrivee ==4:
             plateau.prise_en_passant[joueur] = lettre_arrivee + '3'
-            plateau.pile_prise_en_passant.append((joueur,plateau.prise_en_passant[joueur]))
+            plateau.pile_prise_en_passant.append((plateau.prise_en_passant[joueur])) # on mets l'état acuel de plateau.prise_en_passant dans la pile 
         elif joueur ==1 and chiffre_depart ==7 and chiffre_arrivee ==5:
             plateau.prise_en_passant[joueur] = lettre_arrivee + '6'
-            plateau.pile_prise_en_passant.append((joueur,plateau.prise_en_passant[joueur]))
+            plateau.pile_prise_en_passant.append((plateau.prise_en_passant[joueur]))
         elif joueur ==2 and chiffre_depart ==11 and chiffre_arrivee ==9:
             plateau.prise_en_passant[joueur] = lettre_arrivee + '10'
-            plateau.pile_prise_en_passant.append((joueur,plateau.prise_en_passant[joueur]))
+            plateau.pile_prise_en_passant.append((plateau.prise_en_passant[joueur]))
         else:
             plateau.prise_en_passant[joueur] = None
             plateau.pile_prise_en_passant.append(None)
@@ -194,12 +193,11 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le
             plateau.peut_roquer[couleur][orientation] = True;
             
     #cas où on peut ou non prendre en passant
-    prise_en_passant = plateau.pile_prise_en_passant.pop();
-    if prise_en_passant is not None:
-        (joueur_prise, case) = prise_en_passant;
-        plateau.prise_en_passant[joueur_prise] = case;
+    case_ou_on_peut_prendre_en_passant = plateau.pile_prise_en_passant.pop();
+    if case_ou_on_peut_prendre_en_passant is not None:
+        plateau.prise_en_passant[joueur] = case_ou_on_peut_prendre_en_passant;
     else:
-        plateau.prise_en_passant[joueur_prise] = None
+        plateau.prise_en_passant[joueur] = None
 
     #attention il y a plein de cas particuliers à gérer (promotion)
 
@@ -225,7 +223,7 @@ def afficher_plateau_sur_site(plateau):
     plateau_couleurs = {}
     case = list(plateau.sommets.keys())
     Case = [i.upper() for i in case]
-    inttohex = ["blanc","noir","rouge"]
+    inttohex = ["blanc","rouge","noir"]
     for i in range(len(case)):
         plateau_pieces[Case[i]] = plateau.sommets[case[i]].piece
         if plateau.sommets[case[i]].couleur != None:
@@ -541,6 +539,5 @@ if __name__ == "__main__":
     plateau.remplir_pieces_initiales()
     plateau.afficher()
  
-    tour_de_jeu_IA_minimax_ou_on_dejoue(plateau,0)
 
     #plateau.afficher_aretes()
