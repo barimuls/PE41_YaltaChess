@@ -40,6 +40,8 @@ def nouvelle_partie(mode):
         "arrivee": None # Case d'arrivée sélectionnée
         }
 
+
+
 games = {} # contiendra l'ensemble de la partie { l'identifiant de la partie: {"compteur":#, ...} }
 
 @app.route('/')
@@ -75,6 +77,16 @@ def new_game():
     game_id = uuid.uuid4().hex[:8] # génere 64 caracteres aléatoires et selectionne les 8 premiers 
     games[game_id] = nouvelle_partie(mode)
     return jsonify({"game_id": game_id})
+
+@app.route('/change_tutoriel/<game_id>', methods=['POST'])
+def change_tutoriel(game_id):
+    if game_id not in games:
+        return jsonify({"error": "Partie inconnue"}), 404
+    data = request.get_json()
+    mode = data.get("mode", "reset")
+    games[game_id] = nouvelle_partie(mode)
+    envoyer_mise_a_jour(game_id)
+    return jsonify({"reponse": "Tutoriel affiché"})
 
 @app.route('/receive/<game_id>', methods=['POST'])
 def receive(game_id):
