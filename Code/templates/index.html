@@ -32,19 +32,11 @@
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="openModal(2)" style="margin-top: 30px; width: 250px;">Jouer en local</button>
             <button class="mon-bouton" onclick="ModalErreur()" style="margin-top: 30px; width: 250px;">Jouer en ligne</button>
-            <button class="mon-bouton" onclick="openModal(1)" style="margin-top: 30px; width: 250px;">Tutoriel</button>
+            <button class="mon-bouton" onclick="goToTutoriel('tutoriel_tour')" style="margin-top: 30px; width: 250px;">Tutoriel</button>
         </div>
 
         <p id="message"></p>
 
-        <div class="overlay" id="overlay1">
-            <div class="modal">
-                <span class="bouton-fermer" onclick="closeModal(1)">×</span>
-                <h2>Tutoriel</h2>
-                <p>Voici la page du tutoriel.</p>
-                <button class="mon-bouton" onclick="goToTutoriel('tutoriel_tour')" style="margin-top: 50px; width: 180px;">Tour</button>
-            </div>
-        </div>
 
         <div class="overlay" id="overlay2">
             <div class="modal" style="max-width: 600px; max-height: 400px;">
