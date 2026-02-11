@@ -174,6 +174,7 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le
     piece = plateau.sommets[arrivee].piece;
     piece_mangee = plateau.pile_pieces_mangees.pop(); # renvoie [piece, couleur]
     if piece_mangee is not None:
+        print("on est passé ligne 177, normalement il faut rendre la piece qui a été mangée" + str(piece_mangee), "à la case " + arrivee)
         plateau.sommets[arrivee].piece = piece_mangee[0];
         plateau.sommets[arrivee].couleur = piece_mangee[1];
     else:
