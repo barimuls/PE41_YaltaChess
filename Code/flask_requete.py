@@ -79,11 +79,11 @@ def receive(game_id):
         envoyer_mise_a_jour(game_id)
         return jsonify({"reponse": "Partie réinitialisée"})
 
-    if game["compteur_clic"] == 0:
+    if game["compteur_clic"] == 0 and len(value)<=3:
         game["depart"] = value.lower()
         game["compteur_clic"] += 1
         return jsonify({"reponse": f"Case de départ sélectionnée: {value}"})
-    elif game["compteur_clic"] == 1:
+    elif game["compteur_clic"] == 1 and len(value)<=3:
         arrivee = value.lower()
         depart = game["depart"]
         game["depart"] = None

@@ -25,6 +25,7 @@
         
     </nav>
     <div class="nav-droite">
+        <span class="mon-bouton" onclick="goToTutoriel('tutoriel_fou')">></span>
         <p id="resultat"></p>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="sendValue('reset')">Reset</button>
@@ -239,7 +240,7 @@
     <script>
     const gameId = "{{ game_id }}";
     </script>
-    <script src="{{ url_for('static', filename='scripts/jeu.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/tutoriel.js') }}"></script>
 </body>
 
 </html>
