@@ -86,7 +86,6 @@ main {
     color: #eae9e9;
     font-size: 30px;
     padding: 12px 24px;
-    margin-top: 30px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
@@ -96,7 +95,7 @@ main {
     transition: transform 0.3s ease;
     width: 150px;
     height: 70px;
-    display: block;
+    display: block ;
     margin: 30px auto 0 auto;
 
 }

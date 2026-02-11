@@ -24,14 +24,17 @@
         </div>
         
     </nav>
+
     <div class="nav-droite">
-        <span class="mon-bouton" id="tutoriel_avant" onclick="goToTutoriel(-1)"><</span>
-        <span class="mon-bouton" id="tutoriel_apres" onclick="goToTutoriel(1)">></span>
+        <div class="bloc-boutons">
+            <span class="mon-bouton" id="tutoriel_avant" onclick="goToTutoriel(-1)">◀</span>
+            <span class="mon-bouton" id="tutoriel_apres" onclick="goToTutoriel(1)">▶</span>
+        </div>
         <p id="resultat"></p>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="sendValue('reset')">Reset</button>
         </div>
-    
+
     </div>
 
     <!-- Contenu principal -->
