@@ -379,6 +379,10 @@ class Graph:
             nom_case = f"{lettre}11"
             self.sommets[nom_case].piece='pion'
             self.sommets[nom_case].couleur=2
+    
+    def remplir_tutoriel_tour(self):
+        self.sommets['a1'].piece='tour'
+        self.sommets['a1'].couleur=0
 
     def afficher_aretes(self):
         print("=== ARÊTES DU GRAPHE ===\n")
