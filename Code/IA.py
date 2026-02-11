@@ -92,8 +92,24 @@ def score_pression(plateau, couleur):
                     if case in plateau.coup_possible(case2):
                         pression += 0.5
                         break
+    return pression
+
+def score_pression_optimise(plateau, couleur):
+    pression = 0
+    # On crée un set des cases contrôlées par le joueur 'couleur'
+    cases_controlees = set()
+    for case, s in plateau.sommets.items():
+        if s is not None and s.couleur == couleur:
+            # On ajoute toutes les cibles possibles d'un coup
+            cases_controlees.update(plateau.coup_possible(case))
+    
+    # On compte combien de pièces ennemies sont dans ces cases
+    for case_cible in cases_controlees:
+        s_cible = plateau.sommets[case_cible]
+        if s_cible is not None and s_cible.couleur != couleur:
+            pression += 0.5
     return pression   
-Mate_score=10^9
+Mate_score=10**9
 def danger_attaquants(n):
     if n <= 0:
         return 0
@@ -128,7 +144,7 @@ def score_securite_roi(plateau, couleur):
 
     # trouver le roi
     
-        case_roi=case_roi(plateau,couleur)
+        case_roi=fonct_case_roi(plateau,couleur)
         if case_roi is None:
             return -Mate_score  #roi_capturé
         danger_total = 0
@@ -158,7 +174,7 @@ def score_securite_roi(plateau, couleur):
         danger_total += danger
 
         return -danger_total
-def case_roi(plateau,couleur):
+def fonct_case_roi(plateau,couleur):
     case_roi = None
     for c, s in plateau.sommets.items():
         if s is not None and s.piece == 'roi' and s.couleur == couleur:
@@ -166,7 +182,7 @@ def case_roi(plateau,couleur):
             break
     return case_roi
 def score_total(plateau,couleur) :
-        roi_pos = case_roi(plateau, couleur)
+        roi_pos = fonct_case_roi(plateau, couleur)
         if roi_pos is None:
             return -Mate_score  # notre roi est capturé
 
@@ -193,7 +209,25 @@ def score_total(plateau,couleur) :
         s += score_securite_roi(plateau, couleur) # sécurité_roi
         return s
 #----------------------Test----------------------
-        
+def score_securite_roi_fast(plateau, couleur):
+    pos_roi = fonct_case_roi(plateau, couleur)
+    if pos_roi is None:
+        return -Mate_score
+
+    danger = 0
+    # On identifie les deux adversaires
+    adv1, adv2 = (couleur + 1) % 3, (couleur + 2) % 3
+    
+    # Au lieu de scanner tout le plateau, on vérifie si le roi 
+    # est dans la liste des coups possibles des adversaires
+    for case, s in plateau.sommets.items():
+        if s is not None:
+            if s.couleur == adv1 or s.couleur == adv2:
+                # Si une pièce ennemie peut manger le roi au prochain tour
+                if pos_roi in plateau.coup_possible(case):
+                    danger -= 15 # Malus important car échec immédiat
+    
+    return danger       
 def heuristic(plateau, couleur):
     return score(plateau, couleur) - 0.5*score(plateau, (couleur+1)%3) - 0.5*score(plateau, (couleur+2)%3);
 def heuristique_v1(plateau, couleur):
@@ -221,7 +255,30 @@ def heuristique_v1(plateau, couleur):
     h = scores[couleur] - alpha * max(adversaires) - beta * scores[pas_leader]
 
     return h
+def choisir_coup_heuristique_v1_fast(plateau, couleur):
+    liste_coups = coup_possible(plateau, couleur)
+    meilleur_score = -float('inf')
+    meilleur_coup = None
 
+    # On ne copie le plateau QU'UNE SEULE FOIS au début
+    for depart, arrivees in liste_coups:
+        for arrivee in arrivees:
+            # On stocke la pièce mangée pour pouvoir "déjouer" le coup
+            piece_capturee = plateau.sommets[arrivee] 
+            
+            jouer_le_coup(plateau, couleur, depart, arrivee)
+            
+            # Utilisation de l'heuristique
+            h = heuristique_v1(plateau, couleur)
+            
+            if h > meilleur_score:
+                meilleur_score = h
+                meilleur_coup = (depart, arrivee)
+
+            # Retour à l'état initial sans deepcopy
+            dejouer_le_coup(plateau, couleur, depart, arrivee, piece_capturee)
+
+    return meilleur_coup
     
 def choisir_coup_heuristique_v1(plateau , couleur):
     liste_coups = [];
