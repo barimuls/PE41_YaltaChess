@@ -26,21 +26,17 @@ def nouvelle_partie(mode):
 
 games = {} # contiendra l'ensemble de la partie { l'identifiant de la partie: {"compteur":#, ...} }
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/test')
 def test():
     return render_template('test.html')
 
-
 @app.route('/test2')
 def test2():
     return render_template('test2.html')
-
 
 @app.route('/contact')
 def contact():
@@ -120,7 +116,6 @@ def receive(game_id):
 
     return jsonify({"reponse": value})
 
-
 @socketio.on('connect')
 def handle_connect():
     emit('update', {'message': 'Connexion établie'})
@@ -130,14 +125,12 @@ def join_game(data):
     game_id = data["game_id"]
     envoyer_mise_a_jour(game_id)
 
-
 def envoyer_mise_a_jour(game_id):
     socketio.emit('update', {
         'game_id': game_id,
         'plateau_pieces': games[game_id]["plateau_pieces"],
         'plateau_couleurs': games[game_id]["plateau_couleurs"]
     })
-
 
 if __name__ == '__main__':
     socketio.run(app, debug=True,allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)
