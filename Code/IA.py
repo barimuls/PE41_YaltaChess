@@ -226,7 +226,8 @@ def choisir_coup_heuristique_v1(plateau , couleur):
                 meilleur_score = h
                 meilleur_coup = (depart, arrivee)
 
-    return meilleur_coup;    
+    return meilleur_coup;
+    
 def evaluation_rec_heuristique(plateau, couleur, profondeur):
     if profondeur == 0:
         return [score(plateau,0),score(plateau,1),score(plateau,2),None,None];
@@ -263,7 +264,7 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
 
-    meilleur_score = float('inf');
+    meilleur_score = -float('inf');
     meilleur_coup = None;
 
     #Evaluer chaque coup
@@ -276,8 +277,8 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
             #Appel récursif pour la couleur suivante
             evaluation = evaluation_rec_heuristique_ou_on_dejoue(plateau, (couleur+1)%3, profondeur-1)
             
-            heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
-            if heuristic < meilleur_score:
+            heuristic = evaluation[couleur%3] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
+            if heuristic > meilleur_score:
                 meilleur_score = heuristic
                 meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
 
