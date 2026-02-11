@@ -52,6 +52,10 @@ def contact():
 def jeu(game_id):
     return render_template("jeu.html", game_id=game_id)
 
+@app.route('/tutoriel/<game_id>')
+def tutoriel(game_id):
+    return render_template("tutoriel.html", game_id=game_id)
+
 # création d'une nouvelle partie et choix du mode
 @app.route('/new_game', methods=['POST'])
 def new_game():
