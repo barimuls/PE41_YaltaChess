@@ -102,6 +102,28 @@ def danger_attaquants(n):
     if n == 2:
         return 4
     return 5
+def est_attaquee_par(plateau, case, couleur):
+    for c in plateau.sommets:
+        s = plateau.sommets[c]
+        if s.piece is not None and s.couleur == couleur:
+            if case in plateau.coup_possible(c):
+                return True
+    return False
+def nombre_attaquants(plateau, case, couleur):
+    n = 0
+    for c in plateau.sommets:
+        s = plateau.sommets[c]
+        if s.piece is not None and s.couleur == couleur:
+            if case in plateau.coup_possible(c):
+                n += 1
+    return n
+def cases_adjacentes_roi(plateau, case_roi):
+    voisins = set()
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_chiffre())
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_lettre())
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_a1())
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_h1())
+    return voisins
 def score_securite_roi(plateau, couleur):
 
     # trouver le roi
