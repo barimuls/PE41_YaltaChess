@@ -383,6 +383,26 @@ class Graph:
     def remplir_tutoriel_tour(self):
         self.sommets['a1'].piece='tour'
         self.sommets['a1'].couleur=0
+    
+    def remplir_tutoriel_fou(self):
+        self.sommets['c1'].piece='fou'
+        self.sommets['c1'].couleur=0
+
+    def remplir_tutoriel_dame(self):
+        self.sommets['d1'].piece='dame'
+        self.sommets['d1'].couleur=0
+
+    def remplir_tutoriel_roi(self):
+        self.sommets['e1'].piece='roi'
+        self.sommets['e1'].couleur=0
+    
+    def remplir_tutoriel_pion(self):
+        self.sommets['d2'].piece='pion'
+        self.sommets['d2'].couleur=0
+    
+    def remplir_tutoriel_cavalier(self):
+        self.sommets['b1'].piece='cavalier'
+        self.sommets['b1'].couleur=0
 
     def afficher_aretes(self):
         print("=== ARÊTES DU GRAPHE ===\n")
