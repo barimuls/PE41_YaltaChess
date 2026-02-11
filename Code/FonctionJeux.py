@@ -174,7 +174,7 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le
     piece = plateau.sommets[arrivee].piece;
     piece_mangee = plateau.pile_pieces_mangees.pop(); # renvoie [piece, couleur]
     if piece_mangee is not None:
-        print("on est passé ligne 177, normalement il faut rendre la piece qui a été mangée" + str(piece_mangee), "à la case " + arrivee)
+        #print(" ligne 177, normalement il faut rendre la piece " + str(piece_mangee) + " arrive " + arrivee + " depart " + depart)
         plateau.sommets[arrivee].piece = piece_mangee[0];
         plateau.sommets[arrivee].couleur = piece_mangee[1];
     else:
@@ -510,28 +510,7 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
     return None
 
 #fonctions_pour_IA
-def est_attaquee_par(plateau, case, couleur):
-    for c in plateau.sommets:
-        s = plateau.sommets[c]
-        if s.piece is not None and s.couleur == couleur:
-            if case in plateau.coup_possible(c):
-                return True
-    return False
-def nombre_attaquants(plateau, case, couleur):
-    n = 0
-    for c in plateau.sommets:
-        s = plateau.sommets[c]
-        if s.piece is not None and s.couleur == couleur:
-            if case in plateau.coup_possible(c):
-                n += 1
-    return n
-def cases_adjacentes_roi(plateau, case_roi):
-    voisins = set()
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_chiffre())
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_lettre())
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_a1())
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_h1())
-    return voisins
+
 #----------------------Test----------------------
 if __name__ == "__main__":
     plateau = creer_plateau()
