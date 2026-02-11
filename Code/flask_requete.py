@@ -15,6 +15,16 @@ def nouvelle_partie(mode):
     if len(mode) >= 9 and mode[:8] == 'tutoriel':
         if mode[9:] == 'tour':
             plateau.remplir_tutoriel_tour()
+        elif mode[9:] == 'fou':
+            plateau.remplir_tutoriel_fou()
+        elif mode[9:] == 'cavalier':
+            plateau.remplir_tutoriel_cavalier()
+        elif mode[9:] == 'dame':
+            plateau.remplir_tutoriel_dame()
+        elif mode[9:] == 'pion':
+            plateau.remplir_tutoriel_pion()
+        elif mode[9:] == 'roi':
+            plateau.remplir_tutoriel_roi()
     else:
         plateau.remplir_pieces_initiales()
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
@@ -26,8 +36,11 @@ def nouvelle_partie(mode):
         "plateau_pieces": plateau_pieces,
         "plateau_couleurs": plateau_couleurs,
         "mode": mode, # 3joueurs ou ia_heuristique ou ia_aleatoire 
-        "depart": None # Case de départ sélectionnée
+        "depart": None, # Case de départ sélectionnée
+        "arrivee": None # Case d'arrivée sélectionnée
         }
+
+
 
 games = {} # contiendra l'ensemble de la partie { l'identifiant de la partie: {"compteur":#, ...} }
 
@@ -65,6 +78,16 @@ def new_game():
     games[game_id] = nouvelle_partie(mode)
     return jsonify({"game_id": game_id})
 
+@app.route('/change_tutoriel/<game_id>', methods=['POST'])
+def change_tutoriel(game_id):
+    if game_id not in games:
+        return jsonify({"error": "Partie inconnue"}), 404
+    data = request.get_json()
+    mode = data.get("mode", "reset")
+    games[game_id] = nouvelle_partie(mode)
+    envoyer_mise_a_jour(game_id)
+    return jsonify({"reponse": "Tutoriel affiché"})
+
 @app.route('/receive/<game_id>', methods=['POST'])
 def receive(game_id):
     if game_id not in games:
@@ -82,11 +105,13 @@ def receive(game_id):
     if game["compteur_clic"] == 0 and len(value)<=3:
         game["depart"] = value.lower()
         game["compteur_clic"] += 1
+        game["arrivee"] = None
         return jsonify({"reponse": f"Case de départ sélectionnée: {value}"})
     elif game["compteur_clic"] == 1 and len(value)<=3:
         arrivee = value.lower()
         depart = game["depart"]
         game["depart"] = None
+        game["arrivee"] = arrivee
 
     # PROMOTION
     if value in ['promotion_tour', 'promotion_fou', 'promotion_cavalier', 'promotion_dame']:
@@ -100,8 +125,8 @@ def receive(game_id):
         if not game["mode"] == "3joueurs":
             couleur = 0 
         else:
-            couleur = (game["compteur_tour"]) % 3
-        promotion(game["plateau"], arrivee, couleur, piece_type)
+            couleur = (game["compteur_tour"]+2) % 3
+        promotion(game["plateau"], game["arrivee"], couleur, piece_type)
         game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
         envoyer_mise_a_jour(game_id)
         return jsonify({"reponse": f"Pion promu en {piece_type}"})

@@ -3,6 +3,13 @@ from Plateau import *
 from FonctionJeux import *
 from flask_socketio import SocketIO, emit
 
+'''
+Ce code est un peu différent de ./flask_requete mais il y a quelques trucs différents
+et quelques trucs pareils, on le laisse pour ne pas perdre d'informations mais
+il n'est pas utilisé en production et il faudrait peut-être l'enlever à terme.
+'''
+
+
 # Création de l'application Flask
 app = Flask(__name__)
 

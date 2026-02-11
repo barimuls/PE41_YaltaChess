@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Page du tutoriel</title>
+    <title>Tutoriel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/tutoriel.css') }}">
 </head>
 
-<body>
+<body data-tutoriel="tutoriel_tour">
     <!-- Bandeau avec logo et menu -->
     <nav>
         <div class="logo">
@@ -25,7 +25,8 @@
         
     </nav>
     <div class="nav-droite">
-        <span class="mon-bouton" onclick="goToTutoriel('tutoriel_fou')">></span>
+        <span class="mon-bouton" id="tutoriel_avant" onclick="goToTutoriel(-1)"><</span>
+        <span class="mon-bouton" id="tutoriel_apres" onclick="goToTutoriel(1)">></span>
         <p id="resultat"></p>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="sendValue('reset')">Reset</button>
