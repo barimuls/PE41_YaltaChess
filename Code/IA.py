@@ -4,7 +4,6 @@ from Plateau import *;
 from FonctionJeux import *;
 import random;
 
-# je suis passé par ici
 
 def coup_possible(plateau, couleur):
     liste_coups = [];
@@ -128,7 +127,7 @@ def score_securite_roi(plateau, couleur):
 
     # trouver le roi
     
-        case_roi=case_roi(plateau,couleur)
+        case_roi=fonct_case_roi(plateau,couleur)
         if case_roi is None:
             return -Mate_score  #roi_capturé
         danger_total = 0
@@ -158,15 +157,15 @@ def score_securite_roi(plateau, couleur):
         danger_total += danger
 
         return -danger_total
-def case_roi(plateau,couleur):
+def fonct_case_roi(plateau,couleur):
     case_roi = None
     for c, s in plateau.sommets.items():
         if s is not None and s.piece == 'roi' and s.couleur == couleur:
             case_roi = c
             break
     return case_roi
-def score_total(plateau,couleur) :
-        roi_pos = case_roi(plateau, couleur)
+def score_v1_pierre(plateau,couleur) :
+        roi_pos = fonct_case_roi(plateau, couleur)
         if roi_pos is None:
             return -Mate_score  # notre roi est capturé
 
@@ -208,7 +207,7 @@ def heuristique_v1(plateau, couleur):
     # ---------------- Calcul des scores pour chaque joueur ----------------
     scores = []
     for c in [0,1,2]:
-        s = score_total(plateau,c) # sécurité du roi
+        s = score_v1_pierre(plateau,c) # sécurité du roi
         scores.append(s)
 
     # ---------------- Coefficients alpha et beta ----------------
@@ -277,7 +276,7 @@ def evaluation_rec_heuristique(plateau, couleur, profondeur):
     return meilleur_coup;
 def evaluation_rec_heuristique_v1(plateau, couleur, profondeur):
     if profondeur == 0:
-        return [score_total(plateau,0),score_total(plateau,1),score_total(plateau,2),None,None];
+        return [score_v1_pierre(plateau,0),score_v1_pierre(plateau,1),score_v1_pierre(plateau,2),None,None];
     
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
@@ -305,7 +304,7 @@ def evaluation_rec_heuristique_v1(plateau, couleur, profondeur):
     return meilleur_coup;
 def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
     if profondeur == 0:
-        return [score(plateau,0),score(plateau,1),score(plateau,2),None,None];
+        return [score_v1_pierre(plateau,0),score_v1_pierre(plateau,1),score_v1_pierre(plateau,2),None,None];
     
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
@@ -322,7 +321,7 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
 
             #Appel récursif pour la couleur suivante
             evaluation = evaluation_rec_heuristique_ou_on_dejoue(plateau, (couleur+1)%3, profondeur-1)
-            print(evaluation)
+            #print(evaluation)
             heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
             if heuristic > meilleur_score:
                 meilleur_score = heuristic
@@ -334,7 +333,7 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
 
 def evaluation_rec_heuristique_ou_on_dejoue_v1(plateau, couleur, profondeur):
     if profondeur == 0:
-        return [score_total(plateau,0),score_total(plateau,1),score_total(plateau,2),None,None];
+        return [score_v1_pierre(plateau,0),score_v1_pierre(plateau,1),score_v1_pierre(plateau,2),None,None];
     
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
@@ -361,10 +360,10 @@ def evaluation_rec_heuristique_ou_on_dejoue_v1(plateau, couleur, profondeur):
             
     return meilleur_coup;
 def choisir_coup_minimax(plateau , couleur):
-    meilleur_coup = evaluation_rec_heuristique(plateau, couleur, 3)
+    meilleur_coup = evaluation_rec_heuristique(plateau, couleur, 2)
     return (meilleur_coup[3], meilleur_coup[4]);
 
 def choisir_coup_minimax_ou_on_dejoue(plateau , couleur):
     plateau_copie = copy.deepcopy(plateau)
-    meilleur_coup = evaluation_rec_heuristique_ou_on_dejoue(plateau_copie, couleur, 3)
+    meilleur_coup = evaluation_rec_heuristique_ou_on_dejoue(plateau_copie, couleur, 1)
     return (meilleur_coup[3], meilleur_coup[4]);
