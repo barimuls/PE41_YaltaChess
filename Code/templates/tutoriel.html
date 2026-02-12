@@ -24,14 +24,22 @@
         </div>
         
     </nav>
+
     <div class="nav-droite">
-        <span class="mon-bouton" id="tutoriel_avant" onclick="goToTutoriel(-1)"><</span>
-        <span class="mon-bouton" id="tutoriel_apres" onclick="goToTutoriel(1)">></span>
-        <p id="resultat"></p>
         <div class="bloc-boutons">
-            <button class="mon-bouton" onclick="sendValue('reset')">Reset</button>
+            <span class="mon-bouton" id="tutoriel_avant" onclick="goToTutoriel(-1)">◀</span>
+            <span class="mon-bouton" id="tutoriel_apres" onclick="goToTutoriel(1)">▶</span>
         </div>
-    
+        <p class="tutorielid" id="tutoriel_tour">Tutoriel tour</p>
+        <p class="tutorielid" id="tutoriel_fou">Tutoriel fou</p>
+        <p class="tutorielid" id="tutoriel_dame">Tutoriel dame</p>
+        <p class="tutorielid" id="tutoriel_roi">Tutoriel roi</p>
+        <p class="tutorielid" id="tutoriel_pion">Tutoriel pion</p>
+        <p class="tutorielid" id="tutoriel_cavalier">Tutoriel cavalier</p>
+        <div class="bloc-boutons">
+            <button class="mon-bouton" id="reset" onclick="sendValue('reset')">↻</button>
+        </div>
+
     </div>
 
     <!-- Contenu principal -->

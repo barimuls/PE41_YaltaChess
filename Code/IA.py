@@ -101,28 +101,6 @@ def danger_attaquants(n):
     if n == 2:
         return 4
     return 5
-def est_attaquee_par(plateau, case, couleur):
-    for c in plateau.sommets:
-        s = plateau.sommets[c]
-        if s.piece is not None and s.couleur == couleur:
-            if case in plateau.coup_possible(c):
-                return True
-    return False
-def nombre_attaquants(plateau, case, couleur):
-    n = 0
-    for c in plateau.sommets:
-        s = plateau.sommets[c]
-        if s.piece is not None and s.couleur == couleur:
-            if case in plateau.coup_possible(c):
-                n += 1
-    return n
-def cases_adjacentes_roi(plateau, case_roi):
-    voisins = set()
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_chiffre())
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_lettre())
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_a1())
-    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_h1())
-    return voisins
 def score_securite_roi(plateau, couleur):
 
     # trouver le roi
@@ -204,10 +182,40 @@ def heuristique_v1(plateau, couleur):
     - Matériel, mobilité, pression, sécurité du roi
     - Comparaison relative avec les adversaires (coefficients alpha/beta)
     """
+
+    Mate_score = 10**9  # valeur pour mat
+
+    # ---------------- Vérification fin de partie et menaces ----------------
+    roi_pos = fonct_case_roi(plateau, couleur)
+    if roi_pos is None:
+        return -Mate_score  # notre roi est capturé
+
+    # Vérifier si un roi ennemi est capturable par nos pièces
+    for case, s in plateau.sommets.items():
+        if s is not None and s.couleur == couleur:
+            for coup in plateau.coup_possible(case):
+                cible = plateau.sommets[coup]
+                if cible is not None and cible.piece == 'roi':
+                    return Mate_score  # mat possible sur un roi ennemi
+
+    # Vérifier si notre roi est menacé
+    danger = 0
+    for case, s in plateau.sommets.items():
+        if s is not None and s.couleur != couleur:
+            if roi_pos in plateau.coup_possible(case):
+                danger += 1
+    if danger > 0:
+        return -Mate_score // 2  # roi menacé
+
     # ---------------- Calcul des scores pour chaque joueur ----------------
     scores = []
     for c in [0,1,2]:
         s = score_v1_pierre(plateau,c) # sécurité du roi
+        s = 0
+        s += score_v1(plateau, c)           # matériel
+        s += score_mobilités(plateau, c)    # mobilité
+        s += score_pression(plateau, c)     # pression sur adversaires
+        s += score_securite_roi(plateau, c) # sécurité du roi
         scores.append(s)
 
     # ---------------- Coefficients alpha et beta ----------------
@@ -227,25 +235,26 @@ def choisir_coup_heuristique_v1(plateau , couleur):
     for case in plateau.sommets.items():
         if plateau.sommets[case[0]] != None and plateau.sommets[case[0]].couleur == couleur:
             if plateau.coup_possible(case[0]) != []:
-                liste_coups += [ [case[0],plateau.coup_possible(case[0])] ];#il y a peut être moyen d'utiliser la fonction coup-possible comme dans evaluation_rec_heuristique pour définir liste_coups
+                liste_coups += [ [case[0],plateau.coup_possible(case[0])] ];
     meilleur_score = -float('inf');
     meilleur_coup = None;
     for coup in liste_coups:
         depart = coup[0]
         for arrivee in coup[1]:
-            # Copie profonde du plateau
-            plateau_copie = copy.deepcopy(plateau)
+             #Copie profonde du plateau
+             plateau_copie = copy.deepcopy(plateau)
 
-            jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+             Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
-            # Calculer le score
-            h = heuristique_v1(plateau_copie, couleur)
+             #Calculer le score
+             h = heuristique_v1(plateau_copie, couleur)
             
-            if h > meilleur_score:
+             if h > meilleur_score:
                 meilleur_score = h
                 meilleur_coup = (depart, arrivee)
 
-    return meilleur_coup;  
+    return meilleur_coup;
+    
 def evaluation_rec_heuristique(plateau, couleur, profondeur):
     if profondeur == 0:
         return [score(plateau,0),score(plateau,1),score(plateau,2),None,None];
@@ -281,27 +290,6 @@ def evaluation_rec_heuristique_v1(plateau, couleur, profondeur):
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
 
-    meilleur_score = -float('inf');
-    meilleur_coup = None;
-
-    #Evaluer chaque coup
-    for coup in liste_coups:
-        depart = coup[0]
-        for arrivee in coup[1]:
-            # Copie profonde du plateau
-            plateau_copie = copy.deepcopy(plateau)
-
-            jouer_le_coup(plateau_copie, couleur, depart, arrivee)
-
-            #Appel récursif pour la couleur suivante
-            evaluation = evaluation_rec_heuristique_v1(plateau_copie, (couleur+1)%3, profondeur-1)
-            
-            heuristic= evaluation[couleur]-0.7*max(evaluation[(couleur+1)%3],evaluation[(couleur+2)%3])-0.3*min(evaluation[(couleur+1)%3],evaluation[(couleur+2)%3])
-            if heuristic > meilleur_score:
-                meilleur_score = heuristic
-                meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
-            
-    return meilleur_coup;
 def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
     if profondeur == 0:
         return [score_v1_pierre(plateau,0),score_v1_pierre(plateau,1),score_v1_pierre(plateau,2),None,None];
@@ -323,6 +311,8 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
             evaluation = evaluation_rec_heuristique_ou_on_dejoue(plateau, (couleur+1)%3, profondeur-1)
             #print(evaluation)
             heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
+            
+            heuristic = evaluation[couleur%3] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
             if heuristic > meilleur_score:
                 meilleur_score = heuristic
                 meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
@@ -338,27 +328,6 @@ def evaluation_rec_heuristique_ou_on_dejoue_v1(plateau, couleur, profondeur):
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
 
-    meilleur_score = float('inf');
-    meilleur_coup = None;
-
-    #Evaluer chaque coup
-    for coup in liste_coups:
-        depart = coup[0]
-        for arrivee in coup[1]:
-
-            jouer_le_coup(plateau, couleur, depart, arrivee)
-
-            #Appel récursif pour la couleur suivante
-            evaluation = evaluation_rec_heuristique_ou_on_dejoue_v1(plateau, (couleur+1)%3, profondeur-1)
-            
-            heuristic = evaluation[couleur] -0.7*max(evaluation[(couleur+1)%3],evaluation[(couleur+2)%3])-0.3*min(evaluation[(couleur+1)%3],evaluation[(couleur+2)%3])
-            if heuristic > meilleur_score:
-                meilleur_score = heuristic
-                meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
-
-            dejouer_le_coup(plateau, couleur, depart, arrivee)
-            
-    return meilleur_coup;
 def choisir_coup_minimax(plateau , couleur):
     meilleur_coup = evaluation_rec_heuristique(plateau, couleur, 2)
     return (meilleur_coup[3], meilleur_coup[4]);

@@ -106,7 +106,7 @@ def receive(game_id):
         game["depart"] = value.lower()
         game["compteur_clic"] += 1
         game["arrivee"] = None
-        return jsonify({"reponse": f"Case de départ sélectionnée: {value}"})
+        return jsonify({"reponse": f"Case de départ sélectionnée: {value}", "coup_possible": [game["plateau"].coup_possible(game["depart"])[i].upper() for i in range(len(game["plateau"].coup_possible(game["depart"])))]})
     elif game["compteur_clic"] == 1 and len(value)<=3:
         arrivee = value.lower()
         depart = game["depart"]
