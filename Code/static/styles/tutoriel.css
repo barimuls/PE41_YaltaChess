@@ -82,27 +82,23 @@ main {
 }
 
 .mon-bouton {
-    background-color: #363636;
+    background-color: green;
     color: #eae9e9;
-    font-size: 30px;
-    padding: 12px 24px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     position: relative;
     text-align: center;
-    box-shadow: 0 4px #2a2a2a;
+    box-shadow: 0 4px rgb(0, 87, 0);
     transition: transform 0.3s ease;
-    width: 150px;
-    height: 70px;
     display: block ;
-    margin: 30px auto 0 auto;
+    margin: 0 auto 0 auto;
 
 }
 
 .bouton-fermer {
     background-color: #363636;
-    color: #eae9e9;
+    color: white;
     font-size: 30px;
     border-radius: 8px;
     padding: 5px 14px;
@@ -172,11 +168,6 @@ main {
     box-shadow: 0 4px #ab0101;
 }
 
-.mon-bouton:hover {
-    background-color: green;
-    color: white;
-    box-shadow: 0 4px rgb(0, 87, 0);
-}
 
 .bloc-boutons {
     display: flex;
@@ -194,4 +185,40 @@ main {
 .plateau {
     position: absolute;
     z-index: 1;
+}
+
+#tutoriel_avant {
+    position: absolute;
+    left: 10%;
+    top: 5%;
+    z-index: 2;
+    width: 35px;
+    height: 35px;
+    padding: 8px 8px;
+    font-size: 25px;
+    margin-top: 0px;
+}
+
+#tutoriel_apres {
+    position: absolute;
+    right: 10%;
+    top: 5%;
+    z-index: 2;
+    width: 35px;
+    height: 35px;
+    padding: 8px 8px;
+    font-size: 25px;
+    margin-top: 0px;
+}
+
+#reset {
+    position: absolute;
+    left: 42%;
+    top: 5%;
+    z-index: 2;
+    margin-top: 0px;
+    padding: 10px 11.5px;
+    font-size: 30px;
+    height: 53px;
+    width: 53px;
 }

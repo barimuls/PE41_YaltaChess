@@ -21,6 +21,25 @@ if (tutorielId == "tutoriel_tour") {
 document.getElementById("tutoriel_avant").style.display = "none";
 }
 
+function highlightCase(id, color = "#00aaff88") {
+    const poly = document.getElementById(id);
+    if (!poly) return;
+
+    // Créer un nouveau polygon
+    const overlay = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+    overlay.setAttribute("points", poly.getAttribute("points"));
+    overlay.setAttribute("fill", color);
+    overlay.setAttribute("id", id + "_overlay");
+    overlay.style.pointerEvents = "none"; // pour ne pas bloquer les clics
+
+    // Ajouter juste après la case originale
+    poly.parentNode.insertBefore(overlay, poly.nextSibling);
+}
+
+function clearAllHighlights() {
+    document.querySelectorAll("polygon[id$='_overlay']").forEach(el => el.remove());
+}
+
 function goToTutoriel(mode) {
     if (mode == 1) {
         mode = liste_tutoriels[(dico_tutoriel[tutorielId] + 1) % liste_tutoriels.length];
@@ -92,6 +111,7 @@ function closeModal(piece) {
 }
 // --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
 function sendValue(maValeur) {
+    clearAllHighlights();
     if (!gameId) {
         console.error("ID de jeu non défini !");
         return;
@@ -115,6 +135,13 @@ function sendValue(maValeur) {
             }
             if (data.reponse === "Mouvement invalide") {
                 cmpt += -1;
+            }
+            if (data.coup_possible) {
+                const cases = data.coup_possible;
+                console.log("Coups possibles :", cases);
+                for (const caseId of data.coup_possible) {
+                    highlightCase(caseId);
+                }
             }
 
         })
