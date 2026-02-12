@@ -41,6 +41,8 @@ function clearAllHighlights() {
 }
 
 function goToTutoriel(mode) {
+    clearAllHighlights()
+    document.getElementById(tutorielId).style.display = "none";
     if (mode == 1) {
         mode = liste_tutoriels[(dico_tutoriel[tutorielId] + 1) % liste_tutoriels.length];
     }
@@ -48,6 +50,7 @@ function goToTutoriel(mode) {
         mode = liste_tutoriels[(dico_tutoriel[tutorielId] - 1 + liste_tutoriels.length) % liste_tutoriels.length];
     }
     document.body.dataset.tutoriel = mode;
+    document.getElementById(mode).style.display = "flex";
     tutorielId = document.body.dataset.tutoriel;
     console.log("Tutoriel ID :", tutorielId);
     if (tutorielId == "tutoriel_cavalier") {
@@ -123,9 +126,6 @@ function sendValue(maValeur) {
     })
         .then(res => res.json())
         .then(data => {
-            // Affiche la réponse du serveur (par exemple "Mouvement invalide")
-            const resultEl = document.getElementById("resultat");
-            if (resultEl) resultEl.textContent = data.reponse;
             console.log("Valeur envoyée :", maValeur);
             if (data.reponse.length >= 2 & data.reponse.length <= 3) {
                 cmpt += 1;

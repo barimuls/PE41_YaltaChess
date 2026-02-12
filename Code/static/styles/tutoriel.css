@@ -82,6 +82,10 @@ main {
 }
 
 .mon-bouton {
+    user-select: none;        /* Standard */
+    -webkit-user-select: none; /* Safari/Chrome */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* Internet Explorer/Edge Legacy */
     background-color: green;
     color: #eae9e9;
     border-radius: 8px;
@@ -221,4 +225,15 @@ main {
     font-size: 30px;
     height: 53px;
     width: 53px;
+}
+
+.tutorielid {
+    position: absolute;
+    margin: 50% 10% auto 10%;
+    z-index: 2;
+    display: none;
+}
+
+#tutoriel_tour {
+    display: flex;
 }
