@@ -229,7 +229,14 @@ def heuristique_v1(plateau, couleur):
 
     return h
 
-    
+def cases_adjacentes_roi(plateau, case_roi):
+    voisins = set()
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_chiffre())
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_tour_par_lettre())
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_a1())
+    voisins |= set(plateau.sommets[case_roi].voisin_arete_fou_h1())
+    return voisins
+
 def choisir_coup_heuristique_v1(plateau , couleur):
     liste_coups = [];
     for case in plateau.sommets.items():
@@ -244,7 +251,7 @@ def choisir_coup_heuristique_v1(plateau , couleur):
              #Copie profonde du plateau
              plateau_copie = copy.deepcopy(plateau)
 
-             Plateau.jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+             jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
              #Calculer le score
              h = heuristique_v1(plateau_copie, couleur)
@@ -336,3 +343,19 @@ def choisir_coup_minimax_ou_on_dejoue(plateau , couleur):
     plateau_copie = copy.deepcopy(plateau)
     meilleur_coup = evaluation_rec_heuristique_ou_on_dejoue(plateau_copie, couleur, 1)
     return (meilleur_coup[3], meilleur_coup[4]);
+
+def est_attaquee_par(plateau, case, couleur):
+    for c in plateau.sommets:
+        s = plateau.sommets[c]
+        if s.piece is not None and s.couleur == couleur:
+            if case in plateau.coup_possible(c):
+                return True
+    return False
+def nombre_attaquants(plateau, case, couleur):
+    n = 0
+    for c in plateau.sommets:
+        s = plateau.sommets[c]
+        if s.piece is not None and s.couleur == couleur:
+            if case in plateau.coup_possible(c):
+                n += 1
+    return n
