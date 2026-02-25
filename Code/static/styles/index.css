@@ -1,62 +1,57 @@
+html, body {
+    height: 100%;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     display: flex;
-    background-color: #eae9e9;
-    color: #363636;
+    background-color: #444;
+    color: #eae9e9;
 }
 
-/* Menu vertical */
-nav {
-    width: 200px;
-    background-color: #333;
-    color: white;
-    height: 100vh;
-    /* pleine hauteur */
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    /* reste en place même si on scrolle */
+h1 {
+    margin-left: 150px
 }
 
-nav .logo {
-    text-align: center;
-    padding: 20px 0;
-    border-bottom: 1px solid #444;
+.logo {
+    position: absolute;
+    left: 30px;
+    top: 30px;
 }
 
-nav .ecl {
-    text-align: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #444;
+.ecl {
+    position: absolute;
+    bottom: 10px;
+    left: 30px;    
 }
 
 
-nav ul {
+ul {
     list-style: none;
     padding: 0;
     margin: 0;
     flex-grow: 1;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
 }
 
-nav ul li {
-    margin: 0;
-}
-
-nav ul li a {
-    display: block;
+ul a {
     padding: 15px 20px;
     color: white;
     text-decoration: none;
 }
 
-nav ul li a:hover {
+ul a:hover {
     background-color: #555;
 }
 
+
 /* Contenu principal */
 main {
-    margin-left: 200px;
     /* espace pour le menu */
     padding: 20px;
     flex-grow: 1;
@@ -172,3 +167,4 @@ main {
 .bloc-boutons button {
     margin-bottom: 20px;
 }
+

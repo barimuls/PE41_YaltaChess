@@ -8,44 +8,26 @@
 </head>
 
 <body>
-    <!-- Bandeau avec logo et menu -->
-    <nav>
-        <div class="logo">
-            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
-        </div>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Accueil</a></li>
-            <li><a href="{{ url_for('test') }}">À propos</a></li>
-            <li><a href="{{ url_for('test2') }}">Services</a></li>
-            <li><a href="{{ url_for('contact') }}">Contact</a></li>
-        </ul>
-        <div class="ecl">
-            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
-        </div>
-    </nav>
+<!-- Bandeau avec logo et menu -->
 
     <!-- Contenu principal -->
     <main>
         <h1>Pour nous contacter</h1>
         <p>Vous pouvez nous contacter par email à l'adresse suivante pour tous problèmes avec le site ou le jeu:
             axelle.baviere@etu.ec-lyon.fr</p>
-        <div class="bas-du-main">
-            <div class="image-hover">
-                <a href="https://www.youtube.com/" target="_blank">
-                    <img src="{{ url_for('static', filename='images/youtube.png') }}" alt="Lien vers YouTube"
-                        class="image-hover">
-                </a>
-            </div>
-            <div class="image-hv">
-                <a href="https://github.com/barimuls/PE41_YaltaChess/" target="_blank">
-                    <img src="{{ url_for('static', filename='images/github.png') }}" alt="Image teintée gris foncé">
-                </a>
-            </div>
-            <div class="image-hover">
-                <img src="{{ url_for('static', filename='images/discord.png') }}" alt="Image teintée gris foncé">
-            </div>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
+            </a>
         </div>
-
+        <ul>
+            <a href="{{ url_for('test') }}">À propos</a>
+            <a href="{{ url_for('test2') }}">Services</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </ul>
+        <div class="ecl">
+            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
+        </div>
 
     </main>
 </body>

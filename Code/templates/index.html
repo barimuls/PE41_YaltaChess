@@ -8,36 +8,29 @@
 </head>
 
 <body>
-    <!-- Bandeau avec logo et menu -->
-    <nav>
-        <div class="logo">
-            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
-        </div>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Accueil</a></li>
-            <li><a href="{{ url_for('test') }}">À propos</a></li>
-            <li><a href="{{ url_for('test2') }}">Services</a></li>
-            <li><a href="{{ url_for('contact') }}">Contact</a></li>
-        </ul>
-        <div class="ecl">
-            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
-        </div>
 
-    </nav>
 
     <!-- Contenu principal -->
     <main>
         <h1>Bienvenue sur PE41 Echecs Yalta !</h1>
-        <p>Ceci est la page d'accueil, appuyer sur le bouton pour commencer une partie.</p>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="openModal(2)" style="margin-top: 30px; width: 250px;">Jouer en local</button>
             <button class="mon-bouton" onclick="ModalErreur()" style="margin-top: 30px; width: 250px;">Jouer en ligne</button>
             <button class="mon-bouton" onclick="goToTutoriel('tutoriel_tour')" style="margin-top: 30px; width: 250px;">Tutoriel</button>
         </div>
-
-        <p id="message"></p>
-
-
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
+            </a>
+        </div>
+        <div class="ecl">
+            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
+        </div>
+        <ul>
+            <a href="{{ url_for('test') }}">À propos</a>
+            <a href="{{ url_for('test2') }}">Services</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </ul>
         <div class="overlay" id="overlay2">
             <div class="modal" style="max-width: 600px; max-height: 400px;">
                 <span class="bouton-fermer" onclick="closeModal(2)">×</span>
