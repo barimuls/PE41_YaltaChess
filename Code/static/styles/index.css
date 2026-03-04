@@ -143,6 +143,10 @@ main {
     align-items: center;
 }
 
+.overlay h2, p {
+    color : #363636;
+}
+
 .bouton-fermer:hover {
     background-color: red;
     color: white;

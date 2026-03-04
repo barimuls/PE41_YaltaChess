@@ -237,3 +237,9 @@ main {
 #tutoriel_tour {
     display: flex;
 }
+
+svg text {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}

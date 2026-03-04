@@ -229,6 +229,7 @@ function genererToutesLesPieces(data) {
         img.style.zIndex = "2";
         img.style.pointerEvents = "none";
         img.style.transform = "translate(-140%, -130%)";
+        img.style.userSelect = "none";
 
         main.appendChild(img);
         centerHTMLImageOnPolygon(caseId, imgId);

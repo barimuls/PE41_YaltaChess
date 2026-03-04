@@ -197,3 +197,10 @@ main {
     z-index: 1;
 }
 
+svg text {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+

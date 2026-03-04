@@ -59,10 +59,3 @@ function goToTutoriel(mode) {
     .catch(err => console.error("Erreur lors de la création de la partie :", err));
 }
 
-function openNav() {
-    document.getElementById("nav_left").style.display = "flex";
-}
-
-function closeNav() {
-    document.getElementById("nav_left").style.display = "none";
-}
