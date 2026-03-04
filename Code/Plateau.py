@@ -723,7 +723,7 @@ class Graph:
         coups2=[];
         for coup in liste_coups:
             chiffre_coup=int(coup[1:])
-            if not(chiffre_coup <= chiffre):
+            if not(chiffre_coup <= chiffre) and not(chiffre_coup == 9 and chiffre == 5):
                 coups2.append(coup)
         liste_coups=coups2
                 
