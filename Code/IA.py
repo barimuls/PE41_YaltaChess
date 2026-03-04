@@ -1,5 +1,5 @@
 import copy
-
+from math import *
 from Plateau import *;
 from FonctionJeux import *;
 import random;
@@ -109,7 +109,7 @@ def score_pression_optimise(plateau, couleur):
         if s_cible is not None and s_cible.couleur != couleur:
             pression += 0.5
     return pression   
-Mate_score=10**9
+Mat_score=inf
 def danger_attaquants(n):
     if n <= 0:
         return 0
@@ -146,7 +146,7 @@ def score_securite_roi(plateau, couleur):
     
         case_roi=fonct_case_roi(plateau,couleur)
         if case_roi is None:
-            return -Mate_score  #roi_capturé
+            return -Mat_score  #roi_capturé
         danger_total = 0
         voisins = cases_adjacentes_roi(plateau, case_roi)
 
@@ -184,7 +184,7 @@ def fonct_case_roi(plateau,couleur):
 def score_total(plateau,couleur) :
         roi_pos = fonct_case_roi(plateau, couleur)
         if roi_pos is None:
-            return -Mate_score  # notre roi est capturé
+            return -Mat_score  # notre roi est capturé
 
     # Vérifier si un roi ennemi est capturable par nos pièces
         for case, s in plateau.sommets.items():
@@ -192,7 +192,7 @@ def score_total(plateau,couleur) :
                 for coup in plateau.coup_possible(case):
                     cible = plateau.sommets[coup]
                     if cible is not None and cible.piece == 'roi':
-                        return Mate_score  # mat possible sur un roi ennemi
+                        return Mat_score  # mat possible sur un roi ennemi
 
     # Vérifier si notre roi est menacé
         danger = 0
@@ -201,7 +201,7 @@ def score_total(plateau,couleur) :
                 if roi_pos in plateau.coup_possible(case):
                   danger += 1
         if danger > 0:
-            return - 4
+            return - Mat_score
         s = 0
         s += score_v1(plateau, couleur)           # matériel
         s += score_mobilités(plateau, couleur)    # mobilité
@@ -212,7 +212,7 @@ def score_total(plateau,couleur) :
 def score_securite_roi_fast(plateau, couleur):
     pos_roi = fonct_case_roi(plateau, couleur)
     if pos_roi is None:
-        return -Mate_score
+        return -Mat_score
 
     danger = 0
     # On identifie les deux adversaires
