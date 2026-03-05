@@ -38,6 +38,43 @@ def coup_est_valide(plateau, depart, arrivee,joueur):
             return False
     return True
 
+def est_en_echec(plateau, joueur):
+    #vérifier si le roi du joueur est en échec
+    for case in plateau.sommets.values():
+        if case.piece == 'roi' and case.couleur == joueur:
+            position_roi = case.position
+            break
+    for case in plateau.sommets.values():
+        if case.piece is not None and case.couleur != joueur:
+            piece = case.piece
+            if piece == 'tour':
+                coups_possibles = plateau.coup_possible_tour(case.position)
+                if position_roi in coups_possibles:
+                    return True
+            elif piece == 'fou':
+                coups_possibles = plateau.coup_possible_fou(case.position)
+                if position_roi in coups_possibles:
+                    return True
+            elif piece == 'dame':
+                coups_possibles = plateau.coup_possible_dame(case.position)
+                if position_roi in coups_possibles:
+                    return True
+            elif piece == 'roi':
+                coups_possibles = plateau.coup_possible_roi(case.position)
+                if position_roi in coups_possibles:
+                    return True
+            elif piece == 'cavalier':
+                coups_possibles = plateau.coup_possible_cavalier(case.position)
+                if position_roi in coups_possibles:
+                    return True
+            elif piece == 'pion':
+                coups_possibles = plateau.coup_possible_pion(case.position)
+                if position_roi in coups_possibles:
+                    return True
+    return False
+
+
+
 def verifier_victoire(plateau, joueur):
     #verifier que un roi adverse est capturé
     nbr_roi = 0
