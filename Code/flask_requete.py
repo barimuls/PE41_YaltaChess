@@ -181,11 +181,22 @@ def register():
     password = data.get('password')
     if not username or not password:
         return jsonify({"reponse": "Champs manquants"}), 400
-    result = id.register(username, password)
-    if not result[0]:
-        return jsonify({result[1]}), 409
-    player_id = result[1]
+    player_id = id.register(username, password)
+    if not player_id:
+        return jsonify({"reponse": "Identifiant déjà utilisé"}), 409
     return jsonify({"reponse": "Utilisateur enregistré"}), 200
+
+@app.route('/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return jsonify({"reponse": "Champs manquants"}), 400
+    player_id = id.login(username, password)
+    if not player_id:
+        return jsonify({"reponse": "Identifiant ou mot de passe incorrect"}), 401
+    return jsonify({"reponse": "Connexion réussie"}), 200
 
 @socketio.on('connect')
 def handle_connect():
