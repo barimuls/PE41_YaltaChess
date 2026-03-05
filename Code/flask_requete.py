@@ -9,6 +9,7 @@ import identification as id
 app = Flask(__name__)
 socketio = SocketIO(app)
 
+
 def nouvelle_partie(mode):
     plateau = creer_plateau()
     plateau.remplir_arete()
@@ -172,6 +173,19 @@ def receive_reset(game_id):
     games[game_id] = nouvelle_partie(game["mode"])
     envoyer_mise_a_jour(game_id)
     return jsonify({"reponse": "Partie réinitialisée"})
+
+@app.route('/auth/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return jsonify({"reponse": "Champs manquants"}), 400
+    result = id.register(username, password)
+    if not result[0]:
+        return jsonify({result[1]}), 409
+    player_id = result[1]
+    return jsonify({"reponse": "Utilisateur enregistré"}), 200
 
 @socketio.on('connect')
 def handle_connect():
