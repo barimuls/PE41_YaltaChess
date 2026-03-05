@@ -154,11 +154,11 @@ socket.on('update', data => {
         }
     }
     console.log("Compteur de tours :", cmpt);
-    if (cmpt % 6 === 0 || cmpt % 6 === 1) {
+    if (data.joueur === 0) {
         document.getElementById("t_blanc").setAttribute("fill", "#769656");
         document.getElementById("t_rouge").setAttribute("fill", "#FFFFFF");
         document.getElementById("t_noir").setAttribute("fill", "#FFFFFF");
-    } else if (cmpt % 6 === 2 || cmpt % 6 === 3) {
+    } else if (data.joueur === 1) {
         document.getElementById("t_blanc").setAttribute("fill", "#FFFFFF");
         document.getElementById("t_rouge").setAttribute("fill", "#769656");
         document.getElementById("t_noir").setAttribute("fill", "#FFFFFF");

@@ -175,7 +175,7 @@ def receive_reset(game_id):
     return jsonify({"reponse": "Partie réinitialisée"})
 
 @app.route('/auth/register', methods=['POST'])
-def register():
+def register_user():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -187,7 +187,7 @@ def register():
     return jsonify({"reponse": "Utilisateur enregistré"}), 200
 
 @app.route('/auth/login', methods=['POST'])
-def login():
+def login_user():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -208,10 +208,15 @@ def join_game(data):
     envoyer_mise_a_jour(game_id)
 
 def envoyer_mise_a_jour(game_id):
+    if games[game_id]["mode"] == "3joueurs":
+        joueur = (games[game_id]["compteur_tour"])%3
+    else:
+        joueur = 0
     socketio.emit('update', {
         'game_id': game_id,
         'plateau_pieces': games[game_id]["plateau_pieces"],
-        'plateau_couleurs': games[game_id]["plateau_couleurs"]
+        'plateau_couleurs': games[game_id]["plateau_couleurs"],
+        'joueur' : joueur,
     })
 
 if __name__ == '__main__':
