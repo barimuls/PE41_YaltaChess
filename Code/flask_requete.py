@@ -3,7 +3,8 @@ from flask import Flask, request, jsonify, render_template
 from Plateau import *
 from flask_socketio import SocketIO, emit
 from FonctionJeux import *
-from FonctionJeuxIA import *;
+from FonctionJeuxIA import *
+import identification as id
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -69,6 +70,14 @@ def jeu(game_id):
 def tutoriel(game_id):
     return render_template("tutoriel.html", game_id=game_id)
 
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+@app.route('/register')
+def register():
+    return render_template("register.html")
+
 # création d'une nouvelle partie et choix du mode
 @app.route('/new_game', methods=['POST'])
 def new_game():
@@ -88,49 +97,31 @@ def change_tutoriel(game_id):
     envoyer_mise_a_jour(game_id)
     return jsonify({"reponse": "Tutoriel affiché"})
 
-@app.route('/receive/<game_id>', methods=['POST'])
-def receive(game_id):
+@app.route('/receive/depart/<game_id>', methods=['POST'])
+def receive_depart(game_id):
+    if game_id not in games:
+        return jsonify({"error": "Partie inconnue"}), 404
+    game = games[game_id]
+    data = request.get_json()
+    value = data.get('value')
+
+    game["depart"] = value.lower()
+    game["compteur_clic"] += 1
+    game["arrivee"] = None
+    return jsonify({"reponse": f"Case de départ sélectionnée: {value}", "coup_possible": [game["plateau"].coup_possible(game["depart"])[i].upper() for i in range(len(game["plateau"].coup_possible(game["depart"])))]})
+
+@app.route('/receive/arrivee/<game_id>', methods=['POST'])
+def receive_arrivee(game_id):
     if game_id not in games:
         return jsonify({"error": "Partie inconnue"}), 404
     game = games[game_id]
     data = request.get_json()
     value = data.get('value')
     
-    # RESET la partie dans le meme mode avec le meme identifiant
-    if value == 'reset':
-        games[game_id] = nouvelle_partie(game["mode"])
-        envoyer_mise_a_jour(game_id)
-        return jsonify({"reponse": "Partie réinitialisée"})
-
-    if game["compteur_clic"] == 0 and len(value)<=3:
-        game["depart"] = value.lower()
-        game["compteur_clic"] += 1
-        game["arrivee"] = None
-        return jsonify({"reponse": f"Case de départ sélectionnée: {value}", "coup_possible": [game["plateau"].coup_possible(game["depart"])[i].upper() for i in range(len(game["plateau"].coup_possible(game["depart"])))]})
-    elif game["compteur_clic"] == 1 and len(value)<=3:
-        arrivee = value.lower()
-        depart = game["depart"]
-        game["depart"] = None
-        game["arrivee"] = arrivee
-
-    # PROMOTION
-    if value in ['promotion_tour', 'promotion_fou', 'promotion_cavalier', 'promotion_dame']:
-        piece_map = {
-            'promotion_tour': 'tour',
-            'promotion_fou': 'fou',
-            'promotion_cavalier': 'cavalier',
-            'promotion_dame': 'dame'
-        }
-        piece_type = piece_map[value]
-        if not game["mode"] == "3joueurs":
-            couleur = 0 
-        else:
-            couleur = (game["compteur_tour"]+2) % 3
-        promotion(game["plateau"], game["arrivee"], couleur, piece_type)
-        game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
-        envoyer_mise_a_jour(game_id)
-        return jsonify({"reponse": f"Pion promu en {piece_type}"})
-    
+    arrivee = value.lower()
+    depart = game["depart"]
+    game["depart"] = None
+    game["arrivee"] = arrivee
 
     #  vérifie et fait le mouvement demandé s'il est légal
     if game["compteur_clic"] == 1 and depart and arrivee:
@@ -150,8 +141,37 @@ def receive(game_id):
         game["compteur_tour"] += 1
     game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
     envoyer_mise_a_jour(game_id)
-
     return jsonify({"reponse": value})
+
+@app.route('/receive/promotion/<game_id>', methods=['POST'])
+def receive_promotion(game_id):
+    if game_id not in games:
+        return jsonify({"error": "Partie inconnue"}), 404
+    game = games[game_id]
+    data = request.get_json()
+    value = data.get('value')
+    # PROMOTION
+    if not game["mode"] == "3joueurs":
+        couleur = 0 
+    else:
+        couleur = (game["compteur_tour"]+2) % 3
+    promotion(game["plateau"], game["arrivee"], couleur, value)
+    game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
+    envoyer_mise_a_jour(game_id)
+    return jsonify({"reponse": f"Pion promu en {value}"})
+
+@app.route('/receive/reset/<game_id>', methods=['POST'])
+def receive_reset(game_id):
+    if game_id not in games:
+        return jsonify({"error": "Partie inconnue"}), 404
+    game = games[game_id]
+    data = request.get_json()
+    value = data.get('value')
+
+    # RESET la partie dans le meme mode avec le meme identifiant
+    games[game_id] = nouvelle_partie(game["mode"])
+    envoyer_mise_a_jour(game_id)
+    return jsonify({"reponse": "Partie réinitialisée"})
 
 @socketio.on('connect')
 def handle_connect():

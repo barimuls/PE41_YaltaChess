@@ -115,38 +115,52 @@ function closeModal(piece) {
 // --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
 function sendValue(maValeur) {
     clearAllHighlights();
-    if (!gameId) {
-        console.error("ID de jeu non défini !");
-        return;
+
+    if (!gameId) return;
+
+    let endpoint = "";
+
+    // PROMOTION
+    if (maValeur.startsWith("promotion_")) {
+        const piece = maValeur.replace("promotion_", "");
+        endpoint = `/receive/promotion/${gameId}`;
+        maValeur = piece;
     }
-    fetch(`/receive/${gameId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+    // RESET
+    else if (maValeur === "reset") {
+        endpoint = `/receive/reset/${gameId}`;
+        cmpt = 0;  // reset immédiat
+    }
+
+    // CLIC 1 = départ
+    else if (maValeur.length <= 3 && cmpt % 2 === 0) {
+        endpoint = `/receive/depart/${gameId}`;
+        cmpt++;  // ← mise à jour AVANT le fetch
+    }
+
+    // CLIC 2 = arrivée
+    else if (maValeur.length <= 3 && cmpt % 2 === 1) {
+        endpoint = `/receive/arrivee/${gameId}`;
+        cmpt++;  // ← mise à jour AVANT le fetch
+    }
+
+    if (!endpoint) return;
+
+    fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ value: maValeur })
     })
-        .then(res => res.json())
-        .then(data => {
-            console.log("Valeur envoyée :", maValeur);
-            if (data.reponse.length >= 2 & data.reponse.length <= 3) {
-                cmpt += 1;
-            }
-            if (data.reponse === "Partie réinitialisée") {
-                cmpt = 0;
-            }
-            if (data.reponse === "Mouvement invalide") {
-                cmpt += -1;
-            }
-            if (data.coup_possible) {
-                const cases = data.coup_possible;
-                console.log("Coups possibles :", cases);
-                for (const caseId of data.coup_possible) {
-                    highlightCase(caseId);
-                }
-            }
+    .then(res => res.json())
+    .then(data => {
+        const resultEl = document.getElementById("resultat");
+        if (resultEl) resultEl.textContent = data.reponse;
 
-        })
-        .catch(error => console.error('Erreur lors de l’envoi :', error));
+        if (data.reponse === "Mouvement invalide") cmpt--;  // rollback
+    });
 }
+
 
 // --- 2️ Connexion au serveur Socket.IO ---
 const socket = io();

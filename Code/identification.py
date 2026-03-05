@@ -3,11 +3,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 import uuid
 import sqlite3
-import os
 
-cwd = os.getcwd()
-code_dir = os.path.join(cwd, "Code")
-os.chdir(code_dir)
 ph = PasswordHasher()
 
 def register(username,password):
