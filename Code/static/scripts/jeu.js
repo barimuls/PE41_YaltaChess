@@ -110,6 +110,31 @@ function sendValue(maValeur) {
             return;
         }
 
+        if (data.reponse.slice(0,8) === "Victoire") {
+            console.log("Victoire détectée, désactivation du plateau");
+            const pieces = data.plateau_pieces;
+            console.log("Pièces sur le plateau :", pieces);
+            for (const caseId in pieces) {
+                console.log(caseId);
+                document.getElementById(caseId).style.pointerEvents = "none";
+            }
+            const elems = document.getElementsByClassName("pointer-events-none");
+            for (let el of elems) {
+                el.style.pointerEvents = "none";
+            }
+        }
+
+        if (data.reponse === "Partie réinitialisée") {
+            const pieces = data.plateau_pieces;
+            for (const caseId in pieces) {
+                document.getElementById(caseId).style.pointerEvents = "auto";
+            }
+            const elems = document.getElementsByClassName("pointer-events-none");
+            for (let el of elems) {
+                el.style.pointerEvents = "auto";
+            }
+        }
+
         // Coups possibles (clic 1)
         if (data.coup_possible) {
             for (const caseId of data.coup_possible) {

@@ -39,7 +39,7 @@ def nouvelle_partie(mode):
         "plateau": plateau,
         "plateau_pieces": plateau_pieces,
         "plateau_couleurs": plateau_couleurs,
-        "mode": mode, # 3joueurs ou ia_heuristique ou ia_aleatoire 
+        "mode": mode, # 3joueurs ou ia_min_min_max ou ia_aleatoire 
         "depart": None, # Case de départ sélectionnée
         "arrivee": None # Case d'arrivée sélectionnée
         }
@@ -133,7 +133,7 @@ def receive_arrivee(game_id):
             ok = tour_de_jeu_web(game["plateau"], (game["compteur_tour"])%3, depart, arrivee)
         elif game["mode"] == "ia_aleatoire":
             ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
-        elif game["mode"]=="ia_heuristique":
+        elif game["mode"]=="ia_min_min_max":
             ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
         elif len(game["mode"]) >=8 and game["mode"][:8]=="tutoriel":
             ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
@@ -144,6 +144,8 @@ def receive_arrivee(game_id):
         game["compteur_tour"] += 1
     game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
     envoyer_mise_a_jour(game_id)
+    if verifier_victoire(game["plateau"], (game['compteur_tour']-1)%3 + 1):
+        return jsonify({"reponse": f"Victoire du joueur {(game['compteur_tour']-1)%3 + 1}", 'plateau_pieces': game["plateau_pieces"]})
     return jsonify({"reponse": value})
 
 @app.route('/receive/promotion/<game_id>', methods=['POST'])
@@ -174,7 +176,7 @@ def receive_reset(game_id):
     # RESET la partie dans le meme mode avec le meme identifiant
     games[game_id] = nouvelle_partie(game["mode"])
     envoyer_mise_a_jour(game_id)
-    return jsonify({"reponse": "Partie réinitialisée"})
+    return jsonify({"reponse": "Partie réinitialisée", 'plateau_pieces': game["plateau_pieces"]})
 
 @app.route('/auth/register', methods=['POST'])
 def register_user():
