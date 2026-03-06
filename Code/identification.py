@@ -14,9 +14,10 @@ def register(username,password):
     try:
         cursor.execute("""INSERT INTO user_table (user_uuid, user_id, user_password) VALUES (?, ?, ?)""", (player_id, username, password_hash))
         conn.commit()
-        return True, player_id
+        return player_id
     except sqlite3.IntegrityError:
-        return False, "Erreur : cet identifiant existe déjà"
+        print("Erreur : identifiant déjà utilisé")
+        return None
     finally:
         conn.close()
 

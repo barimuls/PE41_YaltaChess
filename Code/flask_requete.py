@@ -5,7 +5,9 @@ from flask_socketio import SocketIO, emit
 from FonctionJeux import *
 from FonctionJeuxIA import *
 import identification as id
+import os
 
+dir = os.getcwd()
 app = Flask(__name__)
 socketio = SocketIO(app)
 
@@ -176,24 +178,30 @@ def receive_reset(game_id):
 
 @app.route('/auth/register', methods=['POST'])
 def register_user():
+    os.chdir(os.path.join(dir, "Code"))
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
     if not username or not password:
+        os.chdir(dir)
         return jsonify({"reponse": "Champs manquants"}), 400
     player_id = id.register(username, password)
+    os.chdir(dir)
     if not player_id:
         return jsonify({"reponse": "Identifiant déjà utilisé"}), 409
     return jsonify({"reponse": "Utilisateur enregistré"}), 200
 
 @app.route('/auth/login', methods=['POST'])
 def login_user():
+    os.chdir(os.path.join(dir, "Code"))
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
     if not username or not password:
+        os.chdir(dir)
         return jsonify({"reponse": "Champs manquants"}), 400
     player_id = id.login(username, password)
+    os.chdir(dir)
     if not player_id:
         return jsonify({"reponse": "Identifiant ou mot de passe incorrect"}), 401
     return jsonify({"reponse": "Connexion réussie"}), 200

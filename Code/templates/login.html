@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+</head>
+
+<body>
+<!-- Bandeau avec logo et menu -->
+
+    <!-- Contenu principal -->
+    <main>
+        <div class="form-container">
+        <form method="post" action="{{ url_for('login') }}">
+            <label id="titre">PE41 Echecs Yalta</label>
+            <div class="input-container">
+                <input type="text" id="username" name="username" required placeholder=" ">
+                <label for="username">Nom d'utilisateur</label>
+            </div>
+            <div class="input-container">
+                <input type="password" id="password" name="password" required placeholder=" ">
+                <label for="password">Mot de passe</label>
+            </div>
+            <button class="mon-bouton" type="submit">Se connecter</button>
+        </form>
+        </div>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100">
+            </a>
+        </div>
+        <ul>
+            <a href="{{ url_for('index') }}">Accueil</a>
+            <a href="{{ url_for('test') }}">À propos</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+        </ul>
+        <div class="ecl">
+            <img src="{{ url_for('static', filename='images/2024_LOGO-CENTRALE-H_BLANC.png') }}" alt="ECL" width="160">
+        </div>
+
+    </main>
+    <script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
+</body>
+</html>

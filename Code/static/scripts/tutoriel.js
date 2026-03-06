@@ -130,19 +130,19 @@ function sendValue(maValeur) {
     // RESET
     else if (maValeur === "reset") {
         endpoint = `/receive/reset/${gameId}`;
-        cmpt = 0;  // reset immédiat
+        cmpt = 0;
     }
 
     // CLIC 1 = départ
     else if (maValeur.length <= 3 && cmpt % 2 === 0) {
         endpoint = `/receive/depart/${gameId}`;
-        cmpt++;  // ← mise à jour AVANT le fetch
+        cmpt++;  // on avance le compteur
     }
 
     // CLIC 2 = arrivée
     else if (maValeur.length <= 3 && cmpt % 2 === 1) {
         endpoint = `/receive/arrivee/${gameId}`;
-        cmpt++;  // ← mise à jour AVANT le fetch
+        cmpt++;  // on avance le compteur
     }
 
     if (!endpoint) return;
@@ -157,10 +157,21 @@ function sendValue(maValeur) {
         const resultEl = document.getElementById("resultat");
         if (resultEl) resultEl.textContent = data.reponse;
 
-        if (data.reponse === "Mouvement invalide") cmpt--;  // rollback
-    });
-}
+        // --- Correction : si mouvement impossible → reset du compteur ---
+        if (data.reponse === "Mouvement invalide") {
+            cmpt = 0;
+            return;
+        }
 
+        // Coups possibles (clic 1)
+        if (data.coup_possible) {
+            for (const caseId of data.coup_possible) {
+                highlightCase(caseId);
+            }
+        }
+    })
+    .catch(error => console.error("Erreur lors de l’envoi :", error));
+}
 
 // --- 2️ Connexion au serveur Socket.IO ---
 const socket = io();
