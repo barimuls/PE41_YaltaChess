@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const payload = {
             username: document.getElementById("username").value,
-            password: document.getElementById("password").value
+            password: document.getElementById("password").value,
+            confirm_password: document.getElementById("confirm_password").value
         };
 
         try {
@@ -34,4 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Erreur de connexion au serveur");
         }
     });
+});
+
+const input = document.getElementById("password");
+const btn = document.getElementById("toggle");
+
+btn.addEventListener("click", () => {
+if (input.type === "password") {
+    input.type = "text";
+} else {
+    input.type = "password";
+}
 });

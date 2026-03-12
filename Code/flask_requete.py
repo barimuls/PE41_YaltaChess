@@ -184,10 +184,11 @@ def register_user():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    if not username or not password:
+    confirm_password = data.get('confirm_password')
+    if not username or not password or not confirm_password:
         os.chdir(dir)
         return jsonify({"reponse": "Champs manquants"}), 400
-    player_id = id.register(username, password)
+    player_id = id.register(username, password, confirm_password)
     os.chdir(dir)
     if not player_id:
         return jsonify({"reponse": "Identifiant déjà utilisé"}), 409

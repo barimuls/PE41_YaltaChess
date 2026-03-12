@@ -6,7 +6,10 @@ import sqlite3
 
 ph = PasswordHasher()
 
-def register(username,password):
+def register(username,password,confirm_password):
+    if password != confirm_password:
+        print("Erreur : les mots de passe ne correspondent pas")
+        return None
     password_hash = ph.hash(password)
     player_id = str(uuid.uuid4())
     conn = sqlite3.connect("user_database.sqlite")

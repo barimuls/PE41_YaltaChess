@@ -222,12 +222,19 @@ form {
     margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
-    height: 500px;
+    height: 520px;
     width: 400px;
     background-color: #2f2f2f;
     padding-top: 50px;
     border-radius: 8px;
     border : none;
+    box-shadow: #222222 0px 0px 5px;
+}
+
+form a {
+    color: #eae9e9;
+    text-decoration: none;
+    font-size: 16px;
 }
 
 .input-container {
@@ -245,25 +252,11 @@ form {
   border : none;
 }
 
-.input-container label {
-  position: absolute;
-  left: 52px;
-  top: 12px;
-  color: #5d5d5d;
-  pointer-events: none;
-  transition: 0.2s ease;
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-
-/* Effet quand l’input est focus ou rempli */
-.input-container input:focus + label,
-.input-container input:not(:placeholder-shown) + label {
-  top: -8px;
-  font-size: 12px;
-  background: white;
-  padding: 0 4px;
-  color: #333;
-}
-
 
 #titre {
     font-size: 30px;

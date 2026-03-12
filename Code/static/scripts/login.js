@@ -35,3 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+const input = document.getElementById("password");
+const btn = document.getElementById("toggle");
+
+btn.addEventListener("click", () => {
+if (input.type === "password") {
+    input.type = "text";
+} else {
+    input.type = "password";
+}
+});
+

@@ -16,14 +16,17 @@
         <form method="post" action="{{ url_for('login') }}">
             <label id="titre">PE41 Echecs Yalta</label>
             <div class="input-container">
-                <input type="text" id="username" name="username" required placeholder=" ">
-                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" required placeholder="Nom d'utilisateur">
             </div>
             <div class="input-container">
-                <input type="password" id="password" name="password" required placeholder=" ">
-                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required placeholder="Mot de passe">
+            </div>
+            <div class="toggle-container">
+                <input type="checkbox" id="toggle">
+                <label for="toggle">Afficher le mot de passe</label>
             </div>
             <button class="mon-bouton" type="submit">Se connecter</button>
+            <a href="{{ url_for('register') }}" class="register-link">Pas de compte ? S'inscrire</a>
         </form>
         </div>
         <div class="logo">
