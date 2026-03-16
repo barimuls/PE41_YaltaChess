@@ -3,57 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Logo aligné</title>
-    <style>
-        .logo-right {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .row {
-            display: flex;
-            align-items: center;
-            gap: 6px; /* espace entre point et barre */
-        }
-
-        .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: black;
-        }
-
-        .bar {
-            height: 3px;
-            background: black;
-            border-radius: 2px;
-        }
-
-        .bar1 { width: 20px; }
-        .bar2 { width: 28px; }
-        .bar3 { width: 12px; }
-    </style>
-</head>
+    </head>
 <body>
-
-    <div class="logo-right">
-        <div class="row">
-            <span class="dot"></span>
-            <div class="bar bar1"></div>
-        </div>
-        <div class="row">
-            <span class="dot"></span>
-            <div class="bar bar2"></div>
-        </div>
-        <div class="row">
-            <span class="dot"></span>
-            <div class="bar bar3"></div>
-        </div>
-    </div>
+    <svg onclick="" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Cercle extérieur -->
+        <circle cx="100" cy="100" r="90" fill="none" stroke="black" stroke-width="4" />
+        <!-- Tête -->
+        <circle cx="100" cy="70" r="30" fill="none" stroke="black" stroke-width="4" />
+        <!-- Torse (haut d’un ovale) -->
+        <path d="M 50 145 Q 100 90 150 145" fill="none" stroke="black" stroke-width="4" />
+    </svg>
 
 </body>
 </html>

@@ -3,6 +3,15 @@ function openModal(x) {
     document.getElementById('overlay' + x).style.display = 'flex';
 }
 
+function openModalConnexion() {
+    if (document.getElementById('overlay_connexion').style.display === 'flex') {
+        document.getElementById('overlay_connexion').style.display = 'none';
+    }
+    else {
+        document.getElementById('overlay_connexion').style.display = 'flex';
+    }
+}
+
 function closeModal(x) {
     document.getElementById('overlay' + x).style.display = 'none';
 }

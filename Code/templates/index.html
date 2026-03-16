@@ -31,6 +31,11 @@
             <a href="{{ url_for('test') }}">À propos</a>
             <a href="{{ url_for('contact') }}">Contact</a>
         </ul>
+        <svg style="position: absolute; top: 20px; right: 20px;" onclick="openModalConnexion()" width="50" height="50" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="90" fill="none" stroke="white" stroke-width="6" />
+            <circle cx="100" cy="70" r="30" fill="none" stroke="white" stroke-width="6" />
+            <path d="M 50 145 Q 100 90 150 145" fill="none" stroke="white" stroke-width="6" />
+        </svg>
         <div class="overlay" id="overlay2">
             <div class="modal" style="max-width: 600px; max-height: 400px;">
                 <span class="bouton-fermer" onclick="closeModal(2)">×</span>
@@ -66,6 +71,10 @@
                 <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Profondeur 2</button>
                 <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Profondeur 3</button>
             </div>
+        </div>
+        <div class="modal_connexion" id="overlay_connexion">
+            <a href="{{ url_for('login') }}">Se connecter</a>
+            <a href="{{ url_for('register') }}">S'inscrire</a>
         </div>
     </main>
     <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
