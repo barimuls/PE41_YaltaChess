@@ -1,16 +1,22 @@
 import uuid
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, make_response
 from Plateau import *
 from flask_socketio import SocketIO, emit
 from FonctionJeux import *
 from FonctionJeuxIA import *
 import identification as id
 import os
+import jwt
+from datetime import UTC, datetime, timedelta
+
 
 dir = os.getcwd()
 app = Flask(__name__)
 socketio = SocketIO(app)
+id.DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 
+with open("Code/secret_key.txt", "r", encoding="utf-8") as f:
+    secret_key = f.read()
 
 def nouvelle_partie(mode):
     plateau = creer_plateau()
@@ -44,8 +50,24 @@ def nouvelle_partie(mode):
         "arrivee": None # Case d'arrivée sélectionnée
         }
 
+def create_jwt(user_id):
+    payload = {
+        "sub": user_id,  # identifiant de l'utilisateur (UUID ou ID)
+        "exp": datetime.now(UTC) + timedelta(hours=24)  # expiration dans 24h
+    }
 
+    token = jwt.encode(payload, secret_key, algorithm="HS256")
+    return token
 
+def verify_jwt(token):
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+        return payload["sub"]  # retourne l'ID utilisateur
+    except jwt.ExpiredSignatureError:
+        return None  # token expiré
+    except jwt.InvalidTokenError:
+        return None  # token invalide
+    
 games = {} # contiendra l'ensemble de la partie { l'identifiant de la partie: {"compteur":#, ...} }
 
 @app.route('/')
@@ -180,34 +202,44 @@ def receive_reset(game_id):
 
 @app.route('/auth/register', methods=['POST'])
 def register_user():
-    os.chdir(os.path.join(dir, "Code"))
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
     confirm_password = data.get('confirm_password')
     if not username or not password or not confirm_password:
-        os.chdir(dir)
         return jsonify({"reponse": "Champs manquants"}), 400
     player_id = id.register(username, password, confirm_password)
-    os.chdir(dir)
     if not player_id:
         return jsonify({"reponse": "Identifiant déjà utilisé"}), 409
-    return jsonify({"reponse": "Utilisateur enregistré"}), 200
+    token = create_jwt(player_id)
+    response = make_response(jsonify({"reponse": "Utilisateur enregistré"}))
+    response.set_cookie("token", token, httponly=True, samesite="Lax", max_age=3600*24)
+    return response, 200
 
 @app.route('/auth/login', methods=['POST'])
 def login_user():
-    os.chdir(os.path.join(dir, "Code"))
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
     if not username or not password:
-        os.chdir(dir)
         return jsonify({"reponse": "Champs manquants"}), 400
     player_id = id.login(username, password)
-    os.chdir(dir)
     if not player_id:
         return jsonify({"reponse": "Identifiant ou mot de passe incorrect"}), 401
-    return jsonify({"reponse": "Connexion réussie"}), 200
+    token = create_jwt(player_id)
+    response = make_response(jsonify({"reponse": "Connexion réussie"}))
+    response.set_cookie("token", token, httponly=True, samesite="Lax", max_age=3600*24)
+    return response, 200
+
+@app.route('/auth/me')
+def me():
+    token = request.cookies.get("token")
+    if not token:
+        return jsonify({"loggedIn": False}), 200
+    user_id = verify_jwt(token)
+    if not user_id:
+        return jsonify({"loggedIn": False}), 200
+    return jsonify({"loggedIn": True, "user_id": user_id}), 200
 
 @socketio.on('connect')
 def handle_connect():

@@ -5,14 +5,14 @@ import uuid
 import sqlite3
 
 ph = PasswordHasher()
-
+DATA_DIR = None
 def register(username,password,confirm_password):
     if password != confirm_password:
         print("Erreur : les mots de passe ne correspondent pas")
         return None
     password_hash = ph.hash(password)
     player_id = str(uuid.uuid4())
-    conn = sqlite3.connect("user_database.sqlite")
+    conn = sqlite3.connect(f"{DATA_DIR}/user_database.sqlite")
     cursor = conn.cursor()
     try:
         cursor.execute("""INSERT INTO user_table (user_uuid, user_id, user_password) VALUES (?, ?, ?)""", (player_id, username, password_hash))
@@ -25,7 +25,7 @@ def register(username,password,confirm_password):
         conn.close()
 
 def login(username,password):
-    conn = sqlite3.connect("user_database.sqlite")
+    conn = sqlite3.connect(f"{DATA_DIR}/user_database.sqlite")
     cursor = conn.cursor()
     stored_user = cursor.execute("""SELECT user_uuid, user_password FROM user_table WHERE user_id = ?""", (username,)).fetchone()
     conn.close()
