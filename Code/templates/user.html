@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Exemple Site Web</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/contact.css') }}">
+    <title>User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user.css') }}">
 </head>
 
 <body>
@@ -12,9 +12,8 @@
 
     <!-- Contenu principal -->
     <main>
-        <h1>Pour nous contacter</h1>
-        <p>Vous pouvez nous contacter par email à l'adresse suivante pour tous problèmes avec le site ou le jeu:
-            axelle.baviere@etu.ec-lyon.fr</p>
+        <h1>Mon compte</h1>
+        <a id="username_display"></a>
         <svg style="position: absolute; top: 20px; right: 20px;" onclick="openModalConnexion()" width="50" height="50" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <circle cx="100" cy="100" r="90" fill="none" stroke="white" stroke-width="6" />
             <circle cx="100" cy="70" r="30" fill="none" stroke="white" stroke-width="6" />
@@ -40,7 +39,7 @@
             <a href="{{ url_for('index') }}" onclick="logout()">Se déconnecter</a>
         </div>
     </main>
-    <script src="{{ url_for('static', filename='scripts/contact.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/user.js') }}"></script>
 </body>
 
 </html>

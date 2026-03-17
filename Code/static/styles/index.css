@@ -177,9 +177,9 @@ main {
     padding: 20px;
     border-radius: 8px;
     width: 80%;
-    max-width: 100px;
+    max-width: 120px;
     height: 80%;
-    max-height: 50px;
+    max-height: 100px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: absolute;
     display: none;

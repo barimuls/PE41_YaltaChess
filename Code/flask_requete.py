@@ -1,14 +1,16 @@
 import uuid
 from flask import Flask, request, jsonify, render_template, make_response
 from Plateau import *
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from FonctionJeux import *
 from FonctionJeuxIA import *
 import identification as id
 import os
 import jwt
 from datetime import UTC, datetime, timedelta
-
+import sqlite3
+from collections import deque
+lobby = deque()
 
 dir = os.getcwd()
 app = Flask(__name__)
@@ -49,6 +51,13 @@ def nouvelle_partie(mode):
         "depart": None, # Case de départ sélectionnée
         "arrivee": None # Case d'arrivée sélectionnée
         }
+
+def create_game(players):
+    game_id = uuid.uuid4().hex[:8]
+    games[game_id] = nouvelle_partie("multijoueur")
+    games[game_id]["players"] = players # l'ensemble des joueurs de la partie
+    games[game_id]["player"] = players[0] # le joueur dont c'est le tour (0, 1 ou 2)
+    return game_id
 
 def create_jwt(user_id):
     payload = {
@@ -103,6 +112,10 @@ def login():
 def register():
     return render_template("register.html")
 
+@app.route('/user')
+def user():
+    return render_template("user.html")
+
 # création d'une nouvelle partie et choix du mode
 @app.route('/new_game', methods=['POST'])
 def new_game():
@@ -129,7 +142,8 @@ def receive_depart(game_id):
     game = games[game_id]
     data = request.get_json()
     value = data.get('value')
-
+    if game["mode"] == "multijoueur":
+        game["player"] = data.get('player')
     game["depart"] = value.lower()
     game["compteur_clic"] += 1
     game["arrivee"] = None
@@ -178,10 +192,12 @@ def receive_promotion(game_id):
     data = request.get_json()
     value = data.get('value')
     # PROMOTION
-    if not game["mode"] == "3joueurs":
-        couleur = 0 
-    else:
+    if game["mode"] == "3joueurs":
         couleur = (game["compteur_tour"]+2) % 3
+    elif game["mode"] == "multijoueur":
+        couleur = game["players"].index(game["player"])
+    else:
+        couleur = 0
     promotion(game["plateau"], game["arrivee"], couleur, value)
     game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
     envoyer_mise_a_jour(game_id)
@@ -239,7 +255,31 @@ def me():
     user_id = verify_jwt(token)
     if not user_id:
         return jsonify({"loggedIn": False}), 200
-    return jsonify({"loggedIn": True, "user_id": user_id}), 200
+    conn = sqlite3.connect(f"{id.DATA_DIR}/user_database.sqlite")
+    cursor = conn.cursor()
+    stored_user = cursor.execute("""SELECT user_id FROM user_table WHERE user_uuid = ?""", (user_id,)).fetchone()
+    conn.close()
+    return jsonify({"loggedIn": True, "username": stored_user[0]}), 200
+
+@app.route('/auth/logout')
+def logout():
+    response = jsonify({"success": True})
+    response.set_cookie("token", "", expires=0)
+    return response
+
+@app.route('/lobby/join', methods=['POST'])
+def join_lobby():
+    user_id = request.json.get("user_id")
+    # éviter les doublons
+    if user_id not in lobby:
+        lobby.append(user_id)
+    # si on a 3 joueurs → créer une partie
+    if len(lobby) >= 3:
+        players = [lobby.popleft(), lobby.popleft(), lobby.popleft()]
+        game_id = create_game(players)
+        return jsonify({"status": "matched", "game_id": game_id, "players": players})
+    return jsonify({"status": "waiting", "position": len(lobby)})
+
 
 @socketio.on('connect')
 def handle_connect():
@@ -248,6 +288,7 @@ def handle_connect():
 @socketio.on("join_game")
 def join_game(data):
     game_id = data["game_id"]
+    join_room(game_id)
     envoyer_mise_a_jour(game_id)
 
 def envoyer_mise_a_jour(game_id):
@@ -255,12 +296,7 @@ def envoyer_mise_a_jour(game_id):
         joueur = (games[game_id]["compteur_tour"])%3
     else:
         joueur = 0
-    socketio.emit('update', {
-        'game_id': game_id,
-        'plateau_pieces': games[game_id]["plateau_pieces"],
-        'plateau_couleurs': games[game_id]["plateau_couleurs"],
-        'joueur' : joueur,
-    })
+    socketio.emit('update', {'game_id': game_id, 'plateau_pieces': games[game_id]["plateau_pieces"], 'plateau_couleurs': games[game_id]["plateau_couleurs"], 'joueur' : joueur}, room=game_id)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True,allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)

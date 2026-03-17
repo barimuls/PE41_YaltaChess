@@ -73,8 +73,10 @@
             </div>
         </div>
         <div class="modal_connexion" id="overlay_connexion">
+            <a href="{{ url_for('user') }}">Mon compte</a>
             <a href="{{ url_for('login') }}">Se connecter</a>
             <a href="{{ url_for('register') }}">S'inscrire</a>
+            <a href="{{ url_for('index') }}" onclick="logout()">Se déconnecter</a>
         </div>
     </main>
     <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>

@@ -68,3 +68,8 @@ function goToTutoriel(mode) {
     .catch(err => console.error("Erreur lors de la création de la partie :", err));
 }
 
+function logout() {
+    fetch("/auth/logout")
+        .then(res => res.json())
+        .catch(err => console.error("Erreur lors de la déconnexion :", err));
+}
