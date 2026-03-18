@@ -1,6 +1,45 @@
+const socket = io();
 
 function openModal(x) {
     document.getElementById('overlay' + x).style.display = 'flex';
+}
+
+function openLobby() {
+    fetch("/auth/me", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        const loggedIn = data.loggedIn;
+        console.log("Utilisateur connecté :", loggedIn);
+        if (loggedIn) {
+            socket.emit("register", { user_id: localStorage.getItem("user_id") });
+            openModal('_lobby');
+            fetch("/lobby/join", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: localStorage.getItem("user_id") })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "waiting") {
+                    document.getElementById("filedattente").textContent = data.position ? `Position dans la file d'attente : ${data.position}` : "Vous êtes en tête de la file d'attente, en attente d'un adversaire...";
+                }
+                else if (data.status === "matched" && data.players.includes(localStorage.getItem("user_id"))) {
+                    window.location.href = `/jeu/${data.game_id}`;
+                }
+            }
+            
+            )
+            .catch(err => console.error("Erreur lors de la connexion au lobby :", err));
+        }
+        else {
+            window.location.href = "/login";
+        }
+    })
+    .catch(err => console.error("Erreur lors de la lecture des informations utilisateur :", err));
 }
 
 function openModalConnexion() {
@@ -73,3 +112,7 @@ function logout() {
         .then(res => res.json())
         .catch(err => console.error("Erreur lors de la déconnexion :", err));
 }
+
+socket.on("matched", data => {
+    window.location.href = `/jeu/${data.game_id}`;
+});

@@ -228,7 +228,7 @@ def register_user():
     if not player_id:
         return jsonify({"reponse": "Identifiant déjà utilisé"}), 409
     token = create_jwt(player_id)
-    response = make_response(jsonify({"reponse": "Utilisateur enregistré"}))
+    response = make_response(jsonify({"reponse": "Utilisateur enregistré", "user_id": player_id}))
     response.set_cookie("token", token, httponly=True, samesite="Lax", max_age=3600*24)
     return response, 200
 
@@ -243,7 +243,7 @@ def login_user():
     if not player_id:
         return jsonify({"reponse": "Identifiant ou mot de passe incorrect"}), 401
     token = create_jwt(player_id)
-    response = make_response(jsonify({"reponse": "Connexion réussie"}))
+    response = make_response(jsonify({"reponse": "Connexion réussie", "user_id": player_id}))
     response.set_cookie("token", token, httponly=True, samesite="Lax", max_age=3600*24)
     return response, 200
 
@@ -259,7 +259,7 @@ def me():
     cursor = conn.cursor()
     stored_user = cursor.execute("""SELECT user_id FROM user_table WHERE user_uuid = ?""", (user_id,)).fetchone()
     conn.close()
-    return jsonify({"loggedIn": True, "username": stored_user[0]}), 200
+    return jsonify({"loggedIn": True, "user_id": user_id, "username": stored_user[0]}), 200
 
 @app.route('/auth/logout')
 def logout():
@@ -269,6 +269,7 @@ def logout():
 
 @app.route('/lobby/join', methods=['POST'])
 def join_lobby():
+    global lobby
     user_id = request.json.get("user_id")
     # éviter les doublons
     if user_id not in lobby:
@@ -277,6 +278,8 @@ def join_lobby():
     if len(lobby) >= 3:
         players = [lobby.popleft(), lobby.popleft(), lobby.popleft()]
         game_id = create_game(players)
+        for p in players:
+            socketio.emit("matched", {"game_id": game_id}, room=p)
         return jsonify({"status": "matched", "game_id": game_id, "players": players})
     return jsonify({"status": "waiting", "position": len(lobby)})
 
@@ -291,12 +294,21 @@ def join_game(data):
     join_room(game_id)
     envoyer_mise_a_jour(game_id)
 
+@socketio.on("register")
+def register(data):
+    user_id = data["user_id"]
+    join_room(user_id)
+    print(f"Joueur {user_id} a rejoint sa room Socket.IO")
+
+
 def envoyer_mise_a_jour(game_id):
     if games[game_id]["mode"] == "3joueurs":
         joueur = (games[game_id]["compteur_tour"])%3
+    elif games[game_id]["mode"] == "multijoueur":
+        joueur = games[game_id]["player"]
     else:
         joueur = 0
-    socketio.emit('update', {'game_id': game_id, 'plateau_pieces': games[game_id]["plateau_pieces"], 'plateau_couleurs': games[game_id]["plateau_couleurs"], 'joueur' : joueur}, room=game_id)
+    socketio.emit('update', {'game_id': game_id, 'plateau_pieces': games[game_id]["plateau_pieces"], 'plateau_couleurs': games[game_id]["plateau_couleurs"], 'joueur' : joueur, 'mode': games[game_id]["mode"]}, room=game_id)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True,allow_unsafe_werkzeug=True, host="0.0.0.0", port=5000)

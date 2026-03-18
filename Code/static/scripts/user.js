@@ -27,6 +27,7 @@ function user() {
             console.log("Utilisateur connecté :", username);
             document.getElementById("username_display").textContent = username;
             document.getElementById("username_display").removeAttribute("href");
+            localStorage.setItem("user_id", data.user_id); // Stocker l'ID utilisateur dans le localStorage
         }
         else {
             console.log("Aucun utilisateur connecté");

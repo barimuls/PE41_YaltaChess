@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 console.log("Inscription réussie");
-                alert(data.reponse);
                 // Exemple : redirection
-                // window.location.href = "/";
+                localStorage.setItem("user_id", data.user_id); // Stocker l'ID utilisateur dans le localStorage
+                window.location.href = "/user";
             } else {
                 alert(data.reponse);
             }

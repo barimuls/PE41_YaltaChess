@@ -1,6 +1,7 @@
 
 let cl = "blanc";
 let cmpt = 0;
+let mode = "3joueurs";
 function openModal() {
     document.getElementById('modal').querySelectorAll("img").forEach(img => img.remove());
     tour = document.createElement("img");
@@ -64,7 +65,8 @@ function sendValue(maValeur) {
     clearAllHighlights();
 
     if (!gameId) return;
-
+    if (mode === "multijoueur" && window.joueurActuel !== localStorage.getItem("user_id")) {return;} // ce n'est pas ton tour
+        
     let endpoint = "";
 
     // PROMOTION
@@ -93,11 +95,16 @@ function sendValue(maValeur) {
     }
 
     if (!endpoint) return;
+    let payload = { value: maValeur };
+
+    if (mode === "multijoueur") {
+        payload.player = localStorage.getItem("user_id");
+    }
 
     fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ value: maValeur })
+        body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(data => {
@@ -164,6 +171,7 @@ socket.on('update', data => {
     console.log("Comparaison :", data.game_id, gameId, data.game_id === gameId);
     const pieces = data.plateau_pieces;
     const couleurs = data.plateau_couleurs;
+    mode = data.mode;
     genererToutesLesPieces(data);
     for (const caseId in pieces) {
         const piece = pieces[caseId];
@@ -192,6 +200,7 @@ socket.on('update', data => {
         document.getElementById("t_rouge").setAttribute("fill", "#FFFFFF");
         document.getElementById("t_noir").setAttribute("fill", "#769656");
     }
+    if (mode === 'multijoueur') {window.joueurActuel = data.joueur;}
 
 });
 

@@ -15,7 +15,7 @@
         <h1>Bienvenue sur PE41 Echecs Yalta !</h1>
         <div class="bloc-boutons">
             <button class="mon-bouton" onclick="openModal(2)" style="margin-top: 30px; width: 250px;">Jouer en local</button>
-            <button class="mon-bouton" onclick="ModalErreur()" style="margin-top: 30px; width: 250px;">Jouer en ligne</button>
+            <button class="mon-bouton" onclick="openLobby()" style="margin-top: 30px; width: 250px;">Jouer en ligne</button>
             <button class="mon-bouton" onclick="goToTutoriel('tutoriel_tour')" style="margin-top: 30px; width: 250px;">Tutoriel</button>
         </div>
         <div class="logo">
@@ -72,6 +72,13 @@
                 <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Profondeur 3</button>
             </div>
         </div>
+        <div class="overlay" id="overlay_lobby">
+            <div class="modal" style="max-width: 400px; max-height: 450px;">
+                <span class="bouton-fermer" onclick="closeModal('_lobby')">×</span>
+                <h2>Lobby en ligne</h2>
+                <p id="filedattente"></p>
+            </div>
+        </div>
         <div class="modal_connexion" id="overlay_connexion">
             <a href="{{ url_for('user') }}">Mon compte</a>
             <a href="{{ url_for('login') }}">Se connecter</a>
@@ -79,6 +86,7 @@
             <a href="{{ url_for('index') }}" onclick="logout()">Se déconnecter</a>
         </div>
     </main>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </body>
 
