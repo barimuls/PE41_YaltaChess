@@ -36,7 +36,6 @@ class AbstractIA(ABC): # le ABC sert a utiliser abstractmethod, qui permet de fo
         return liste_coups
     
 
-
 class IAAleatoire(AbstractIA):
     """IA qui joue des coups aléatoires, renvoie None si aucun coup n'est possible, sinon renvoie un tuple (case_depart, case_arrivee)"""
     
@@ -367,7 +366,7 @@ class GestionnaireJeu:
         :param joueurs: Liste de 3 joueurs (humain ou IA)
         """
         self.__plateau = plateau
-        self.__joueurs = joueurs  # [joueur0, joueur1, joueur2]
+        self.__joueurs = joueurs  # [joueur0, joueur1, joueur2] , potentiellement IA ou humain
         self.__joueur_actuel = 0
     
     @property

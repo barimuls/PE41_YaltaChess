@@ -264,12 +264,15 @@ class Case:
         return voisins
 
 
-class Graph:
+class Plateau:
     def __init__(self):
         self.sommets = {}
+        
+        # "mémoire" pour coup spécifiques
         self.prise_en_passant = [None,None,None]  # Pour chaque couleur, la case où un pion peut être pris en passant on mets la case où on peut manger
         self.pile_prise_en_passant= []  # Pile pour annuler les prises en passant, contient pour chaque tour, None ou (couleur, case)
         self.peut_roquer = [[True,True],[True,True],[True,True]] # Pour chaque couleur, si le roi peut encore roquer à gauche et droite
+        # "mémoire" pour pouvoir ensuite déjouer
         self.pile_pour_roque = []  # Pile pour annuler les roques, contient pour chaque tour, None ou (couleur, direction)
         self.pile_pieces_mangees = []  # Pile des pièces mangées (pour annuler les coups) contient pour chaque tour, None ou (piece, couleur)
 
@@ -280,6 +283,7 @@ class Graph:
     def ajouter_arete(self, depart, arrivee, orientation):
         if depart in self.sommets and arrivee in self.sommets:
             self.sommets[depart].ajouter_arete(orientation, arrivee)
+
 
     def afficher(self):
         """
@@ -413,6 +417,32 @@ class Graph:
                 aretes_str = "—"
             print(f"{nom:>4} → {aretes_str}")
         
+        # creer les bonnes cases
+
+    #--------------------Création du plateau de jeu------------------
+    def creer_plateau_yalta(self):
+            
+        # Les combinaisons qui existe
+        masque = {
+            1:  ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+            2:  ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+            3:  ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+            4:  ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+            5:  ('a', 'b', 'c', 'd', 'i', 'j', 'k', 'l'),
+            6:  ('a', 'b', 'c', 'd', 'i', 'j', 'k', 'l'),
+            7:  ('a', 'b', 'c', 'd', 'i', 'j', 'k', 'l'),
+            8:  ('a', 'b', 'c', 'd', 'i', 'j', 'k', 'l'),
+            9:  ('e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'),
+            10: ('e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'),
+            11: ('e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'),
+            12: ('e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'),
+        }
+
+        # Créer les cases existantes
+        for ligne, cols in masque.items():
+            for col in cols:
+                self.ajouter_case(f"{col}{ligne}")
+
     #--------------------Remplissage des aretes------------------
     def remplir_arete_tour_chiffre(self):
         for case in self.sommets.values():
@@ -839,7 +869,7 @@ class Graph:
 
 #------Initialisation du plateau------
 def creer_plateau():
-    plateau = Graph()
+    plateau = Plateau()
 
     # Les combinaisons qui existe
     masque = {
