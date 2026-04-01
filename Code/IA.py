@@ -90,7 +90,7 @@ def score_pression(plateau, couleur):
                 s2 = plateau.sommets[case2]
                 if s2 != None and s2.couleur == couleur:
                     if case in plateau.coup_possible(case2):
-                        pression += 0.5
+                        pression += 0.1
                         break
     return pression
 
@@ -114,10 +114,10 @@ def danger_attaquants(n):
     if n <= 0:
         return 0
     if n == 1:
-        return 2
+        return 0.5
     if n == 2:
-        return 4
-    return 5
+        return 1
+    return 1.5
 def est_attaquee_par(plateau, case, couleur):
     for c in plateau.sommets:
         s = plateau.sommets[c]
@@ -161,11 +161,11 @@ def score_securite_roi(plateau, couleur):
         # danger individuel
         danger += danger_attaquants(att1)
         danger += danger_attaquants(att2)
+        danger -= danger_attaquants(def_ami)
         if att1 > 0 and att2 > 0:
-            danger += 3
+            danger += 1
 
-        # défense (limitée)
-        danger -= min(def_ami, 2)
+    
 
         # étouffement par pièces amies
         if plateau.sommets[v].piece is not None and plateau.sommets[v].couleur == couleur:
