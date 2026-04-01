@@ -4,7 +4,6 @@ from Plateau import *;
 from FonctionJeux import *;
 import random;
 
-
 def coup_possible(plateau, couleur):
     liste_coups = [];
     for case in plateau.sommets.items():
@@ -169,6 +168,41 @@ def score_v1_pierre(plateau,couleur) :
         s += score_pression(plateau, couleur)     # pression sur adversaires
         s += score_securite_roi(plateau, couleur) # sécurité_roi
         return s
+
+#----------------------Fonctions pour l'heuristique----------------------
+
+def calculer_heuristiques(plateau : Plateau) -> list[float]: # liste de taille 3 
+    valeur_piece = {'pion':1,'cavalier':3,'fou':4,'tour':5,'dame':8,'roi':1000}
+    valeur_piece_attaque_protege = {'pion':1,'cavalier':3,'fou':4,'tour':5,'dame':8,'roi':15}
+    
+    avantage_materiel = [0,0,0]
+    nombre_case_controlees = [0,0,0]
+    score_pieces_menacees = [0,0,0]
+    score_piece_protegees = [0,0,0]
+    for case , _ in plateau.sommets.items():
+        if plateau.sommets[case].piece is not None:
+            couleur = plateau.sommets[case].couleur
+            piece = plateau.sommets[case].piece
+            # calcul avantage matériel
+            avantage_materiel[couleur] += valeur_piece[piece]
+            
+            # calcul du controle,menace et protection
+            coup_deplacement_mange_protege = plateau.deplacement_mange_protege(case)
+            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.05
+            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.1
+            score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.1
+    
+    heuristiques = [0,0,0]
+    for i in range(3):
+        heuristiques[i] = avantage_materiel[i] + nombre_case_controlees[i] + score_pieces_menacees[i] + score_piece_protegees[i]
+    
+    return heuristiques
+            
+
+def calculer_son_avantage( heuristique : list[float], couleur : int) -> float:
+    return heuristique[couleur] - 0.5*heuristique[(couleur+1)%3] - 0.5*heuristique[(couleur+2)%3]
+
+
 #----------------------Test----------------------
         
 def heuristic(plateau, couleur):
@@ -359,3 +393,26 @@ def nombre_attaquants(plateau, case, couleur):
             if case in plateau.coup_possible(c):
                 n += 1
     return n
+
+
+if __name__ == "__main__":
+    
+    plateau = creer_plateau()
+    plateau.remplir_arete()
+    
+    plateau.remplir_pieces_initiales()
+    print('heuristiques : ',calculer_heuristiques(plateau))
+    
+    print(plateau.deplacement_mange_protege("a2"))
+    print(plateau.deplacement_mange_protege("a1"))
+    print(plateau.deplacement_mange_protege("b1"))
+    
+    plateau.sommets["a3"].piece = "tour"
+    plateau.sommets["a3"].couleur = 1
+    
+    print('heuristiques : ',calculer_heuristiques(plateau))
+    
+    print(plateau.deplacement_mange_protege("b1"))
+    
+    
+    

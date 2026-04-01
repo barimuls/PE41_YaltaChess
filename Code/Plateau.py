@@ -864,6 +864,450 @@ class Plateau:
         else:
             return self.coup_possible_pion_noir(depart)
 
+    # --------------------Parcours pour les coups possibles, selon si ça se déplace, mange, protège -----
+    
+    def deplacement_mange_protege(self, depart) -> list [list [str], list[str], list[str]]:
+        
+        piece = self.sommets[depart].piece
+
+        if piece == None:
+            return []
+        elif piece == 'tour':
+            return self.tour_deplacement_mange_protege(depart)
+        elif piece == 'fou':
+            return self.fou_deplacement_mange_protege(depart)
+        elif piece == 'dame':
+            return self.dame_deplacement_mange_protege(depart)
+        elif piece == 'cavalier':
+            return self.cavalier_deplacement_mange_protege(depart)
+        elif piece == 'roi':
+            return self.roi_deplacement_mange_protege(depart)
+        elif piece == 'pion':
+            return self.pion_deplacement_mange_protege(depart)
+        else:
+            print("Erreur : pièce inconnue.")
+            return []
+
+    def fusion_liste_triple(self, l1 , l2):
+        return [l1[0]+l2[0] , l1[1]+l2[1] , l1[2]+l2[2]]
+#tour
+    
+    def tour_deplacement_mange_protege(self,depart):
+        couleur = self.sommets[depart].couleur
+
+        deplacements1 = self.tour_chiffre_deplacement_mange_protege(depart,couleur,[],est_initial=True);
+        deplacements2 = self.tour_lettre_deplacement_mange_protege(depart,couleur,[],est_initial=True);
+        return self.fusion_liste_triple(deplacements1, deplacements2)
+
+    def tour_lettre_deplacement_mange_protege(self,actuel,couleur,deja_vu,est_initial=False):
+        if actuel in deja_vu:
+            return [[],[],[]];
+        deja_vu.append(actuel);
+
+        liste_totale = [[],[],[]] # list_deplacement, liste_mange, liste_protege
+        
+        if est_initial:
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.tour_lettre_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        elif self.sommets[actuel].piece is None :
+            liste_totale[0].append(actuel)
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_lettre():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.tour_lettre_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
+            liste_totale[2].append(actuel);
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
+            liste_totale[1].append(actuel);
+        return liste_totale;
+
+    def tour_chiffre_deplacement_mange_protege(self,actuel,couleur,deja_vu,est_initial=False):
+        if actuel in deja_vu:
+            return [[],[],[]];
+        deja_vu.append(actuel);
+
+        liste_totale = [[],[],[]] # list_deplacement, liste_mange, liste_protege
+
+        if est_initial:
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.tour_chiffre_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        elif self.sommets[actuel].piece is None :
+            liste_totale[0].append(actuel);
+            for coup_potentiel in self.sommets[actuel].voisin_arete_tour_par_chiffre():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.tour_chiffre_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur:
+            liste_totale[2].append(actuel);
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
+            liste_totale[1].append(actuel);
+        return liste_totale;
+
+#fou
+    def fou_a1_deplacement_mange_protege(self, actuel,couleur,deja_vu,est_initial=False):
+        if actuel in deja_vu:
+            return [[],[],[]];
+        deja_vu.append(actuel);
+
+
+        liste_totale = [[],[],[]] # list_deplacement, liste_mange, liste_protege
+
+        if self.sommets[actuel].piece is None and not est_initial:
+            liste_totale[0].append(actuel);
+            for coup_potentiel in self.sommets[actuel].voisin_arete_fou_a1():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.fou_a1_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur and not est_initial:
+            liste_totale[2].append(actuel);
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
+            liste_totale[1].append(actuel);
+        else: #est_initial == True
+            for coup_potentiel in self.sommets[actuel].voisin_arete_fou_a1():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.fou_a1_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        return liste_totale;
+
+    def fou_h1_deplacement_mange_protege(self, actuel,couleur,deja_vu,est_initial=False):
+        if actuel in deja_vu:
+            return [[],[],[]];
+        deja_vu.append(actuel);
+
+
+        liste_totale = [[],[],[]] # list_deplacement, liste_mange, liste_protege
+
+        if self.sommets[actuel].piece is None and not est_initial:
+            liste_totale[0].append(actuel);
+            for coup_potentiel in self.sommets[actuel].voisin_arete_fou_h1():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.fou_h1_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur == couleur and not est_initial:
+            liste_totale[2].append(actuel);
+        elif self.sommets[actuel].piece is not None and self.sommets[actuel].couleur != couleur:
+            liste_totale[1].append(actuel);
+        else: #est_initial == True
+            for coup_potentiel in self.sommets[actuel].voisin_arete_fou_h1():
+                liste_totale = self.fusion_liste_triple(liste_totale, self.fou_h1_deplacement_mange_protege(coup_potentiel,couleur,deja_vu))
+        return liste_totale;
+
+    def fou_deplacement_mange_protege(self, depart):
+        couleur = self.sommets[depart].couleur
+
+        coups = self.fou_a1_deplacement_mange_protege(depart,couleur,[],est_initial=True);
+        coups2 = self.fou_h1_deplacement_mange_protege(depart,couleur,[],est_initial=True);
+        return self.fusion_liste_triple(coups, coups2)
+
+    def dame_deplacement_mange_protege(self, depart):
+        couleur = self.sommets[depart].couleur
+
+        coups = [[],[],[]];
+        
+        coups = self.fusion_liste_triple(coups, self.tour_lettre_deplacement_mange_protege(depart,couleur,[],est_initial=True));
+        coups = self.fusion_liste_triple(coups, self.tour_chiffre_deplacement_mange_protege(depart,couleur,[],est_initial=True));
+        coups = self.fusion_liste_triple(coups, self.fou_a1_deplacement_mange_protege(depart,couleur,[],est_initial=True));
+        coups = self.fusion_liste_triple(coups, self.fou_h1_deplacement_mange_protege(depart,couleur,[],est_initial=True));
+        return coups
+    
+    def roi_deplacement_mange_protege(self, depart):
+
+        coups = self.sommets[depart].voisin_arete_tour_par_chiffre();
+        coups += self.sommets[depart].voisin_arete_tour_par_lettre();
+        coups += self.sommets[depart].voisin_arete_fou_a1();
+        coups += self.sommets[depart].voisin_arete_fou_h1();    
+
+        liste_totale = [[],[],[]] # list_deplacement, liste_mange, liste_protege
+
+        #enlever les coups où il y a une pièce de la même couleur
+        for coup in coups:
+            if self.sommets[coup].piece is None:
+                liste_totale[0].append(coup)
+            elif self.sommets[coup].couleur != self.sommets[depart].couleur:
+                liste_totale[1].append(coup)
+            elif self.sommets[coup].couleur == self.sommets[depart].couleur:
+                liste_totale[2].append(coup)
+                
+
+        # ---------  cas du roque
+        couleur = self.sommets[depart].couleur
+        #roque à gauche possible
+        if self.peut_roquer[couleur][0]: 
+            if couleur ==0 and self.sommets['b1'].piece is None and self.sommets['c1'].piece is None and self.sommets['d1'].piece is None and self.sommets['a1'].piece == 'tour' and self.sommets['a1'].couleur == couleur :
+                coups.append('c1')
+                liste_totale[0].append('c1')
+            elif couleur ==1 and self.sommets['i8'].piece is None and self.sommets['j8'].piece is None and self.sommets['k8'].piece is None and self.sommets['l8'].piece == 'tour' and self.sommets['l8'].couleur == couleur:
+                coups.append('j8')
+                liste_totale[0].append('j8')
+            elif couleur ==2 and self.sommets['e12'].piece is None and self.sommets['f12'].piece is None and self.sommets['g12'].piece is None and self.sommets['h12'].piece == 'tour' and self.sommets['h12'].couleur == couleur:
+                coups.append('f12')
+                liste_totale[0].append('f12')
+        #roque à droite possible
+        if self.peut_roquer[couleur][1]:
+            if couleur ==0 and self.sommets['f1'].piece is None and self.sommets['g1'].piece is None and self.sommets['h1'].piece == 'tour' and self.sommets['h1'].couleur == couleur :
+                coups.append('g1')
+                liste_totale[0].append('g1')
+            elif couleur ==1 and self.sommets['b8'].piece is None and self.sommets['c8'].piece is None and self.sommets['a8'].piece == 'tour' and self.sommets['a8'].couleur == couleur:
+                coups.append('b8')
+                liste_totale[0].append('b8')
+            elif couleur ==2 and self.sommets['j12'].piece is None and self.sommets['k12'].piece is None and self.sommets['l12'].piece == 'tour' and self.sommets['l12'].couleur == couleur:
+                coups.append('k12')
+                liste_totale[0].append('k12')
+
+        return liste_totale
+    
+    #cavalier     
+    def cavalier_deplacement_mange_protege(self, depart):
+        coups = self.coup_possible_cavalier_ccl(depart);
+        coups = list(set(coups + self.coup_possible_cavalier_llc(depart)));
+        coups = list(set(coups + self.coup_possible_cavalier_cll(depart)));
+        coups = list(set(coups + self.coup_possible_cavalier_lcc(depart)));
+
+
+        couleur = self.sommets[depart].couleur
+        liste_totale = [[],[],[]] # list_deplacement, liste_mange, liste_protege
+
+        for coup in coups:
+            if self.sommets[coup].piece is None:
+                liste_totale[0].append(coup)
+            elif self.sommets[coup].couleur != couleur:
+                liste_totale[1].append(coup)   
+            elif self.sommets[coup].couleur == couleur:
+                liste_totale[2].append(coup)   
+
+
+        return liste_totale
+
+    #pion
+    def pion_blanc_deplacement_mange_protege(self, depart):
+        lettre=str(depart[0])
+        chiffre=int(depart[1:])
+
+        liste_coups=[]
+        #----------------on ajoute les coups potentiels
+        #----cas ou on avance 
+        liste_coups_avance=[]
+        #cas où le pion est sur sa position initiale
+        if chiffre==2 and self.sommets[lettre+'3'].piece is None:
+            liste_coups_avance.append(lettre+str(chiffre+2))
+        #cas avancer d'une case
+        liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
+        #verification que la case est libre
+        for coup in liste_coups_avance:
+            if self.sommets[coup].piece is None:
+                liste_coups.append(coup)
+        
+        #----cas ou on mange
+        liste_coups_diago=[]
+        liste_coups_diago += self.sommets[depart].voisin_arete_fou_a1()
+        liste_coups_diago += self.sommets[depart].voisin_arete_fou_h1()
+        
+        liste_coup_mange=[]
+        liste_coups_protege=[]
+        #verification que la case est occupée par une pièce adverse
+        for coup in liste_coups_diago:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=0:
+                liste_coup_mange.append(coup)
+            elif self.sommets[coup].piece is not None and self.sommets[coup].couleur ==0:
+                liste_coups_protege.append(coup)
+            elif coup == self.prise_en_passant[1] or coup == self.prise_en_passant[2]: #prise en passant
+                liste_coup_mange.append(coup)
+        
+        #----------------on filtre les coups qui reculent
+        coups2=[];
+        for coup in liste_coups:
+            chiffre_coup=int(coup[1:])
+            if not(chiffre_coup <= chiffre) and not(chiffre_coup == 9 and chiffre == 5):
+                coups2.append(coup)
+        liste_coups=coups2
+        
+         #----------------on filtre les coups qui reculent pour les coups de manger
+        coups2=[];
+        for coup in liste_coup_mange:
+            chiffre_coup=int(coup[1:])
+            if not(chiffre_coup <= chiffre) and not(chiffre_coup == 9 and chiffre == 5):
+                coups2.append(coup)
+        liste_coup_mange=coups2
+        
+        #----------------on filtre les coups qui reculent pour les coups de protéger
+        coups2=[];
+        for coup in liste_coups_protege:
+            chiffre_coup=int(coup[1:])
+            if not(chiffre_coup <= chiffre) and not(chiffre_coup == 9 and chiffre == 5):
+                coups2.append(coup)
+        liste_coups_protege=coups2
+                
+        return [liste_coups, liste_coup_mange, liste_coups_protege]
+
+    def pion_rouge_deplacement_mange_protege(self, depart):
+        lettre=str(depart[0])
+        chiffre=int(depart[1:])
+
+        liste_coups=[]
+        #----------------on ajoute les coups potentiels
+        #----cas ou on avance 
+        liste_coups_avance=[]
+        #cas où le pion est sur sa position initiale
+        if chiffre==7 and self.sommets[lettre+'6'].piece is None:
+            liste_coups_avance.append(lettre+'5')
+        #cas avancer d'une case
+        liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
+        #verification que la case est libre
+        for coup in liste_coups_avance:
+            if self.sommets[coup].piece is None:
+                liste_coups.append(coup)
+        
+        #----cas ou on mange
+        liste_coups_diago=[]
+        liste_coups_diago += self.sommets[depart].voisin_arete_fou_a1()
+        liste_coups_diago += self.sommets[depart].voisin_arete_fou_h1()
+        
+        liste_coups_mange=[]
+        liste_coups_protege=[]
+        #verification que la case est occupée par une pièce adverse
+        for coup in liste_coups_diago:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=1:
+                liste_coups_mange.append(coup)
+            elif self.sommets[coup].piece is not None and self.sommets[coup].couleur ==1:
+                liste_coups_protege.append(coup)
+            elif coup == self.prise_en_passant[0] or coup == self.prise_en_passant[2]: #prise en passant
+                liste_coups_mange.append(coup)
+        
+        #----------------on filtre les coups qui reculent
+        liste_des_coups_a_retirer=[];
+        for coup in liste_coups:
+            chiffre_coup=int(coup[1:])
+            if chiffre in {9,10,11,12}:
+                if chiffre_coup < chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+            elif chiffre == 5:
+                if chiffre_coup == 6:
+                    liste_des_coups_a_retirer.append(coup)
+            else :
+                if chiffre_coup >= chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+
+        for coup in liste_des_coups_a_retirer:
+            liste_coups.remove(coup)
+
+        #----------------on filtre les coups qui reculent pour les coups de manger
+        liste_des_coups_a_retirer=[];
+        for coup in liste_coups_mange:
+            chiffre_coup=int(coup[1:])
+            if chiffre in {9,10,11,12}:
+                if chiffre_coup < chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+            elif chiffre == 5:
+                if chiffre_coup == 6:
+                    liste_des_coups_a_retirer.append(coup)
+            else :
+                if chiffre_coup >= chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+
+        for coup in liste_des_coups_a_retirer:
+            liste_coups_mange.remove(coup)
+        
+        #----------------on filtre les coups qui reculent pour les coups de protéger
+        liste_des_coups_a_retirer=[];
+        for coup in liste_coups_protege:
+            chiffre_coup=int(coup[1:])
+            if chiffre in {9,10,11,12}:
+                if chiffre_coup < chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+            elif chiffre == 5:
+                if chiffre_coup == 6:
+                    liste_des_coups_a_retirer.append(coup)
+            else :
+                if chiffre_coup >= chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+
+        for coup in liste_des_coups_a_retirer:
+            liste_coups_protege.remove(coup)
+        
+        return [liste_coups, liste_coups_mange, liste_coups_protege]
+
+    def pion_noir_deplacement_mange_protege(self, depart):
+        lettre=str(depart[0])
+        chiffre=int(depart[1:])
+
+        liste_coups=[]
+        #----------------on ajoute les coups potentiels
+        #----cas ou on avance 
+        liste_coups_avance=[]
+        #cas où le pion est sur sa position initiale
+        if chiffre==11 and self.sommets[lettre+'10'].piece is None:
+            liste_coups_avance.append(lettre+'9')
+        #cas avancer d'une case
+        liste_coups_avance += self.sommets[depart].voisin_arete_tour_par_lettre()
+        #verification que la case est libre
+        for coup in liste_coups_avance:
+            if self.sommets[coup].piece is None:
+                liste_coups.append(coup)
+        
+        #----cas ou on mange
+        liste_coups_diago=[]
+        liste_coups_diago += self.sommets[depart].voisin_arete_fou_a1()
+        liste_coups_diago += self.sommets[depart].voisin_arete_fou_h1()
+        
+        liste_coups_mange=[]
+        liste_coups_protege=[]
+        #verification que la case est occupée par une pièce adverse
+        for coup in liste_coups_diago:
+            if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=2:
+                liste_coups.append(coup)
+            elif coup == self.prise_en_passant[0] or coup == self.prise_en_passant[1]: #prise en passant
+                liste_coups.append(coup)
+        
+        #----------------on filtre les coups qui reculent
+        liste_des_coups_a_retirer=[];
+        for coup in liste_coups:
+            chiffre_coup=int(coup[1:])
+            if chiffre in {6,7,8}:
+                if chiffre_coup < chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+            elif chiffre ==5:
+                if chiffre_coup == 9:
+                    liste_des_coups_a_retirer.append(coup)
+            else:
+                if chiffre_coup >= chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+        for coup in liste_des_coups_a_retirer:
+            liste_coups.remove(coup)
+
+        #----------------on filtre les coups qui reculent pour les coups de manger
+        liste_des_coups_a_retirer=[];
+        for coup in liste_coups_mange:
+            chiffre_coup=int(coup[1:])
+            if chiffre in {6,7,8}:
+                if chiffre_coup < chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+            elif chiffre ==5:
+                if chiffre_coup == 9:
+                    liste_des_coups_a_retirer.append(coup)
+            else:
+                if chiffre_coup >= chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+        for coup in liste_des_coups_a_retirer:
+            liste_coups_mange.remove(coup)
+            
+        #----------------on filtre les coups qui reculent pour les coups de protéger
+        liste_des_coups_a_retirer=[];
+        for coup in liste_coups_protege:
+            chiffre_coup=int(coup[1:])
+            if chiffre in {6,7,8}:
+                if chiffre_coup < chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+            elif chiffre ==5:
+                if chiffre_coup == 9:
+                    liste_des_coups_a_retirer.append(coup)
+            else:
+                if chiffre_coup >= chiffre:
+                    liste_des_coups_a_retirer.append(coup)
+        for coup in liste_des_coups_a_retirer:
+            liste_coups_protege.remove(coup)
+            
+            
+        return [liste_coups, liste_coups_mange, liste_coups_protege]
+
+    def pion_deplacement_mange_protege(self, depart):
+        couleur = self.sommets[depart].couleur
+
+        if couleur ==0:
+            return self.pion_blanc_deplacement_mange_protege(depart)
+        elif couleur ==1:
+            return self.pion_rouge_deplacement_mange_protege(depart)
+        else:
+            return self.pion_noir_deplacement_mange_protege(depart)
 
 
 
