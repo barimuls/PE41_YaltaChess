@@ -2,6 +2,26 @@
 let cl = "blanc";
 let cmpt = 0;
 let mode = "3joueurs";
+
+const rotateLeft = {A1 : "L8", A2 : "L7", A3 : "L6", A4 : "L5", A5 : "L9", A6 : "L10", A7 : "L11", A8 : "L12",
+                    B1 : "K8", B2 : "K7", B3 : "K6", B4 : "K5", B5 : "K9", B6 : "K10", B7 : "K11", B8 : "K12",
+                    C1 : "J8", C2 : "J7", C3 : "J6", C4 : "J5", C5 : "J9", C6 : "J10", C7 : "J11", C8 : "J12",
+                    D1 : "I8", D2 : "I7", D3 : "I6", D4 : "I5", D5 : "I9", D6 : "I10", D7 : "I11", D8 : "I12",
+                    L8 : "H12", L7 : "H11", L6 : "H10", L5 : "H9", L9 : "H4", L10 : "H3", L11 : "H2", L12 : "H1",
+                    K8 : "G12", K7 : "G11", K6 : "G10", K5 : "G9", K9 : "G4", K10 : "G3", K11 : "G2", K12 : "G1",
+                    J8 : "F12", J7 : "F11", J6 : "F10", J5 : "F9", J9 : "F4", J10 : "F3", J11 : "F2", J12 : "F1",
+                    I8 : "E12", I7 : "E11", I6 : "E10", I5 : "E9", I9 : "E4", I10 : "E3", I11 : "E2", I12 : "E1",
+                    H12 : "A1", H11 : "A2", H10 : "A3", H9 : "A4", H4 : "A5", H3 : "A6", H2 : "A7", H1 : "A8",
+                    G12 : "B1", G11 : "B2", G10 : "B3", G9 : "B4", G4 : "B5", G3 : "B6", G2 : "B7", G1 : "B8",
+                    F12 : "C1", F11 : "C2", F10 : "C3", F9 : "C4", F4 : "C5", F3 : "C6", F2 : "C7", F1 : "C8",
+                    E12 : "D1", E11 : "D2", E10 : "D3", E9 : "D4", E4 : "D5", E3 : "D6", E2 : "D7", E1 : "D8"};
+
+const rotateRight = {};
+for (const from in rotateLeft) {
+    const to = rotateLeft[from];
+    rotateRight[to] = from;
+}
+
 function openModal() {
     document.getElementById('modal').querySelectorAll("img").forEach(img => img.remove());
     tour = document.createElement("img");
@@ -202,6 +222,16 @@ socket.on('update', data => {
     }
     if (mode === 'multijoueur') {window.joueurActuel = data.joueur;}
 
+    fetch("/game/search_player/" + gameId, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(res => res.json())
+    .then(data2 => {
+        const joueurEl = document.getElementById("joueur");
+        if (joueurEl) {joueurEl.textContent = data2.player_index;}
+    })
+    .catch(err => console.error("Erreur lors de la récupération du joueur actuel :", err));
 });
 
 function polygonCentroid(points) {
@@ -259,9 +289,14 @@ function centerHTMLImageOnPolygon(polygonId, imgId) {
     img.style.transform = "translate(-50%, -50%)";
 }
 
+function rotationPlateau(data, sens) {
+    const pieces = data.plateau_pieces;
+}
+
 
 function genererToutesLesPieces(data) {
     const pieces = data.plateau_pieces;
+    console.log("Pièces sur le plateau :", pieces);
     const couleurs = data.plateau_couleurs;
     const main = document.querySelector("main");
 

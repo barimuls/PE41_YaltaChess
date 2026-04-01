@@ -173,6 +173,8 @@ def receive_arrivee(game_id):
             ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
         elif len(game["mode"]) >=8 and game["mode"][:8]=="tutoriel":
             ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
+        elif game["mode"] == "multijoueur":
+            ok = tour_de_jeu_web(game["plateau"], game["players"].index(game["player"]), depart, arrivee)
         if ok == False:
             print(depart, arrivee)
             return jsonify({"reponse": "Mouvement invalide"})
@@ -282,6 +284,24 @@ def join_lobby():
             socketio.emit("matched", {"game_id": game_id}, room=p)
         return jsonify({"status": "matched", "game_id": game_id, "players": players})
     return jsonify({"status": "waiting", "position": len(lobby)})
+
+@app.route('/game/search_player/<game_id>', methods=['POST'])
+def search_player(game_id):
+    if games[game_id]["mode"] != "multijoueur":
+        return None
+    token = request.cookies.get("token")
+    if not token:
+        return jsonify({"loggedIn": False}), 200
+    user_id = verify_jwt(token)
+
+    if game_id not in games:
+        return None
+    game = games[game_id]
+    for i, p in enumerate(game["players"]):
+        if p == user_id:
+
+            return jsonify({"player_index": ['blanc','rouge','noir'][i]}), 200
+    return None
 
 
 @socketio.on('connect')
