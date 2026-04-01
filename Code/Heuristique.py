@@ -12,8 +12,8 @@ class par_valeur(Heuristique):
     def score_joueur(self, plateau, joueur):
         score = 0;
         for case in plateau.sommets.items():
-        if plateau.sommets[case[0]].piece != None:
-            if plateau.sommets[case[0]].couleur == joueur:
-                score += self.valeur_piece[plateau.sommets[case[0]].piece];
+            if plateau.sommets[case[0]].piece != None:
+                if plateau.sommets[case[0]].couleur == joueur:
+                    score += self.valeur_piece[plateau.sommets[case[0]].piece];
         return score;
     
