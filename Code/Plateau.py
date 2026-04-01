@@ -5,7 +5,7 @@
 
 class Arete:
     def __init__(self, orientation, sommet_arrive):
-        self.orientation = orientation  # "chiffre", "lettre", "diag_a1", "diag_h1", "cavalier" ...
+        self.orientation = orientation  # "chiffre", "lettre", "diag_a1", "diag_h1",
         self.sommet_arrive = sommet_arrive
 
     def __repr__(self):
