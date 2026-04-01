@@ -69,12 +69,10 @@ class Joueur_humain_console(Joueur_humain):
         
         return (depart, arrivee)
 
-
 class Joueur_IA(Joueur):
     def __init__(self, couleur):
         super().__init__(couleur)
      
-
 def lancer_partie(joueurs, est_en_ligne = False):
     partie = Partie(joueurs, est_en_ligne)
     partie.tour_de_jeu(0) # le joueur 0 commence
