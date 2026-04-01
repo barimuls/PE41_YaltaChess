@@ -21,7 +21,7 @@ def register(username,password,confirm_password):
     except sqlite3.IntegrityError:
         print("Erreur : identifiant déjà utilisé")
         return None
-    finally:
+    finally:    
         conn.close()
 
 def login(username,password):
