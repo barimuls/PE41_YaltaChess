@@ -237,7 +237,7 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
         return True 
     
     return None
-def tour_de_jeu_test_IA_optimisee_web_ou_on_dejoue(plateau, depart, arrivee):
+def tour_de_jeu_test(plateau, depart, arrivee):
     joueur = 0 #le vrai joueur
     if not coup_est_valide(plateau, depart, arrivee, joueur):
         return False
