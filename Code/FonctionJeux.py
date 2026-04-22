@@ -108,7 +108,7 @@ def remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur):
 
 def jouer_le_coup(plateau, joueur, depart, arrivee):
     #effectuer le coup
-  if plateau.sommets[depart].couleur==joueur: 
+ 
     piece = plateau.sommets[depart].piece;
     couleur = plateau.sommets[depart].couleur;
     plateau.sommets[depart].piece = None;
@@ -206,9 +206,7 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
   
     #mettre à jour la prise en passant
     remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur); #chelou que ce soit là et pas dans if piece==pion
-  else: 
-        raise Exception("Sorry, you are not allowed to do this")     
-
+  
 def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le dernier coup qui a été joué, notament pour les explorations des IAs
     # depart et arrivée est le coup qui a été joué et doit etre annulé
 
