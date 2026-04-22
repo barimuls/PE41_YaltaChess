@@ -291,6 +291,12 @@ function centerHTMLImageOnPolygon(polygonId, imgId) {
 
 function rotationPlateau(data, sens) {
     const pieces = data.plateau_pieces;
+    const cases = Object.keys(pieces);
+    if (sens != "none") {
+    for (const caseId of cases) {
+        Document.getElementById(caseId).id = (sens === "gauche") ? rotateLeft[caseId] : rotateRight[caseId];
+    }
+    }
 }
 
 
