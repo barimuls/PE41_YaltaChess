@@ -410,6 +410,6 @@ function getNbRotations(monIndex) {
     // monIndex : 0=blanc, 1=rouge, 2=noir
     // On veut que chaque joueur voie ses pièces en bas
     // blanc=0 rot, rouge=1 rot, noir=2 rot
-    return monIndex; // à ajuster selon le sens de votre plateau
+    return (3-monIndex)%3; // à ajuster selon le sens de votre plateau
 } // a mon avis ca sert à rien mais je laisse au cas où
 
