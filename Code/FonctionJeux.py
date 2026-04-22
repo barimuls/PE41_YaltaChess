@@ -108,16 +108,18 @@ def remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur):
 
 def jouer_le_coup(plateau, joueur, depart, arrivee):
     #effectuer le coup
+  if plateau.sommets[depart].couleur==joueur: 
     piece = plateau.sommets[depart].piece;
+    couleur = plateau.sommets[depart].couleur;
     plateau.sommets[depart].piece = None;
     plateau.sommets[depart].couleur = None;
     if plateau.sommets[arrivee].piece is not None:
         plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
     else:
-        plateau.pile_pieces_mangees.append(None)
+        plateau.pile_pieces_mangees.append((None,None))
     plateau.sommets[arrivee].piece = piece;
-    plateau.sommets[arrivee].couleur = joueur;
-
+    plateau.sommets[arrivee].couleur = couleur;
+  
     #cas ou on roque
     if piece == 'roi':
         #roque à gauche
@@ -159,7 +161,8 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
             chiffre_depart = depart[1:];
             lettre_arrivee = arrivee[0];
             plateau.sommets[lettre_arrivee + chiffre_depart].piece = None;
-            plateau.sommets[lettre_arrivee + chiffre_depart].couleur = None;
+            plateau.sommets[lettre_arrivee + chiffre_depart].couleur = None; #peu crédible
+    
            
     #cas ou on se deroque
     if piece == 'roi' and plateau.peut_roquer[joueur] != [False,False]:
@@ -200,10 +203,11 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
                 plateau.peut_roquer[joueur][1] = False;
     else:
         plateau.pile_pour_roque.append(None);
-        
+  
     #mettre à jour la prise en passant
-    remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur);
-
+    remplir_prise_en_passant(plateau,piece, depart, arrivee, joueur); #chelou que ce soit là et pas dans if piece==pion
+  else: 
+        raise Exception("Sorry, you are not allowed to do this")     
 
 def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le dernier coup qui a été joué, notament pour les explorations des IAs
     # depart et arrivée est le coup qui a été joué et doit etre annulé
@@ -214,9 +218,6 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le
         #print(" ligne 177, normalement il faut rendre la piece " + str(piece_mangee) + " arrive " + arrivee + " depart " + depart)
         plateau.sommets[arrivee].piece = piece_mangee[0];
         plateau.sommets[arrivee].couleur = piece_mangee[1];
-    else:
-        plateau.sommets[arrivee].piece = None;
-        plateau.sommets[arrivee].couleur = None;
 
     plateau.sommets[depart].piece = piece;
     plateau.sommets[depart].couleur = joueur;

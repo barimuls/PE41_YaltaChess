@@ -237,7 +237,37 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
         return True 
     
     return None
+def tour_de_jeu_test_IA_optimisee_web_ou_on_dejoue(plateau, depart, arrivee):
+    joueur = 0 #le vrai joueur
+    if not coup_est_valide(plateau, depart, arrivee, joueur):
+        return False
 
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA
+    joueur =1 #IA
+    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True
+    
+    #tour de l'IA 2
+    joueur =2 #IA
+    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur);
+    depart = coups[0];
+    arrivee = coups[1];
+    jouer_le_coup(plateau, joueur, depart, arrivee);
+    #verifier la condition de victoire
+    if verifier_victoire(plateau, joueur):
+        return True 
+    
+    return None
 
 
 #----------------------Test----------------------
