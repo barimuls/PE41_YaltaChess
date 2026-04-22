@@ -116,7 +116,7 @@ def jouer_le_coup(plateau, joueur, depart, arrivee):
     if plateau.sommets[arrivee].piece is not None:
         plateau.pile_pieces_mangees.append((plateau.sommets[arrivee].piece , plateau.sommets[arrivee].couleur)) 
     else:
-        plateau.pile_pieces_mangees.append((None,None))
+        plateau.pile_pieces_mangees.append(None)
     plateau.sommets[arrivee].piece = piece;
     plateau.sommets[arrivee].couleur = couleur;
   
@@ -216,7 +216,9 @@ def dejouer_le_coup(plateau,joueur ,depart, arrivee): # On cherche à annuler le
         #print(" ligne 177, normalement il faut rendre la piece " + str(piece_mangee) + " arrive " + arrivee + " depart " + depart)
         plateau.sommets[arrivee].piece = piece_mangee[0];
         plateau.sommets[arrivee].couleur = piece_mangee[1];
-
+    else:
+        plateau.sommets[arrivee].piece =None;
+        plateau.sommets[arrivee].couleur =None;
     plateau.sommets[depart].piece = piece;
     plateau.sommets[depart].couleur = joueur;
 
