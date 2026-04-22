@@ -170,14 +170,14 @@ def receive_arrivee(game_id):
         elif game["mode"] == "ia_aleatoire":
             ok = tour_de_jeu_avec_IA_web(game["plateau"], depart, arrivee)
         elif game["mode"]=="ia_min_min_max":
-            ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
+            #ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
+            ok = tour_de_jeu_test(game["plateau"], depart, arrivee) 
         elif len(game["mode"]) >=8 and game["mode"][:8]=="tutoriel":
             ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
         elif game["mode"] == "multijoueur":
             ok = tour_de_jeu_web(game["plateau"], game["players"].index(game["player"]), depart, arrivee)
         elif game["mode"] == "test":
-            pass
-            ok = tour_de_jeu_test(game["plateau"], depart, arrivee)  
+             pass #à implémenter pour mesurer le temps de calcul de chaque IA
         if ok == False:
             print(depart, arrivee)
             return jsonify({"reponse": "Mouvement invalide"})
