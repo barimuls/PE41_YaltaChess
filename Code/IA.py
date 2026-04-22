@@ -437,7 +437,7 @@ def choisir_coup_minimax_ou_on_dejoue(plateau , couleur):
 def choisir_coup_IA_optimisee_ou_on_dejoue(plateau , couleur):
     plateau_copie = copy.deepcopy(plateau) #criminel
     meilleur_coup = evaluation_rec_avantage_ou_on_dejoue(plateau_copie, couleur, 1)
-    return (meilleur_coup[3], meilleur_coup[4]);
+    return (meilleur_coup[3], meilleur_coup[4])
 
 def est_attaquee_par(plateau, case, couleur):
     for c in plateau.sommets:
