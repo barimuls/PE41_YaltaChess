@@ -177,7 +177,7 @@ def receive_arrivee(game_id):
             ok = tour_de_jeu_web(game["plateau"], game["players"].index(game["player"]), depart, arrivee)
         elif game["mode"] == "test":
             pass
-            ok = tour_de_jeu_test()  
+            ok = tour_de_jeu_test(game["plateau"], depart, arrivee)  
         if ok == False:
             print(depart, arrivee)
             return jsonify({"reponse": "Mouvement invalide"})
