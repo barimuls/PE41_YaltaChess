@@ -3,6 +3,22 @@ let couleur = "blanc";
 let cmpt = 0;
 let mode = "3joueurs";
 
+let monIndex = 0;
+
+// Au chargement de la page, on récupère qui on est
+fetch("/game/search_player/" + gameId, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+})
+.then(res => res.json())
+.then(data2 => {
+    console.log("Réponse seach_player:", data2);
+    const couleurToIndex = { blanc: 0, rouge: 1, noir: 2 };
+    monIndex = couleurToIndex[data2.player_index] ?? 0;
+    console.log("Je suis le joueur :", data2.player_index, "→ index", monIndex);
+})
+.catch(() => { monIndex = 0; });
+
 const rotateLeft = {A1 : "L8", A2 : "L7", A3 : "L6", A4 : "L5", A5 : "L9", A6 : "L10", A7 : "L11", A8 : "L12",
                     B1 : "K8", B2 : "K7", B3 : "K6", B4 : "K5", B5 : "K9", B6 : "K10", B7 : "K11", B8 : "K12",
                     C1 : "J8", C2 : "J7", C3 : "J6", C4 : "J5", C5 : "J9", C6 : "J10", C7 : "J11", C8 : "J12",
@@ -93,8 +109,9 @@ function sendValue(maValeur) {
         // Rotation inverse : on applique rotateRight nbRot fois
         let vraiCase = maValeur;
         for (let i = 0; i < nbRot; i++) {
-            vraiCase = rotateRight[vraiCase] ?? vraiCase;
+            vraiCase = rotateLeft[vraiCase] ?? vraiCase;
         }
+        console.log("Clic visuel:", maValeur, "/ monIndex:", monIndex, "/nbRot:", nbRot, "Case envoyée", vraiCase);
         maValeur = vraiCase;
     }
 
@@ -197,7 +214,7 @@ socket.on('connect', () => {
 
 // ---  Réception des mises à jour automatiques du plateau ---
 // Variable globale pour stocker l'index du joueur local
-let monIndex = 0; // 0=blanc par défaut
+monIndex = 0; // 0=blanc par défaut
 
 socket.on('update', data => {
     if (!gameId || data.game_id !== gameId) return;
@@ -232,9 +249,6 @@ socket.on('update', data => {
         const joueurEl = document.getElementById("joueur");
         if (joueurEl) { joueurEl.textContent = data2.player_index; }
 
-        // Calculer le nombre de rotations selon le joueur local
-        const couleurToIndex = { blanc: 0, rouge: 1, noir: 2 };
-        monIndex = couleurToIndex[data2.player_index] ?? 0;
         const nbRot = getNbRotations(monIndex);
 
         // Remapper les données du plateau selon la rotation
