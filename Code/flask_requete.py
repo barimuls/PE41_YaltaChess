@@ -10,6 +10,7 @@ import jwt
 from datetime import UTC, datetime, timedelta
 import sqlite3
 from collections import deque
+
 lobby = deque()
 
 dir = os.getcwd()
