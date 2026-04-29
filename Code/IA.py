@@ -91,7 +91,7 @@ def score_pression(plateau, couleur):
                         pression += 0.5
                         break
     return pression   
-Mate_score=10^9
+Mate_score=10**9
 def danger_attaquants(n):
     if n <= 0:
         return 0
@@ -188,9 +188,9 @@ def calculer_heuristiques(plateau : Plateau) -> list[float]: # liste de taille 3
             
             # calcul du controle,menace et protection
             coup_deplacement_mange_protege = plateau.deplacement_mange_protege(case)
-            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.05
-            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.1
-            score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.1
+            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.001
+            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
+            score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.004
     
     heuristiques = [0,0,0]
     for i in range(3):
@@ -207,8 +207,13 @@ def evaluation_rec_avantage_ou_on_dejoue(plateau, couleur, profondeur):
     if profondeur == 0:
         heuristique=calculer_heuristiques(plateau)
         return [heuristique[0],heuristique[1],heuristique[2],None,None];
+    
     liste_coups = coup_possible(plateau, couleur)
 
+    if not liste_coups:
+        heuristique = calculer_heuristiques(plateau)
+        return [heuristique[0], heuristique[1], heuristique[2], None, None]
+    
     meilleur_score = -float('inf');
     meilleur_coup = None;
 
@@ -216,9 +221,8 @@ def evaluation_rec_avantage_ou_on_dejoue(plateau, couleur, profondeur):
     for coup in liste_coups:
         depart = coup[0]
         for arrivee in coup[1]:
-            # Copie profonde du plateau
             
-
+            #plateau_copie = copy.deepcopy(plateau)
             jouer_le_coup(plateau, couleur, depart, arrivee)
 
             #Appel récursif pour la couleur suivante
@@ -232,6 +236,7 @@ def evaluation_rec_avantage_ou_on_dejoue(plateau, couleur, profondeur):
             
     return meilleur_coup;
     
+
 def evaluation_rec_heuristique(plateau, couleur, profondeur):
     if profondeur == 0:
         return [score(plateau,0),score(plateau,1),score(plateau,2),None,None];
@@ -434,9 +439,9 @@ def choisir_coup_minimax_ou_on_dejoue(plateau , couleur):
     plateau_copie = copy.deepcopy(plateau)
     meilleur_coup = evaluation_rec_heuristique_ou_on_dejoue(plateau_copie, couleur, 1)
     return (meilleur_coup[3], meilleur_coup[4]);
-def choisir_coup_IA_optimisee_ou_on_dejoue(plateau , couleur):
+def choisir_coup_IA_optimisee_ou_on_dejoue(plateau , couleur , profondeur=1 ):
     plateau_copie = copy.deepcopy(plateau) #criminel
-    meilleur_coup = evaluation_rec_avantage_ou_on_dejoue(plateau_copie, couleur, 1)
+    meilleur_coup = evaluation_rec_avantage_ou_on_dejoue(plateau_copie, couleur, profondeur)
     return (meilleur_coup[3], meilleur_coup[4]);
 
 def est_attaquee_par(plateau, case, couleur):
@@ -462,18 +467,73 @@ if __name__ == "__main__":
     plateau.remplir_arete()
     
     plateau.remplir_pieces_initiales()
-    print('heuristiques : ',calculer_heuristiques(plateau))
+    #print('heuristiques : ',calculer_heuristiques(plateau))
     
-    print(plateau.deplacement_mange_protege("a2"))
-    print(plateau.deplacement_mange_protege("a1"))
-    print(plateau.deplacement_mange_protege("b1"))
+    # print(plateau.deplacement_mange_protege("a2"))
+    # print(plateau.deplacement_mange_protege("a1"))
+    # print(plateau.deplacement_mange_protege("b1"))
     
-    plateau.sommets["a3"].piece = "tour"
-    plateau.sommets["a3"].couleur = 1
+    # plateau.sommets["a3"].piece = "tour"
+    # plateau.sommets["a3"].couleur = 1
     
-    print('heuristiques : ',calculer_heuristiques(plateau))
+    # print('heuristiques : ',calculer_heuristiques(plateau))
     
-    print(plateau.deplacement_mange_protege("b1"))
+    # print(plateau.deplacement_mange_protege("b1"))
+    
+    
+    import time
+    
+    #test temps choisir coup
+    k =1
+    profondeur = 1
+    start_time = time.time()    
+    for _ in range(k):
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
+    end_time = time.time()
+    print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
+    
+    profondeur = 3
+    start_time = time.time()    
+    for _ in range(k):
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
+    end_time = time.time()
+    print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
+    
+    profondeur = 1
+    start_time = time.time()    
+    for _ in range(k):
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
+    end_time = time.time()
+    print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
+    
+    
+    
+    # ---- teste du temps des heuristiques ----
+    # k = 100
+    
+    # start_time = time.time()    
+    # for _ in range(k):
+    #     calculer_heuristiques(plateau)
+    # end_time = time.time()
+    # print(f"Moyenne des temps pour {k} calculs d'heuristiques avec calculer_heuristiques: {(end_time - start_time) / k:.4f} secondes")
+    
+    # start_time = time.time()    
+    # for _ in range(10):
+    #     heuristic(plateau,1)
+    # end_time = time.time()
+    # print(f"Moyenne des temps pour {k} calculs d'heuristiques avec heuristic: {(end_time - start_time) / k:.4f} secondes")
+   
+    
+    # start_time = time.time()    
+    # for _ in range(k):
+    #     heuristique_v1 (plateau,1)
+    # end_time = time.time()
+    # print(f"Moyenne des temps pour {k} calculs d'heuristiques avec heuristique_v1: {(end_time - start_time) / k:.4f} secondes")
+    
+    
+    
+    
+    
     
     
     
