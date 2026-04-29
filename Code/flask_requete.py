@@ -176,6 +176,7 @@ def receive_arrivee(game_id):
             ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
         elif game["mode"] == "multijoueur":
             ok = tour_de_jeu_web(game["plateau"], game["players"].index(game["player"]), depart, arrivee)
+            game["player"] = game["players"][(game["players"].index(game["player"])+1)%3] # passe au joueur suivant
         elif game["mode"] == "test":
              pass #à implémenter pour mesurer le temps de calcul de chaque IA
         if ok == False:
@@ -329,6 +330,7 @@ def envoyer_mise_a_jour(game_id):
         joueur = (games[game_id]["compteur_tour"])%3
     elif games[game_id]["mode"] == "multijoueur":
         joueur = games[game_id]["player"]
+        print("Joueur actuel:", joueur)
     else:
         joueur = 0
     socketio.emit('update', {'game_id': game_id, 'plateau_pieces': games[game_id]["plateau_pieces"], 'plateau_couleurs': games[game_id]["plateau_couleurs"], 'joueur' : joueur, 'mode': games[game_id]["mode"]}, room=game_id)

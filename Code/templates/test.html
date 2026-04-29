@@ -5,14 +5,30 @@
     <title>Logo aligné</title>
     </head>
 <body>
-    <svg onclick="" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <!-- Cercle extérieur -->
-        <circle cx="100" cy="100" r="90" fill="none" stroke="black" stroke-width="4" />
-        <!-- Tête -->
-        <circle cx="100" cy="70" r="30" fill="none" stroke="black" stroke-width="4" />
-        <!-- Torse (haut d’un ovale) -->
-        <path d="M 50 145 Q 100 90 150 145" fill="none" stroke="black" stroke-width="4" />
-    </svg>
-
+    <img id="logo" style="pointer-events: none;" src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="100" onclick="message()">
+    <button onclick="compteur()">Cliquez ici</button>
 </body>
+<script>
+    var a = 0;
+
+    function message() {
+        alert("Logo cliqué !");
+    }
+    function compteur() {
+        a += 1;
+        a = a%3;
+        console.log(a);
+        if (a == 2) {
+            activation();
+        }
+    }
+    function activation() {
+        var a = document.getElementById("logo").style.pointerEvents;
+        if (a == "none") {
+            document.getElementById("logo").style.pointerEvents = "auto";
+        } else {
+            document.getElementById("logo").style.pointerEvents = "none";
+        }
+    }
+</script>
 </html>
