@@ -188,9 +188,9 @@ def calculer_heuristiques(plateau : Plateau) -> list[float]: # liste de taille 3
             
             # calcul du controle,menace et protection
             coup_deplacement_mange_protege = plateau.deplacement_mange_protege(case)
-            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.01
-            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.07
-            score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.04
+            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.001
+            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
+            score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.004
     
     heuristiques = [0,0,0]
     for i in range(3):
@@ -207,6 +207,7 @@ def evaluation_rec_avantage_ou_on_dejoue(plateau, couleur, profondeur):
     if profondeur == 0:
         heuristique=calculer_heuristiques(plateau)
         return [heuristique[0],heuristique[1],heuristique[2],None,None];
+    
     liste_coups = coup_possible(plateau, couleur)
 
     if not liste_coups:
@@ -221,17 +222,17 @@ def evaluation_rec_avantage_ou_on_dejoue(plateau, couleur, profondeur):
         depart = coup[0]
         for arrivee in coup[1]:
             
-            plateau_copie = copy.deepcopy(plateau)
-            jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+            #plateau_copie = copy.deepcopy(plateau)
+            jouer_le_coup(plateau, couleur, depart, arrivee)
 
             #Appel récursif pour la couleur suivante
-            evaluation = evaluation_rec_avantage_ou_on_dejoue(plateau_copie, (couleur+1)%3, profondeur-1)
+            evaluation = evaluation_rec_avantage_ou_on_dejoue(plateau, (couleur+1)%3, profondeur-1)
             
             heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
             if heuristic > meilleur_score:
                 meilleur_score = heuristic
                 meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
-            #dejouer_le_coup(plateau, couleur, depart, arrivee)
+            dejouer_le_coup(plateau, couleur, depart, arrivee)
             
     return meilleur_coup;
     
@@ -483,25 +484,25 @@ if __name__ == "__main__":
     import time
     
     #test temps choisir coup
-    k =10
+    k =1
     profondeur = 1
     start_time = time.time()    
     for _ in range(k):
-        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,profondeur)
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
     end_time = time.time()
     print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
     
     profondeur = 3
     start_time = time.time()    
     for _ in range(k):
-        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,profondeur)
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
     end_time = time.time()
     print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
     
     profondeur = 1
     start_time = time.time()    
     for _ in range(k):
-        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,profondeur)
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
     end_time = time.time()
     print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
     

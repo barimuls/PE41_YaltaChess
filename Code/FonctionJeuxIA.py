@@ -249,7 +249,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     
     #tour de l'IA
     joueur =1 #IA
-    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur,3);
+    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur,2);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
