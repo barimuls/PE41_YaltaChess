@@ -32,6 +32,8 @@ const rotateLeft = {A1 : "L8", A2 : "L7", A3 : "L6", A4 : "L5", A5 : "L9", A6 : 
                     F12 : "C1", F11 : "C2", F10 : "C3", F9 : "C4", F4 : "C5", F3 : "C6", F2 : "C7", F1 : "C8",
                     E12 : "D1", E11 : "D2", E10 : "D3", E9 : "D4", E4 : "D5", E3 : "D6", E2 : "D7", E1 : "D8"};
 
+console.log(rotateLeft["A1"]); // devrait afficher "L8"
+
 const rotateRight = {};
 for (const from in rotateLeft) {
     const to = rotateLeft[from];
@@ -189,11 +191,11 @@ function sendValue(maValeur) {
                 el.style.pointerEvents = "auto";
             }
         }
-
+        const nbRot = getNbRotations(monIndex);
         // Coups possibles (clic 1)
         if (data.coup_possible) {
             for (const caseId of data.coup_possible) {
-                highlightCase(caseId);
+                highlightCase(rotateCase(caseId, nbRot));
             }
         }
     })
@@ -220,13 +222,15 @@ socket.on('update', data => {
     if (!gameId || data.game_id !== gameId) return;
 
     mode = data.mode;
-
+    const couleurToIndex = { blanc: 0, rouge: 1, noir: 2 };
+    joueurActuel = couleurToIndex[data.joueur] ?? 0;
+    console.log("joueur:", joueurActuel);
     // Mise à jour des indicateurs de tour
-    if (data.joueur === 0) {
+    if (joueurActuel === 0) {
         document.getElementById("t_blanc").setAttribute("fill", "#769656");
         document.getElementById("t_rouge").setAttribute("fill", "#FFFFFF");
         document.getElementById("t_noir").setAttribute("fill", "#FFFFFF");
-    } else if (data.joueur === 1) {
+    } else if (joueurActuel === 1) {
         document.getElementById("t_blanc").setAttribute("fill", "#FFFFFF");
         document.getElementById("t_rouge").setAttribute("fill", "#769656");
         document.getElementById("t_noir").setAttribute("fill", "#FFFFFF");
@@ -260,7 +264,7 @@ socket.on('update', data => {
         const dataRotated = { ...data, plateau_pieces: piecesRot, plateau_couleurs: couleursRot };
 
         // Afficher les pièces avec la rotation appliquée
-        genererToutesLesPieces(dataRotated);
+        genererToutesLesPieces(dataRotated, nbRot);
 
         // Vérification promotion sur les données remappées
         for (const caseId in piecesRot) {
@@ -275,7 +279,7 @@ socket.on('update', data => {
     .catch(err => {
         // En mode non-multijoueur, search_player retourne null → on affiche sans rotation
         console.warn("Pas de joueur trouvé, affichage sans rotation");
-        genererToutesLesPieces(data);
+        genererToutesLesPieces(data, 0);
 
         // Vérification promotion sans rotation
         for (const caseId in data.plateau_pieces) {
@@ -307,8 +311,8 @@ function polygonCentroid(points) {
     return { x: cx, y: cy };
 }
 
-function centerHTMLImageOnPolygon(polygonId, imgId) {
-    const polygon = document.getElementById(polygonId);
+function centerHTMLImageOnPolygon(polygonId, imgId, nbRot) {
+    const polygon = document.getElementById(rotateCase(polygonId, nbRot));
     const img = document.getElementById(imgId);
     const main = document.querySelector("main");
 
@@ -343,18 +347,9 @@ function centerHTMLImageOnPolygon(polygonId, imgId) {
     img.style.transform = "translate(-50%, -50%)";
 }
 
-function rotationPlateau(data, sens) {
-    const pieces = data.plateau_pieces;
-    const cases = Object.keys(pieces);
-    if (sens != "none") {
-    for (const caseId of cases) {
-        document.getElementById(caseId).id = (sens === "gauche") ? rotateLeft[caseId] : rotateRight[caseId];
-    }
-    }
-}
 
 
-function genererToutesLesPieces(data) {
+function genererToutesLesPieces(data, nbRot) {
     const pieces = data.plateau_pieces;
     console.log("Pièces sur le plateau :", pieces);
     const couleurs = data.plateau_couleurs;
@@ -386,7 +381,7 @@ function genererToutesLesPieces(data) {
         img.style.userSelect = "none";
 
         main.appendChild(img);
-        centerHTMLImageOnPolygon(caseId, imgId);
+        centerHTMLImageOnPolygon(caseId, imgId, nbRot);
 
     }
 }
@@ -405,7 +400,6 @@ function rotateCase(caseId, n) {
     }
     return result;
 }
-
 // Retourne un nouveau plateau_pieces/couleurs avec les cases remappées
 function remapPlateau(pieces, couleurs, nbRotations) {
     if (nbRotations === 0) return { pieces, couleurs };
@@ -413,10 +407,11 @@ function remapPlateau(pieces, couleurs, nbRotations) {
     const newCouleurs = {};
     for (const caseId in pieces) {
         const newId = rotateCase(caseId, nbRotations);
-        newPieces[newId] = pieces[caseId];
-        newCouleurs[newId] = couleurs[caseId];
+        document.getElementById(caseId).setAttribute("onclick", `sendValue("${newId}")`); // met à jour l'attribut onclick
+        document.getElementById(caseId+'-text').setAttribute("onclick", `sendValue("${newId}")`); // met à jour l'attribut onclick du texte
+        document.getElementById(caseId+'-text').textContent = newId; // met à jour le texte affiché
     }
-    return { pieces: newPieces, couleurs: newCouleurs };
+    return { pieces, couleurs};
 }
 
 // Détermine combien de rotations appliquer selon le joueur local
