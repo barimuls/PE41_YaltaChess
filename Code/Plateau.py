@@ -1244,9 +1244,9 @@ class Plateau:
         #verification que la case est occupée par une pièce adverse
         for coup in liste_coups_diago:
             if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=2:
-                liste_coups.append(coup)
+                liste_coups_mange.append(coup)
             elif coup == self.prise_en_passant[0] or coup == self.prise_en_passant[1]: #prise en passant
-                liste_coups.append(coup)
+                liste_coups_mange.append(coup)
         
         #----------------on filtre les coups qui reculent
         liste_des_coups_a_retirer=[];

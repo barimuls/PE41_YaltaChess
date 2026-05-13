@@ -188,7 +188,7 @@ def calculer_heuristiques(plateau : Plateau) -> list[float]: # liste de taille 3
             
             # calcul du controle,menace et protection
             coup_deplacement_mange_protege = plateau.deplacement_mange_protege(case)
-            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.001
+            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.01
             score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
             score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.004
     
