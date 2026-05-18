@@ -387,10 +387,14 @@ class Plateau:
     def remplir_tutoriel_tour(self):
         self.sommets['a1'].piece='tour'
         self.sommets['a1'].couleur=0
+        self.sommets['h1'].piece='tour'
+        self.sommets['h1'].couleur=0
     
     def remplir_tutoriel_fou(self):
         self.sommets['c1'].piece='fou'
         self.sommets['c1'].couleur=0
+        self.sommets['f1'].piece='fou'
+        self.sommets['f1'].couleur=0
 
     def remplir_tutoriel_dame(self):
         self.sommets['d1'].piece='dame'
@@ -401,12 +405,42 @@ class Plateau:
         self.sommets['e1'].couleur=0
     
     def remplir_tutoriel_pion(self):
+        self.sommets['a2'].piece='pion'
+        self.sommets['a2'].couleur=0
+        self.sommets['b2'].piece='pion'
+        self.sommets['b2'].couleur=0
+        self.sommets['c2'].piece='pion'
+        self.sommets['c2'].couleur=0
         self.sommets['d2'].piece='pion'
         self.sommets['d2'].couleur=0
+        self.sommets['e2'].piece='pion'
+        self.sommets['e2'].couleur=0
+        self.sommets['f2'].piece='pion'
+        self.sommets['f2'].couleur=0
+        self.sommets['g2'].piece='pion'
+        self.sommets['g2'].couleur=0
+        self.sommets['h2'].piece='pion'
+        self.sommets['h2'].couleur=0
     
     def remplir_tutoriel_cavalier(self):
         self.sommets['b1'].piece='cavalier'
         self.sommets['b1'].couleur=0
+        self.sommets['g1'].piece='cavalier'
+        self.sommets['g1'].couleur=0
+
+    def remplir_tutoriel_roque(self):
+        self.sommets['e1'].piece='roi'
+        self.sommets['e1'].couleur=0
+        self.sommets['a1'].piece='tour'
+        self.sommets['a1'].couleur=0
+        self.sommets['h1'].piece='tour'
+        self.sommets['h1'].couleur=0
+    
+    def remplir_tutoriel_passant(self):
+        self.sommets['d4'].piece='pion'
+        self.sommets['d4'].couleur=0
+        self.sommets['i7'].piece='pion'
+        self.sommets['i7'].couleur=1
 
     def afficher_aretes(self):
         print("=== ARÊTES DU GRAPHE ===\n")
