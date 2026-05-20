@@ -182,14 +182,16 @@ def calculer_heuristiques(plateau : Plateau) -> list[float]: # liste de taille 3
     for case , _ in plateau.sommets.items():
         if plateau.sommets[case].piece is not None:
             couleur = plateau.sommets[case].couleur
-            piece = plateau.sommets[case].piece
+            piece_acuelle = plateau.sommets[case].piece
             # calcul avantage matériel
-            avantage_materiel[couleur] += valeur_piece[piece]
+            avantage_materiel[couleur] += valeur_piece[piece_acuelle]
             
             # calcul du controle,menace et protection
             coup_deplacement_mange_protege = plateau.deplacement_mange_protege(case)
-            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.001
-            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
+            nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.01
+            #score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
+            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece]for case in coup_deplacement_mange_protege[1]if plateau.sommets[case].piece is not None) * 0.007
+            # j'ai mis la poussière sous le tapis, si quelqu'un à le courage de s'en occuper il peut
             score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.004
     
     heuristiques = [0,0,0]
@@ -444,6 +446,7 @@ def choisir_coup_IA_optimisee_ou_on_dejoue(plateau , couleur , profondeur=1 ):
     meilleur_coup = evaluation_rec_avantage_ou_on_dejoue(plateau_copie, couleur, profondeur)
     return (meilleur_coup[3], meilleur_coup[4]);
 
+
 def est_attaquee_par(plateau, case, couleur):
     for c in plateau.sommets:
         s = plateau.sommets[c]
@@ -460,6 +463,284 @@ def nombre_attaquants(plateau, case, couleur):
                 n += 1
     return n
 
+# ----------------------Parrallélisme----------------------
+from concurrent.futures import ProcessPoolExecutor
+import math
+
+
+def evaluer_branche(args):
+    plateau, couleur, profondeur, depart, arrivee = args
+
+    plateau_copie = copy.deepcopy(plateau)
+
+    jouer_le_coup(plateau_copie, couleur, depart, arrivee)
+
+    evaluation = evaluation_rec_avantage_ou_on_dejoue(
+        plateau_copie,
+        (couleur + 1) % 3,
+        profondeur - 1
+    )
+
+    heuristic = (
+        evaluation[couleur]
+        - 0.5 * evaluation[(couleur + 1) % 3]
+        - 0.5 * evaluation[(couleur + 2) % 3]
+    )
+
+    return (
+        heuristic,
+        evaluation[0],
+        evaluation[1],
+        evaluation[2],
+        depart,
+        arrivee
+    )
+
+def evaluation_rec_parallele(plateau, couleur, profondeur):
+
+    if profondeur == 0:
+        heuristique = calculer_heuristiques(plateau)
+        return [heuristique[0], heuristique[1], heuristique[2], None, None]
+
+    liste_coups = coup_possible(plateau, couleur)
+
+    if not liste_coups:
+        heuristique = calculer_heuristiques(plateau)
+        return [heuristique[0], heuristique[1], heuristique[2], None, None]
+
+    # Préparer les tâches
+    taches = []
+
+    for coup in liste_coups:
+        depart = coup[0]
+
+        for arrivee in coup[1]:
+            taches.append(
+                (
+                    plateau,
+                    couleur,
+                    profondeur,
+                    depart,
+                    arrivee
+                )
+            )
+
+    meilleur_score = -math.inf
+    meilleur_coup = None
+
+    with ProcessPoolExecutor() as executor:
+
+        resultats = executor.map(evaluer_branche, taches)
+
+        for resultat in resultats:
+
+            heuristic, s0, s1, s2, depart, arrivee = resultat
+
+            if heuristic > meilleur_score:
+                meilleur_score = heuristic
+                meilleur_coup = (s0, s1, s2, depart, arrivee)
+
+    return meilleur_coup
+
+def choisir_coup_IA_optimisee_parallele(plateau , couleur , profondeur=1 ):
+    meilleur_coup = evaluation_rec_parallele(plateau, couleur, profondeur)
+    return (meilleur_coup[3], meilleur_coup[4]);
+
+# ----------------------Paranoid Alpha-Beta----------------------
+
+def evaluation_paranoid_alpha_beta(
+    plateau,
+    joueur_racine,
+    joueur_actuel,
+    profondeur,
+    alpha,
+    beta
+):
+
+    # -------------------------------------------------
+    # FIN RECURSION
+    # -------------------------------------------------
+
+    if profondeur == 0:
+
+        h = calculer_heuristiques(plateau)
+
+        score = (
+            h[joueur_racine]
+            - 0.5 * h[(joueur_racine + 1) % 3]
+            - 0.5 * h[(joueur_racine + 2) % 3]
+        )
+
+        return score, None
+
+
+    liste_coups = coup_possible(plateau, joueur_actuel)
+
+    if not liste_coups:
+
+        h = calculer_heuristiques(plateau)
+
+        score = (
+            h[joueur_racine]
+            - 0.5 * h[(joueur_racine + 1) % 3]
+            - 0.5 * h[(joueur_racine + 2) % 3]
+        )
+
+        return score, None
+
+
+    # -------------------------------------------------
+    # FLATTEN + MOVE ORDERING
+    # -------------------------------------------------
+
+    coups_plats = []
+
+    for coup in liste_coups:
+
+        depart = coup[0]
+
+        for arrivee in coup[1]:
+
+            score_ordre = 0
+
+            # Priorité aux captures
+            piece_mangee = plateau.sommets[arrivee].piece
+
+            if piece_mangee is not None:
+
+                valeur_capture = {
+                    "P": 1,
+                    "C": 3,
+                    "F": 3,
+                    "T": 5,
+                    "D": 9,
+                    "R": 100
+                }
+
+                score_ordre = valeur_capture.get(piece_mangee, 0)
+
+            coups_plats.append(
+                (score_ordre, depart, arrivee)
+            )
+
+
+    # Explorer les meilleurs coups d'abord
+    coups_plats.sort(reverse=True)
+
+
+    # -------------------------------------------------
+    # MAX NODE
+    # -------------------------------------------------
+
+    if joueur_actuel == joueur_racine:
+
+        meilleur_score = -math.inf
+        meilleur_coup = None
+
+        for _, depart, arrivee in coups_plats:
+
+            jouer_le_coup(
+                plateau,
+                joueur_actuel,
+                depart,
+                arrivee
+            )
+
+            score, _ = evaluation_paranoid_alpha_beta(
+                plateau,
+                joueur_racine,
+                (joueur_actuel + 1) % 3,
+                profondeur - 1,
+                alpha,
+                beta
+            )
+
+            dejouer_le_coup(
+                plateau,
+                joueur_actuel,
+                depart,
+                arrivee
+            )
+
+            if score > meilleur_score:
+
+                meilleur_score = score
+                meilleur_coup = (depart, arrivee)
+
+            alpha = max(alpha, score)
+
+            # ALPHA-BETA CUT
+            if beta <= alpha:
+                break
+
+        return meilleur_score, meilleur_coup
+
+
+    # -------------------------------------------------
+    # MIN NODE
+    # -------------------------------------------------
+
+    else:
+
+        pire_score = math.inf
+        pire_coup = None
+
+        for _, depart, arrivee in coups_plats:
+
+            jouer_le_coup(
+                plateau,
+                joueur_actuel,
+                depart,
+                arrivee
+            )
+
+            score, _ = evaluation_paranoid_alpha_beta(
+                plateau,
+                joueur_racine,
+                (joueur_actuel + 1) % 3,
+                profondeur - 1,
+                alpha,
+                beta
+            )
+
+            dejouer_le_coup(
+                plateau,
+                joueur_actuel,
+                depart,
+                arrivee
+            )
+
+            if score < pire_score:
+
+                pire_score = score
+                pire_coup = (depart, arrivee)
+
+            beta = min(beta, score)
+
+            # ALPHA-BETA CUT
+            if beta <= alpha:
+                break
+
+        return pire_score, pire_coup
+
+def choisir_coup_paranoid_alpha_beta(
+    plateau,
+    couleur,
+    profondeur
+):
+
+    score, coup = evaluation_paranoid_alpha_beta(
+        plateau,
+        couleur,
+        couleur,
+        profondeur,
+        -math.inf,
+        math.inf
+    )
+
+    return coup
+
+
 
 if __name__ == "__main__":
     
@@ -467,7 +748,35 @@ if __name__ == "__main__":
     plateau.remplir_arete()
     
     plateau.remplir_pieces_initiales()
-    #print('heuristiques : ',calculer_heuristiques(plateau))
+    print('heuristiques : ',calculer_heuristiques(plateau))
+    print(choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,2))
+    print(evaluation_rec_parallele(plateau,0,2))
+    print(choisir_coup_paranoid_alpha_beta(plateau,0,2))
+
+    
+    #test parallelisme
+    import time
+    k = 2
+    profondeur = 3
+    
+    start_time = time.time()
+    for _ in range(k):
+        choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
+    end_time = time.time()
+    print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
+    
+    start_time = time.time()
+    for _ in range(k):
+        evaluation_rec_parallele(plateau, 0, profondeur)
+    end_time = time.time()
+    print(f"Parallele - Moyenne temps : {k} coup , profondeur {profondeur}: {(end_time - start_time) / k:.4f} secondes")
+    
+    start_time = time.time()
+    for _ in range(k):
+        choisir_coup_paranoid_alpha_beta(plateau, 0, profondeur)
+    end_time = time.time()
+    print(f"Paranoid Alpha-Beta - Moyenne temps : {k} coup , profondeur {profondeur}: {(end_time - start_time) / k:.4f} secondes")
+    
     
     # print(plateau.deplacement_mange_protege("a2"))
     # print(plateau.deplacement_mange_protege("a1"))
@@ -480,7 +789,7 @@ if __name__ == "__main__":
     
     # print(plateau.deplacement_mange_protege("b1"))
     
-    
+    '''
     import time
     
     #test temps choisir coup
@@ -505,7 +814,7 @@ if __name__ == "__main__":
         choisir_coup_IA_optimisee_ou_on_dejoue(plateau,0,profondeur)
     end_time = time.time()
     print(f"Moyenne temps : {k} coup , profondeur {profondeur}: choisir_coup_IA_optimisee_ou_on_dejoue: {(end_time - start_time) / k:.4f} secondes")
-    
+    '''
     
     
     # ---- teste du temps des heuristiques ----
