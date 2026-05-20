@@ -247,11 +247,11 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     if verifier_victoire(plateau, joueur):
         return True
     
-    profondeur = 1
+    profondeur = 3
     
     #tour de l'IA
     joueur =1 #IA
-    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur,profondeur);
+    coups = IA.choisir_coup_paranoid_alpha_beta(plateau,joueur,profondeur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
@@ -261,7 +261,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     
     #tour de l'IA 2
     joueur =2 #IA
-    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur,profondeur);
+    coups = IA.choisir_coup_paranoid_alpha_beta(plateau,joueur,profondeur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
@@ -298,6 +298,9 @@ def tour_de_jeu_IA_optimisee_ou_on_dejoue(plateau, joueur):
 
     #passer au joueur suivant
     tour_de_jeu_IA_optimisee_ou_on_dejoue(plateau, (joueur+1) %3);
+
+
+
 
 #----------------------Test----------------------
 if __name__ == "__main__":
