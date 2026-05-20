@@ -182,14 +182,16 @@ def calculer_heuristiques(plateau : Plateau) -> list[float]: # liste de taille 3
     for case , _ in plateau.sommets.items():
         if plateau.sommets[case].piece is not None:
             couleur = plateau.sommets[case].couleur
-            piece = plateau.sommets[case].piece
+            piece_acuelle = plateau.sommets[case].piece
             # calcul avantage matériel
-            avantage_materiel[couleur] += valeur_piece[piece]
+            avantage_materiel[couleur] += valeur_piece[piece_acuelle]
             
             # calcul du controle,menace et protection
             coup_deplacement_mange_protege = plateau.deplacement_mange_protege(case)
             nombre_case_controlees[couleur] += len(coup_deplacement_mange_protege[0]) * 0.01
-            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
+            #score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[1]) *0.007
+            score_pieces_menacees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece]for case in coup_deplacement_mange_protege[1]if plateau.sommets[case].piece is not None) * 0.007
+            # j'ai mis la poussière sous le tapis, si quelqu'un à le courage de s'en occuper il peut
             score_piece_protegees[couleur] += sum(valeur_piece_attaque_protege[plateau.sommets[case].piece] for case in coup_deplacement_mange_protege[2]) *0.004
     
     heuristiques = [0,0,0]

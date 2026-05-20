@@ -306,11 +306,11 @@ class Plateau:
                         couleur = case.couleur
                         piece = case.piece
                         if couleur == 0:
-                            print(f"\033[32m {nom_case}: {piece} \033[0m", end=" ")
+                            print(f"[B] {nom_case}: {piece}", end=" ")
                         elif couleur == 1:
-                            print(f"\033[31m {nom_case}: {piece} \033[0m", end=" ")
+                            print(f"[R] {nom_case}: {piece}", end=" ")
                         elif couleur == 2:
-                            print(f"\033[34m {nom_case}: {piece} \033[0m", end=" ")
+                            print(f"[N] {nom_case}: {piece}", end=" ")
 
             print(" ")
         
@@ -1245,8 +1245,11 @@ class Plateau:
         for coup in liste_coups_diago:
             if self.sommets[coup].piece is not None and self.sommets[coup].couleur !=2:
                 liste_coups_mange.append(coup)
+            elif self.sommets[coup].piece is not None and self.sommets[coup].couleur ==2:
+                liste_coups_protege.append(coup)
             elif coup == self.prise_en_passant[0] or coup == self.prise_en_passant[1]: #prise en passant
                 liste_coups_mange.append(coup)
+
         
         #----------------on filtre les coups qui reculent
         liste_des_coups_a_retirer=[];
