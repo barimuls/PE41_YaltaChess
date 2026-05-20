@@ -38,6 +38,10 @@ def nouvelle_partie(mode):
             plateau.remplir_tutoriel_pion()
         elif mode[9:] == 'roi':
             plateau.remplir_tutoriel_roi()
+        elif mode[9:] == 'roque':
+            plateau.remplir_tutoriel_roque()
+        elif mode[9:] == 'passant':
+            plateau.remplir_tutoriel_passant()
     else:
         plateau.remplir_pieces_initiales()
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
