@@ -30,12 +30,31 @@
             <span class="mon-bouton" id="tutoriel_avant" onclick="goToTutoriel(-1)">◀</span>
             <span class="mon-bouton" id="tutoriel_apres" onclick="goToTutoriel(1)">▶</span>
         </div>
-        <p class="tutorielid" id="tutoriel_tour">Tutoriel tour</p>
-        <p class="tutorielid" id="tutoriel_fou">Tutoriel fou</p>
-        <p class="tutorielid" id="tutoriel_dame">Tutoriel dame</p>
-        <p class="tutorielid" id="tutoriel_roi">Tutoriel roi</p>
-        <p class="tutorielid" id="tutoriel_pion">Tutoriel pion</p>
-        <p class="tutorielid" id="tutoriel_cavalier">Tutoriel cavalier</p>
+        <p class="tutorielid" id="tutoriel_tour">La Tour se déplace selon les lignes et les colonnes du plateau. <br>
+        Son déplacement est limité par l'obstruction d'autres pièces dans sa ligne de mire.</p>
+        <p class="tutorielid" id="tutoriel_fou">Le Fou se déplace en diagonale et toujours sur la couleur de sa case de départ.<br>
+        La particularité qui le rend plus fort que dans les échecs classiques est que lorsqu'il se retrouve sur une des grandes diagonales, qui relient des sommets du plateau,
+        il couvre les trois diagonales.
+        Son déplacement est aussi limité par l'obstruction d'autres pièces dans sa ligne de mire.</p>
+        <p class="tutorielid" id="tutoriel_dame">La Dame est toujours la pièce la plus puissante du jeu, combinant les déplacements de la Tour et du Fou.</p>
+        <p class="tutorielid" id="tutoriel_roi">Le Roi est la pièce que chaque joueur cherche à protéger à tout prix de la capture de ses adversaires.<br>
+        Il peut se déplacer sur les cases adjacentes à lui, dont celles en diagonales.<br>
+        Tout coup qui met le Roi en capture à une pièce ennemie est considéré comme interdit.</p>
+        <p class="tutorielid" id="tutoriel_pion">Le Pion est une pièce complexe.<br>
+        Le premier coup joué lui permet d'avancer d'une ou de deux cases au choix.
+        Il ne peut ensuite qu'avancer d'une case à la fois. <br>
+        Il peut capturer en diagonale devant lui.<br>
+        Enfin, arrivé au bout du plateau, il a accès à la promotion. Le joueur le transforme en une pièce de son choix (excepté le roi).</p>
+        <p class="tutorielid" id="tutoriel_cavalier">Le Cavalier se déplace en forme de “L” : 2 cases dans une direction puis 1 case perpendiculairement.<br>
+        Il est la seule pièce à pouvoir sauter par-dessus les autres pièces.</p>
+        <p class="tutorielid" id="tutoriel_roque">Le Roque est un coup spécial disponible 
+        lorsque le Roi n'a pas encore été déplacé depuis le début de la partie 
+        et que les cases qui le sépare d'une tour sont vacantes. <br>
+        Le déplacement est le suivant : le Roi se déplace de deux cases vers la Tour, puis elle se place à côté du roi, en passant par dessus celui-ci.<br>
+        <strong>ATTENTION</strong> : le Roi ne doit pas être mis en échec au cours de son déplacement, sans quoi le Roque est interdit.</p>
+        <p class="tutorielid" id="tutoriel_passant">La Prise en passant est un coup spécial disponible 
+        lorsque un pion ennemi se déplace de deux cases et qu'un de nos pions contrôlait la case que le pion a sautée.<br>
+        Il est alors possible de capturer le pion ennemi comme s'il ne s'était déplacé que d'une case.</p>
         <div class="bloc-boutons">
             <button class="mon-bouton" id="reset" onclick="sendValue('reset')">↻</button>
         </div>

@@ -7,14 +7,16 @@ const dico_tutoriel = {
     "tutoriel_dame": 2,
     "tutoriel_roi": 3,
     "tutoriel_pion": 4,
-    "tutoriel_cavalier": 5
+    "tutoriel_cavalier": 5,
+    "tutoriel_roque": 6,
+    "tutoriel_passant": 7
 };
 
-const liste_tutoriels = ["tutoriel_tour", "tutoriel_fou", "tutoriel_dame", "tutoriel_roi", "tutoriel_pion", "tutoriel_cavalier"];
+const liste_tutoriels = ["tutoriel_tour", "tutoriel_fou", "tutoriel_dame", "tutoriel_roi", "tutoriel_pion", "tutoriel_cavalier", "tutoriel_roque", "tutoriel_passant"];
 
 let tutorielId = document.body.dataset.tutoriel;
 console.log("Tutoriel ID :", tutorielId);
-if (tutorielId == "tutoriel_cavalier") {
+if (tutorielId == "tutoriel_passant") {
 document.getElementById("tutoriel_apres").style.display = "none";
 }
 if (tutorielId == "tutoriel_tour") {
@@ -53,7 +55,7 @@ function goToTutoriel(mode) {
     document.getElementById(mode).style.display = "flex";
     tutorielId = document.body.dataset.tutoriel;
     console.log("Tutoriel ID :", tutorielId);
-    if (tutorielId == "tutoriel_cavalier") {
+    if (tutorielId == "tutoriel_passant") {
         document.getElementById("tutoriel_apres").style.display = "none";
     }
     else if (tutorielId == "tutoriel_tour") {
