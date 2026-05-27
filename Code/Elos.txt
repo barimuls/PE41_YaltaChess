@@ -1,0 +1,2 @@
+Joueur_test;1000
+IA_test;1200
