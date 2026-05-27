@@ -114,7 +114,7 @@ function closeModal(piece) {
     sendValue(piece);
     document.getElementById('overlay').style.display = 'none';
 }
-// --- 1️⃣ Fonction pour envoyer les coups au backend Flask ---
+// --- 1 Fonction pour envoyer les coups au backend Flask ---
 function sendValue(maValeur) {
     clearAllHighlights();
 
