@@ -25,6 +25,7 @@ def nouvelle_partie(mode):
     plateau = creer_plateau()
     plateau.remplir_arete()
     #tutoriel
+    cp = None # coup passant utilisé uniquement pour le tutoriel du coup en passant
     if len(mode) >= 9 and mode[:8] == 'tutoriel':
         if mode[9:] == 'tour':
             plateau.remplir_tutoriel_tour()
@@ -42,6 +43,7 @@ def nouvelle_partie(mode):
             plateau.remplir_tutoriel_roque()
         elif mode[9:] == 'passant':
             plateau.remplir_tutoriel_passant()
+            cp = True #True = 1er coup et False = tous les autres coups
     else:
         plateau.remplir_pieces_initiales()
     plateau_pieces, plateau_couleurs = afficher_plateau_sur_site(plateau)
@@ -54,7 +56,8 @@ def nouvelle_partie(mode):
         "plateau_couleurs": plateau_couleurs,
         "mode": mode, # 3joueurs ou ia_min_min_max ou ia_aleatoire 
         "depart": None, # Case de départ sélectionnée
-        "arrivee": None # Case d'arrivée sélectionnée
+        "arrivee": None, # Case d'arrivée sélectionnée
+        "coup_passant": cp # Utilisé uniquement pour le tutoriel du coup en passant
         }
 
 def create_game(players):
@@ -178,7 +181,15 @@ def receive_arrivee(game_id):
             #ok = tour_de_jeu_IA_minimax_web_ou_on_dejoue(game["plateau"], depart, arrivee)
             ok = tour_de_jeu_test(game["plateau"], depart, arrivee) 
         elif len(game["mode"]) >=8 and game["mode"][:8]=="tutoriel":
-            ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
+            if game["mode"][9:] == "passant":
+                if game["coup_passant"] == True:
+                    ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
+                    jouer_le_coup(game["plateau"], 1, 'i7', 'i5')
+                    game["coup_passant"] = False
+                else:
+                    ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
+            else:
+                ok = tour_de_jeu_web(game["plateau"], 0, depart, arrivee)
         elif game["mode"] == "multijoueur":
             ok = tour_de_jeu_web(game["plateau"], game["players"].index(game["player"]), depart, arrivee)
             game["player"] = game["players"][(game["players"].index(game["player"])+1)%3] # passe au joueur suivant
