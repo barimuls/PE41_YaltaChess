@@ -19,7 +19,7 @@ def tour_de_jeu_avec_IA(plateau,joueur):
     jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         print(f"Le joueur {joueur} a gagné la partie!")
         return ;
     
@@ -46,7 +46,7 @@ def tour_de_jeu_IA_heuristique(plateau,joueur):
     jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         print(f"Le joueur {joueur} a gagné la partie!")
         return ;
     
@@ -137,7 +137,7 @@ def tour_de_jeu_IA_minimax(plateau,joueur):
     jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         print(f"Le joueur {joueur} a gagné la partie!")
         return ;
     
@@ -164,7 +164,7 @@ def tour_de_jeu_IA_minimax_ou_on_dejoue(plateau,joueur):
     jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         print(f"Le joueur {joueur} a gagné la partie!")
         return ;
     
@@ -181,7 +181,7 @@ def tour_de_jeu_IA_minimax_web(plateau, depart, arrivee):
 
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA
@@ -191,7 +191,7 @@ def tour_de_jeu_IA_minimax_web(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA 2
@@ -201,7 +201,7 @@ def tour_de_jeu_IA_minimax_web(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True 
     
     return None
@@ -213,7 +213,7 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
 
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA
@@ -223,7 +223,7 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA 2
@@ -233,7 +233,7 @@ def tour_de_jeu_IA_minimax_web_ou_on_dejoue(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True 
     
     return None
@@ -244,7 +244,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
 
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     profondeur = 3
@@ -256,7 +256,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA 2
@@ -266,7 +266,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True 
     
     return None
@@ -289,7 +289,7 @@ def tour_de_jeu_IA_optimisee_ou_on_dejoue(plateau, joueur):
     jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         print(f"Le joueur {joueur} a gagné la partie!")
         return ;
     

@@ -202,7 +202,7 @@ def receive_arrivee(game_id):
         game["compteur_tour"] += 1
     game["plateau_pieces"], game["plateau_couleurs"] = afficher_plateau_sur_site(game["plateau"])
     envoyer_mise_a_jour(game_id)
-    if verifier_victoire(game["plateau"], (game['compteur_tour']-1)%3 + 1):
+    if verifier_victoire(game["plateau"]):
         return jsonify({"reponse": f"Victoire du joueur {(game['compteur_tour']-1)%3 + 1}", 'plateau_pieces': game["plateau_pieces"]})
     return jsonify({"reponse": value})
 

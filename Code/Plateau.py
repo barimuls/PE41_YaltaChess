@@ -263,7 +263,6 @@ class Case:
 
         return voisins
 
-
 class Plateau:
     def __init__(self):
         self.sommets = {}
@@ -1345,8 +1344,6 @@ class Plateau:
             return self.pion_rouge_deplacement_mange_protege(depart)
         else:
             return self.pion_noir_deplacement_mange_protege(depart)
-
-
 
 #------Initialisation du plateau------
 def creer_plateau():

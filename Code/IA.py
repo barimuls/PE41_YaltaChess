@@ -433,13 +433,13 @@ def evaluation_rec_heuristique_ou_on_dejoue_v1(plateau, couleur, profondeur):
     #recupérer tous les coups possibles pour la couleur actuelle
     liste_coups = coup_possible(plateau, couleur)
 
-def choisir_coup_minimax(plateau , couleur):
-    meilleur_coup = evaluation_rec_heuristique(plateau, couleur, 2)
+def choisir_coup_minimax(plateau , couleur, profondeur=2):
+    meilleur_coup = evaluation_rec_heuristique(plateau, couleur, profondeur)
     return (meilleur_coup[3], meilleur_coup[4]);
 
-def choisir_coup_minimax_ou_on_dejoue(plateau , couleur):
+def choisir_coup_minimax_ou_on_dejoue(plateau , couleur,profondeur=2):
     plateau_copie = copy.deepcopy(plateau)
-    meilleur_coup = evaluation_rec_heuristique_ou_on_dejoue(plateau_copie, couleur, 1)
+    meilleur_coup = evaluation_rec_heuristique_ou_on_dejoue(plateau_copie, couleur, profondeur)
     return (meilleur_coup[3], meilleur_coup[4]);
 def choisir_coup_IA_optimisee_ou_on_dejoue(plateau , couleur , profondeur=1 ):
     plateau_copie = copy.deepcopy(plateau) #criminel

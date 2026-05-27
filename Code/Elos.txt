@@ -1,4 +1,15 @@
-Joueur_test;1000
-IA_optimisee;1000.0
-IA_aleatoire;1000
-IA_optimisee_2;1000.0
+choisir_coup_heuristique_v1 profondeur None;916.364981384465
+choisir_coup_aleatoire profondeur None;869.7497024452201
+choisir_coup_heuristique profondeur None;915.2670069766197
+choisir_coup_paranoid_alpha_beta profondeur 1;1131.0085209088277
+choisir_coup_minimax profondeur 1;990.1231655974419
+choisir_coup_paranoid_alpha_beta profondeur 2;997.0791503458172
+choisir_coup_IA_optimisee_parallele profondeur 2;1079.3579969748353
+choisir_coup_minimax profondeur 2;988.7378988858701
+choisir_coup_paranoid_alpha_beta profondeur 3;1010.5189033491412
+choisir_coup_minimax_ou_on_dejoue profondeur 1;1033.1907063511258
+choisir_coup_IA_optimisee_parallele profondeur 3;1080.1593615108281
+choisir_coup_minimax_ou_on_dejoue profondeur 2;1031.3387282453336
+choisir_coup_IA_optimisee_ou_on_dejoue profondeur 2;1014.7534196658999
+choisir_coup_IA_optimisee_ou_on_dejoue profondeur 1;962.3182540509102
+choisir_coup_IA_optimisee_parallele profondeur 1;980.0322033076637

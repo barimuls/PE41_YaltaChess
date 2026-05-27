@@ -75,7 +75,7 @@ def est_en_echec(plateau, joueur):
 
 
 
-def verifier_victoire(plateau, joueur):
+def verifier_victoire(plateau):
     #verifier que un roi adverse est capturé
     nbr_roi = 0
     for case in plateau.sommets.values():
@@ -287,7 +287,7 @@ def tour_de_jeu(plateau, joueur):
     jouer_le_coup(plateau, depart, arrivee, joueur);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         print(f"Le joueur {joueur} a gagné la partie!")
         return ;
     
@@ -306,7 +306,7 @@ def tour_de_jeu_web(plateau, joueur, depart, arrivee):
     jouer_le_coup(plateau, joueur, depart, arrivee);
 
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     return None
