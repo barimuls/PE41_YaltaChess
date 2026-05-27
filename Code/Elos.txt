@@ -1,2 +1,4 @@
 Joueur_test;1000
-IA_test;1200
+IA_optimisee;1000.0
+IA_aleatoire;1000
+IA_optimisee_2;1000.0
