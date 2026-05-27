@@ -28,21 +28,37 @@ def simuler_partie_complete():
         # Condition de victoire définie dans votre FonctionJeux.py (nbr_roi < 3)
         if verifier_victoire(plateau, joueur_actuel):
             if joueur_actuel==debut:
-                return (joueur_actuel,True)
+                return (debut,joueur_actuel,True)
             else:
-                return (joueur_actuel,False)
+                return (debut,joueur_actuel,False)
         
         # Passage au joueur suivant : 0 -> 1 -> 2 -> 0
         joueur_actuel = (joueur_actuel + 1) % 3
         compteur_coups += 1
     
         
-    return -1  # Match nul (limite de coups atteinte)
+    return (-1,-1,False)  # Match nul (limite de coups atteinte)
 score_elo_IA_evaluee=1500
 score_elo_IA_1=1500
 score_elo_IA_2=1500
-for k in range (100) :
-    a,b=simuler_partie_complete()
-    if b :
-        abs(score_elo_IA_evaluee-score_elo_IA_1)
-        abs(score_elo_IA_evaluee-score_elo_IA_2)
+c=32
+for k in range (10) :
+    x,a,b=simuler_partie_complete()
+    if x>=0:
+        delta_1=(score_elo_IA_evaluee-score_elo_IA_1)
+        delta_2=(score_elo_IA_evaluee-score_elo_IA_2)
+        delta_3=(score_elo_IA_1-score_elo_IA_2)
+        E_1=1/(1+10**((delta_1)/400))
+        F_1=1/(1+10**(-(delta_1)/400))
+        E_2=1/(1+10**((delta_2)/400))
+        F_2=1/(1+10**(-(delta_2)/400))
+        E_3=1/(1+10**(delta_3/400))
+        F_3=1/(1+10**(-(delta_3)/400))
+        if b :
+        
+
+            score_elo_IA_1,score_elo_IA_evaluee=score_elo_IA_1+c*(0-E_1),score_elo_IA_evaluee+c*(1-F_1)
+            score_elo_IA_2,score_elo_IA_evaluee=score_elo_IA_2+c*(0-E_2),score_elo_IA_evaluee+c*(1-F_2)
+            score_elo_IA_1,score_elo_IA_2=score_elo_IA_1+c*(0.5-F_3),score_elo_IA_2+c*(0.5-E_3)
+        else :
+                pass #on finit après

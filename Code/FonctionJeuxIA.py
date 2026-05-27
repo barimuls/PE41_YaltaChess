@@ -251,7 +251,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     
     #tour de l'IA
     joueur =1 #IA
-    coups = IA.choisir_coup_paranoid_alpha_beta(plateau,joueur,profondeur);
+    coups = IA.choisir_coup_IA_optimisee_parallele(plateau,joueur,profondeur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
@@ -261,7 +261,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     
     #tour de l'IA 2
     joueur =2 #IA
-    coups = IA.choisir_coup_paranoid_alpha_beta(plateau,joueur,profondeur);
+    coups = IA.choisir_coup_IA_optimisee_parallele(plateau,joueur,profondeur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
