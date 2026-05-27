@@ -2,6 +2,7 @@
 from pathlib import Path
 from IA import *
 from Plateau import *
+import time
 
 classements = Path(__file__).parent / "Elos.txt"
 
@@ -169,8 +170,10 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
                 f.write(ligne)
 
 
-
-liste_IA_existantes = [(choisir_coup_aleatoire,None),(choisir_coup_heuristique,None),(choisir_coup_heuristique_v1,None),(choisir_coup_minimax,1),(choisir_coup_minimax,2),(choisir_coup_minimax_ou_on_dejoue,1),(choisir_coup_minimax_ou_on_dejoue,2),(choisir_coup_IA_optimisee_ou_on_dejoue,1),(choisir_coup_IA_optimisee_ou_on_dejoue,2),(choisir_coup_IA_optimisee_parallele,1),(choisir_coup_IA_optimisee_parallele,2),(choisir_coup_IA_optimisee_parallele,3),(choisir_coup_paranoid_alpha_beta,1),(choisir_coup_paranoid_alpha_beta,2),(choisir_coup_paranoid_alpha_beta,3)]
+#simulation IA
+liste_IA_existantes = [(choisir_coup_aleatoire,None),(choisir_coup_heuristique,None),(choisir_coup_heuristique_v1,None),(choisir_coup_minimax,1),(choisir_coup_minimax,2),(choisir_coup_minimax_ou_on_dejoue,1),(choisir_coup_IA_optimisee_ou_on_dejoue,1),(choisir_coup_IA_optimisee_ou_on_dejoue,2),(choisir_coup_IA_optimisee_parallele,1),(choisir_coup_IA_optimisee_parallele,2),(choisir_coup_IA_optimisee_parallele,3),(choisir_coup_paranoid_alpha_beta,1),(choisir_coup_paranoid_alpha_beta,2),(choisir_coup_paranoid_alpha_beta,3)]
+# les pas interessants :
+#liste_IA_pas_interessants = [(choisir_coup_minimax_ou_on_dejoue,2)]
 
 def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
     #choix aléatoire de 3 IA
@@ -189,7 +192,7 @@ def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
     plateau.remplir_pieces_initiales()
     
     compteur_coups = 0
-    max_coups = 300
+    max_coups = 200
     while(compteur_coups < max_coups and not verifier_victoire(plateau)):
         IA_actuelle = IAs[compteur_coups % 3]
         if IA_actuelle[1] is not None:
@@ -211,11 +214,73 @@ def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
         print("Match nul")
         mettre_a_jour_classement_3j(f"{IAs[0][0].__name__} profondeur {IAs[0][1]}",f"{IAs[1][0].__name__} profondeur {IAs[1][1]}",f"{IAs[2][0].__name__} profondeur {IAs[2][1]}",-1)
 
-if __name__ == "__main__":
-    for i in range(4):
-        simuler_partie()
-        afficher_classement()
+def test_temps():
+    #test de temps pour les différentes IA
+    temps = []
     
+    plateau = creer_plateau()
+    plateau.remplir_arete()
+    plateau.remplir_pieces_initiales()
+    
+    
+    for IA in liste_IA_existantes:
+        start_time = time.time()
+        if IA[1] is not None:
+            IA[0](plateau, 0, IA[1])
+        else:
+            IA[0](plateau, 0)
+        end_time = time.time()
+        temps.append((IA[0].__name__, IA[1], end_time - start_time))
+        
+    temps.sort(key=lambda x: x[2])
+    for nom, profondeur, t in temps:
+        print(f"IA : {nom} profondeur {profondeur}, temps : {t:.4f} secondes")
+
+def matchmaking_selon_classement():
+    # faire un matchmaking selon le classement, les IA les plus proches s'affrontent
+    with open(classements, "r") as f:
+        lignes = f.readlines()
+
+    classement = []
+    for ligne in lignes:
+        nom, elo = ligne.strip().split(";")
+        classement.append((nom, float(elo)))
+
+    classement.sort(key=lambda x: x[1])
+    
+    for i in range(0, len(classement)-2):
+        IA0 = classement[i][0]
+        IA1 = classement[i+1][0]
+        IA2 = classement[i+2][0]
+        print(f"Matchmaking : {IA0} vs {IA1} vs {IA2}")
+        IA0 = IA0.split(" profondeur ")
+        IA1 = IA1.split(" profondeur ")
+        IA2 = IA2.split(" profondeur ")
+        IA0[1] = int(IA0[1]) if IA0[1] != "None" else None
+        IA1[1] = int(IA1[1]) if IA1[1] != "None" else None
+        IA2[1] = int(IA2[1]) if IA2[1] != "None" else None
+        simuler_partie((eval(IA0[0]), IA0[1]), (eval(IA1[0]), IA1[1]), (eval(IA2[0]), IA2[1]))
+        afficher_classement()
+
+def tourne_pnd_2_jours():
+    # faire tourner un pnd pendant 2 jours, en simulant des parties entre IA
+    start_time = time.time()
+    compteur_parties = 0
+    while time.time() - start_time < 2 * 24 * 60 * 60: # 2 jours en secondes
+        simuler_partie()
+        compteur_parties += 1
+        if compteur_parties % 10 == 0:
+            matchmaking_selon_classement()
+            afficher_classement()
+            
+
+if __name__ == "__main__":
+    
+    tourne_pnd_2_jours()
+    #matchmaking_selon_classement()
+    #for i in range(20):
+    #    simuler_partie()
+    #    afficher_classement()
    
     
     '''
