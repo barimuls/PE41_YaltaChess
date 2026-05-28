@@ -276,7 +276,8 @@ def tourne_pnd_2_jours():
 
 if __name__ == "__main__":
     
-    tourne_pnd_2_jours()
+    afficher_classement()
+    #tourne_pnd_2_jours()
     #matchmaking_selon_classement()
     #for i in range(20):
     #    simuler_partie()
