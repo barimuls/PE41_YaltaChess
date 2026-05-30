@@ -3,6 +3,7 @@ from pathlib import Path
 from IA import *
 from Plateau import *
 import time
+import matplotlib.pyplot as plt
 
 classements = Path(__file__).parent / "Elos.txt"
 
@@ -65,6 +66,33 @@ def afficher_classement():
     print("Classement des joueurs :")
     for nom, elo in classement:
         print(f"{nom} : {elo}")
+
+def afficher_classement_graphique():
+    with open(classements, "r") as f:
+        lignes = f.readlines()
+
+    classement = []
+    for ligne in lignes:
+        nom, elo = ligne.strip().split(";")
+        classement.append((nom, float(elo)))
+
+    classement.sort(key=lambda x: x[1], reverse=True)
+
+    noms = [nom for nom, _ in classement]
+    elos = [elo for _, elo in classement]
+
+    plt.figure(figsize=(12, 6))  # largeur, hauteur
+
+    plt.barh(noms, elos)
+
+    plt.xlabel("Elo")
+    plt.title("Classement des joueurs")
+
+    plt.gca().invert_yaxis()
+
+    plt.subplots_adjust(left=0.35)  # espace pour les noms
+
+    plt.show()
 
 def mettre_a_jour_classement_2j(joueur0,joueur1,resultat):
     with open(classements, "r") as f:
@@ -276,13 +304,13 @@ def tourne_pnd_2_jours():
 
 if __name__ == "__main__":
     
-    afficher_classement()
+    
     #tourne_pnd_2_jours()
     #matchmaking_selon_classement()
     for i in range(4):
         simuler_partie()
         afficher_classement()
-   
+    afficher_classement_graphique()
     
     '''
     #test mettre à jour:
