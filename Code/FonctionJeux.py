@@ -74,7 +74,6 @@ def est_en_echec(plateau, joueur):
     return False
 
 
-
 def verifier_victoire(plateau):
     #verifier que un roi adverse est capturé
     nbr_roi = 0

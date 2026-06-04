@@ -283,7 +283,6 @@ class Plateau:
         if depart in self.sommets and arrivee in self.sommets:
             self.sommets[depart].ajouter_arete(orientation, arrivee)
 
-
     def afficher(self):
         """
         Affiche le plateau et les pieces présentes sur chaque case dans la couleur correspondante.

@@ -1,0 +1,18 @@
+nom;profondeur;elo;temps
+choisir_coup_aleatoire;None;1000;None
+choisir_coup_heuristique;None;1000;None
+choisir_coup_heuristique_v1;None;1000;None
+choisir_coup_minimax;1;1000;None
+choisir_coup_minimax;2;1000;None
+choisir_coup_minimax_ou_on_dejoue;1;1000;None
+choisir_coup_IA_optimisee_ou_on_dejoue;1;1000;None
+choisir_coup_IA_optimisee_ou_on_dejoue;2;1000;None
+choisir_coup_IA_optimisee_parallele;1;1000;None
+choisir_coup_IA_optimisee_parallele;2;1000;None
+choisir_coup_IA_optimisee_parallele;3;1000;None
+choisir_coup_paranoid_alpha_beta;1;1000;None
+choisir_coup_paranoid_alpha_beta;2;1000;None
+choisir_coup_paranoid_alpha_beta;3;1000;None
+<function choisir_coup_IA_optimisee_ou_on_dejoue at 0x00000165CBAFDC70>;1;1000;None
+<function choisir_coup_minimax at 0x00000165CBAFDB10>;1;1000;None
+<function choisir_coup_paranoid_alpha_beta at 0x00000165CC1C1F30>;1;1000;None

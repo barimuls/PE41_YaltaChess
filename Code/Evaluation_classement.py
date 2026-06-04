@@ -5,7 +5,8 @@ from Plateau import *
 import time
 import matplotlib.pyplot as plt
 
-classements = Path(__file__).parent / "Elos.txt"
+# elos= Path(__file__).parent / "Elos.txt" # l'ancien qui contient uniquement les elos
+classements = Path(__file__).parent / "Classements.txt" 
 
 def formule_elo(elo_joueur_0,elo_joueur_1, resultat, k=32):
     # k est un facteur de pondération qui détermine à quel point les classements changent après chaque partie
@@ -26,60 +27,68 @@ def variation_elo(elo_joueur_0,elo_joueur_1, resultat, k=32):
 
     return variation_elo_joueur_0 # on renvoit que joueur 0
 
-def ajouter_joueur_classement(joueur, elo_initial=1000):
+def ajouter_joueur_classement(joueur,profondeur = None, elo_initial=1000, temps_exe = None):
     with open(classements, "r") as f:
+        next(f)
         lignes = f.readlines()
 
     for ligne in lignes:
-        nom, _ = ligne.strip().split(";")
-        if nom == joueur:
+        nom, profondeur_act, elo, temps = ligne.strip().split(";")
+        if nom == joueur and profondeur_act == str(profondeur):
             return  # joueur déjà présent
 
     with open(classements, "a") as f:
-        f.write(f"{joueur};{elo_initial}\n")
+        f.write(f"{joueur};{profondeur};{elo_initial};{temps_exe}\n")
         
 def reset_classement( elos_initial=1000):
     #mettre tous les classements à 1000
     with open(classements, "r") as f:
+        next(f,None)  # Ignore la première ligne
         lignes = f.readlines() 
 
     with open(classements, "w") as f:
+        f.write("nom;profondeur;elo;temps\n")
         for ligne in lignes:
-            nom, _ = ligne.strip().split(";")
-            f.write(f"{nom};{elos_initial}\n")
+            nom, _, _, _ = ligne.strip().split(";")
+            f.write(f"{nom};{None};{elos_initial};{None}\n")
 
 def vider_classement():
     with open(classements, "w") as f:
-        f.write("") # on vide le fichier
+        f.write("nom;profondeur;elo;temps\n") # on vide le fichier
 
 def afficher_classement():
     with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
         lignes = f.readlines()
 
     classement = []
     for ligne in lignes:
-        nom, elo = ligne.strip().split(";")
-        classement.append((nom, float(elo)))
+        nom, profondeur, elo, _ = ligne.strip().split(";") 
+        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(elo)))
 
-    classement.sort(key=lambda x: x[1], reverse=True)
+    classement.sort(key=lambda x: x[2], reverse=True)
 
     print("Classement des joueurs :")
-    for nom, elo in classement:
-        print(f"{nom} : {elo}")
+    for nom, profondeur, elo in classement:
+        if profondeur is not None:
+            print(f"{nom} (profondeur {profondeur}) : {elo}")
+        else:
+            print(f"{nom} : {elo}")
 
-def afficher_classement_graphique():
+def afficher_classement_graphique(): # a mettre a jour plus tard
     with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
         lignes = f.readlines()
 
     classement = []
     for ligne in lignes:
-        nom, elo = ligne.strip().split(";")
-        classement.append((nom, float(elo)))
+        nom, profondeur, elo, _ = ligne.strip().split(";")
+        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(elo)))
 
-    classement.sort(key=lambda x: x[1], reverse=True)
+    classement.sort(key=lambda x: x[2], reverse=True)
 
-    noms = [nom for nom, _ in classement]
-    elos = [elo for _, elo in classement]
+    noms = [nom for nom, _, _ in classement]
+    elos = [elo for _, _, elo in classement]
 
     plt.figure(figsize=(12, 6))  # largeur, hauteur
 
@@ -102,7 +111,7 @@ def mettre_a_jour_classement_2j(joueur0,joueur1,resultat):
     classement_joueur1 = None
     
     for ligne in lignes:
-        nom, elo = ligne.strip().split(";")
+        nom, _, elo, _ = ligne.strip().split(";")
         if nom == joueur0:
             classement_joueur0 = float(elo)
         elif nom == joueur1:
@@ -114,11 +123,11 @@ def mettre_a_jour_classement_2j(joueur0,joueur1,resultat):
         # Mettre à jour les classements dans le fichier
         with open(classements, "w") as f:
             for ligne in lignes:
-                nom, elo = ligne.strip().split(";")
+                nom, _, elo, _ = ligne.strip().split(";")
                 if nom == joueur0:
-                    f.write(f"{joueur0};{nouvel_elo_joueur_0}\n")
+                    f.write(f"{joueur0};{None};{nouvel_elo_joueur_0};{None}\n")
                 elif nom == joueur1:
-                    f.write(f"{joueur1};{nouvel_elo_joueur_1}\n")
+                    f.write(f"{joueur1};{None};{nouvel_elo_joueur_1};{None}\n")
                 else:
                     f.write(ligne)
     else:
@@ -129,9 +138,9 @@ def mettre_a_jour_classement_2j(joueur0,joueur1,resultat):
     print(f"difference de points : {nouvel_elo_joueur_0 - classement_joueur0} pour {joueur0}, {nouvel_elo_joueur_1 - classement_joueur1} pour {joueur1}")
 
 def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
-    ajouter_joueur_classement(joueur0)
-    ajouter_joueur_classement(joueur1)
-    ajouter_joueur_classement(joueur2)# n'ajoute le joueur que s'il n'est pas déjà présent dans le classement
+    ajouter_joueur_classement(joueur0[0], profondeur=joueur0[1])
+    ajouter_joueur_classement(joueur1[0], profondeur=joueur1[1])
+    ajouter_joueur_classement(joueur2[0], profondeur=joueur2[1])# n'ajoute le joueur que s'il n'est pas déjà présent dans le classement
     
     #gagnant vaut -1 en cas d'égalité
     
@@ -140,6 +149,7 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     variation_joueur2 = 0
     
     with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
         lignes = f.readlines()
         
     classement_joueur0 = None
@@ -147,7 +157,7 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     classement_joueur2 = None
     
     for ligne in lignes:
-        nom, elo = ligne.strip().split(";")
+        nom, _, elo, _ = ligne.strip().split(";")
         if nom == joueur0:
             classement_joueur0 = float(elo)
         if nom == joueur1:
@@ -186,33 +196,57 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     nouvel_elo_joueur_2 = classement_joueur2 + variation_joueur2
         
     with open(classements, "w") as f:
+        next(f)  # Ignore la première ligne
         for ligne in lignes:
-            nom, elo = ligne.strip().split(";")
+            nom, _, elo, _ = ligne.strip().split(";")
             if nom == joueur0:
-                f.write(f"{joueur0};{nouvel_elo_joueur_0}\n")
+                f.write(f"{joueur0};{None};{nouvel_elo_joueur_0};{None}\n")
             elif nom == joueur1:
-                f.write(f"{joueur1};{nouvel_elo_joueur_1}\n")
+                f.write(f"{joueur1};{None};{nouvel_elo_joueur_1};{None}\n")
             elif nom == joueur2:
-                f.write(f"{joueur2};{nouvel_elo_joueur_2}\n")
+                f.write(f"{joueur2};{None};{nouvel_elo_joueur_2};{None}\n")
             else:
                 f.write(ligne)
 
 
 #simulation IA
-liste_IA_existantes = [(choisir_coup_aleatoire,None),(choisir_coup_heuristique,None),(choisir_coup_heuristique_v1,None),(choisir_coup_minimax,1),(choisir_coup_minimax,2),(choisir_coup_minimax_ou_on_dejoue,1),(choisir_coup_IA_optimisee_ou_on_dejoue,1),(choisir_coup_IA_optimisee_ou_on_dejoue,2),(choisir_coup_IA_optimisee_parallele,1),(choisir_coup_IA_optimisee_parallele,2),(choisir_coup_IA_optimisee_parallele,3),(choisir_coup_paranoid_alpha_beta,1),(choisir_coup_paranoid_alpha_beta,2),(choisir_coup_paranoid_alpha_beta,3)]
+liste_IA_existantes = [(choisir_coup_aleatoire,None),(choisir_coup_heuristique,None),(choisir_coup_heuristique_v1,None),(choisir_coup_minimax,2),(choisir_coup_minimax_ou_on_dejoue,1),(choisir_coup_IA_optimisee_ou_on_dejoue,2),(choisir_coup_IA_optimisee_parallele,3),(choisir_coup_paranoid_alpha_beta,3)]
 # les pas interessants :
 #liste_IA_pas_interessants = [(choisir_coup_minimax_ou_on_dejoue,2)]
 
+def remplir_IA(liste):
+    for IA in liste:
+        profondeur_max = IA[1] if IA[1] is not None else None
+        if profondeur_max is not None:
+            for profondeur in range(1, profondeur_max + 1):
+                ajouter_joueur_classement(IA[0].__name__ , profondeur=profondeur)
+        else:
+            ajouter_joueur_classement(IA[0].__name__, profondeur=None)
+def recuperer_IA():
+    with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
+        lignes = f.readlines()
+
+    IAs = []
+    for ligne in lignes:
+        nom, profondeur, _, _ = ligne.strip().split(";")
+        IAs.append((eval(nom), int(profondeur) if profondeur != "None" else None))
+    
+    return IAs
+
 def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
     #choix aléatoire de 3 IA
+    liste_IA = recuperer_IA()
+    
     if IA0 is None:
-        IA0 = random.choice(liste_IA_existantes)
+        IA0 = random.choice(liste_IA)
     if IA1 is None:
-        IA1 = random.choice(liste_IA_existantes)
+        IA1 = random.choice(liste_IA)
     if IA2 is None:
-        IA2 = random.choice(liste_IA_existantes)
+        IA2 = random.choice(liste_IA)
     IAs = [IA0, IA1, IA2]
-    print(f"Les IA choisies sont : {IA0[0].__name__}profondeur {IA0[1]}, {IA1[0].__name__}profondeur {IA1[1]}, {IA2[0].__name__}profondeur {IA2[1]}")
+    print(f"Les IA choisies sont : {IA0[0].__name__} (profondeur {IA0[1]}), {IA1[0].__name__} (profondeur {IA1[1]}), {IA2[0].__name__} (profondeur {IA2[1]})")
+
     
     #lancement de la partie
     plateau = creer_plateau()
@@ -236,11 +270,11 @@ def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
     
     if verifier_victoire(plateau):
         gagnant = (compteur_coups - 1) % 3
-        print(f"Le gagnant est le joueur {gagnant} avec l'IA {IAs[gagnant][0].__name__}profondeur {IAs[gagnant][1]}")   
-        mettre_a_jour_classement_3j(f"{IAs[0][0].__name__} profondeur {IAs[0][1]}",f"{IAs[1][0].__name__} profondeur {IAs[1][1]}",f"{IAs[2][0].__name__} profondeur {IAs[2][1]}",gagnant)
+        print(f"Le gagnant est le joueur {gagnant} avec l'IA {IAs[gagnant][0].__name__} (profondeur {IAs[gagnant][1]})")   
+        mettre_a_jour_classement_3j((IAs[0][0], IAs[0][1]), (IAs[1][0], IAs[1][1]), (IAs[2][0], IAs[2][1]), gagnant)
     else:
         print("Match nul")
-        mettre_a_jour_classement_3j(f"{IAs[0][0].__name__} profondeur {IAs[0][1]}",f"{IAs[1][0].__name__} profondeur {IAs[1][1]}",f"{IAs[2][0].__name__} profondeur {IAs[2][1]}",-1)
+        mettre_a_jour_classement_3j((IAs[0][0], IAs[0][1]), (IAs[1][0], IAs[1][1]), (IAs[2][0], IAs[2][1]), -1)
 
 def test_temps():
     #test de temps pour les différentes IA
@@ -303,19 +337,26 @@ def tourne_pnd_2_jours():
             
 
 if __name__ == "__main__":
+    vider_classement()
+    remplir_IA(liste_IA_existantes)
     
-    
+    afficher_classement()
+    simuler_partie()
+    afficher_classement()
+    afficher_classement_graphique()
     #tourne_pnd_2_jours()
     #matchmaking_selon_classement()
-    for i in range(4):
-        simuler_partie()
-        afficher_classement()
-    afficher_classement_graphique()
+    
     
     '''
     #test mettre à jour:
     reset_classement()
     mettre_a_jour_classement_3j("IA_optimisee", "IA_optimisee", "IA_optimisee_2", 2)  
     afficher_classement()
+    
+    for i in range(4):
+        simuler_partie()
+        afficher_classement()
+    afficher_classement_graphique()
     '''
     
