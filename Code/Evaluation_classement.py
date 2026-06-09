@@ -5,8 +5,9 @@ from Plateau import *
 import time
 import matplotlib.pyplot as plt
 
-# elos= Path(__file__).parent / "Elos.txt" # l'ancien qui contient uniquement les elos
+elos= Path(__file__).parent / "Elos.txt" # l'ancien qui contient uniquement les elos, ne jamais modifier
 classements = Path(__file__).parent / "Classements.txt" 
+ligne1 = "nom;profondeur;elo;temps\n"
 
 def formule_elo(elo_joueur_0,elo_joueur_1, resultat, k=32):
     # k est un facteur de pondération qui détermine à quel point les classements changent après chaque partie
@@ -83,11 +84,12 @@ def afficher_classement_graphique(): # a mettre a jour plus tard
     classement = []
     for ligne in lignes:
         nom, profondeur, elo, _ = ligne.strip().split(";")
-        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(elo)))
+        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(float(elo))))
 
     classement.sort(key=lambda x: x[2], reverse=True)
 
-    noms = [nom for nom, _, _ in classement]
+    elements = [(nom, profondeur) for nom, profondeur, _ in classement]
+    noms = [f"{nom} (profondeur {profondeur})" if profondeur is not None else nom for nom, profondeur in elements]
     elos = [elo for _, _, elo in classement]
 
     plt.figure(figsize=(12, 6))  # largeur, hauteur
@@ -278,25 +280,169 @@ def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
 
 def test_temps():
     #test de temps pour les différentes IA
-    temps = []
-    
+    temps_IA = {}
     plateau = creer_plateau()
     plateau.remplir_arete()
     plateau.remplir_pieces_initiales()
     
+    IAs = recuperer_IA()
     
-    for IA in liste_IA_existantes:
+    
+    for IA in IAs:
         start_time = time.time()
         if IA[1] is not None:
-            IA[0](plateau, 0, IA[1])
-        else:
-            IA[0](plateau, 0)
+            IA[0](plateau, 0, IA[1]) # on choisit le coup
+        else: # si il n'y a pas de profondeur
+            IA[0](plateau, 0) 
         end_time = time.time()
-        temps.append((IA[0].__name__, IA[1], end_time - start_time))
+        temps_IA[(IA[0].__name__, IA[1])] = end_time - start_time
         
-    temps.sort(key=lambda x: x[2])
-    for nom, profondeur, t in temps:
-        print(f"IA : {nom} profondeur {profondeur}, temps : {t:.4f} secondes")
+    with open(classements, "r") as f:
+        ligne1 = f.readline()  # Lire la première ligne
+        lignes = f.readlines()  # Lire le reste
+    
+    with open(classements, "w") as f:
+        
+        f.write(ligne1) # on réécrit la première ligne
+        for ligne in lignes:
+            nom, profondeur, elo, _ = ligne.strip().split(";")
+            if (nom, int(profondeur) if profondeur != "None" else None) in temps_IA:
+                f.write(f"{nom};{profondeur};{elo};{temps_IA[(nom, int(profondeur) if profondeur != 'None' else None)]}\n")
+            else:
+                f.write(ligne)
+        
+def afficher_temps():
+    with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
+        lignes = f.readlines()
+
+    temps_IA = {}
+    for ligne in lignes:
+        nom, profondeur, _, temps = ligne.strip().split(";")
+        if temps != "None":
+            temps_IA[(nom, int(profondeur) if profondeur != "None" else None)] = float(temps)
+
+    elements = list(temps_IA.keys())
+    noms = [f"{nom} (profondeur {profondeur})" for nom, profondeur in elements]
+    temps = list(temps_IA.values())
+
+    plt.figure(figsize=(12, 6))  # largeur, hauteur
+
+    plt.barh(noms, temps)
+
+    plt.xlabel("Temps d'exécution (secondes)")
+    plt.title("Temps d'exécution des IA")
+
+    plt.gca().invert_yaxis()
+
+    plt.subplots_adjust(left=0.35)  # espace pour les noms
+
+    plt.show()
+    
+def afficher_elo_en_fonction_du_temps():
+    with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
+        lignes = f.readlines()
+
+    elo_temps = {}
+    for ligne in lignes:
+        nom, profondeur, elo, temps = ligne.strip().split(";")
+        if temps != "None":
+            elo_temps[(nom, int(profondeur) if profondeur != "None" else None)] = (float(elo), float(temps))
+
+    elements = list(elo_temps.keys())
+    noms = [f"{nom} (profondeur {profondeur})" for nom, profondeur in elements]
+    elos = [elo for elo, _ in elo_temps.values()]
+    temps = [temps for _, temps in elo_temps.values()]
+
+    plt.figure(figsize=(12, 6))  # largeur, hauteur
+
+    plt.scatter(temps, elos)
+
+    plt.xlabel("Temps d'exécution (secondes)")
+    plt.ylabel("Elo")
+    plt.legend(noms)
+    plt.title("Elo en fonction du temps d'exécution des IA")
+
+    plt.show()
+    
+def afficher_elo_en_fonction_du_temps_v2():
+    with open(classements, "r") as f:
+        next(f)
+        lignes = f.readlines()
+
+    elo_temps = {}
+    for ligne in lignes:
+        nom, profondeur, elo, temps = ligne.strip().split(";")
+        if temps != "None":
+            prof = int(profondeur) if profondeur != "None" else None
+            elo_temps[(nom, prof)] = (float(elo), float(temps))
+
+    # Marqueurs selon la profondeur
+    markers = {None: "o", 1: "s", 2: "D", 3: "^"}
+
+    # Couleur unique par nom d'IA
+    noms_uniques = list(dict.fromkeys(nom for nom, _ in elo_temps.keys()))
+    palette = plt.cm.tab10.colors
+    couleurs = {nom: palette[i % len(palette)] for i, nom in enumerate(noms_uniques)}
+
+    plt.figure(figsize=(12, 6))
+
+    for (nom, profondeur), (elo, temps) in elo_temps.items():
+        marker = markers.get(profondeur, "o")
+        couleur = couleurs[nom]
+        plt.scatter(temps, elo, color=couleur, marker=marker, s=100, zorder=3)
+
+    # Légende couleurs (IAs)
+    legende_ias = [
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=couleurs[nom],
+                   markersize=10, label=nom)
+        for nom in noms_uniques
+    ]
+
+    # Légende marqueurs (profondeurs)
+    legende_profondeurs = [
+        plt.Line2D([0], [0], marker=m, color="gray", markersize=10,
+                   label=f"Profondeur {p if p is not None else 'None'}", linestyle="None")
+        for p, m in markers.items()
+    ]
+    
+    leg1 = plt.legend(handles=legende_ias, title="IA",
+                      loc="lower right", bbox_to_anchor=(1, 0))
+    plt.gca().add_artist(leg1)
+    plt.legend(handles=legende_profondeurs, title="Profondeur",
+               loc="lower right", bbox_to_anchor=(0.67, 0))  
+
+    plt.xlabel("Temps d'exécution (secondes)")
+    plt.ylabel("Elo")
+    plt.title("Elo en fonction du temps d'exécution des IA")
+    plt.tight_layout()
+    plt.show()
+
+def importer_elos():
+    with open(elos, "r") as f:
+        next(f)  # Ignore la première ligne
+        lignes = f.readlines()
+
+    elos_IA = {}
+    for ligne in lignes:
+        nom_profondeur, elo = ligne.strip().split(";")
+        nom, profondeur = nom_profondeur.split(" profondeur ")
+        profondeur = int(profondeur) if profondeur != "None" else None
+        elos_IA[(nom, profondeur)] = float(elo)
+
+    with open(classements, "r") as f:
+        ligne1 = f.readline()  # Lire la première ligne
+        lignes_classement = f.readlines()  # Lire le reste
+
+    with open(classements, "w") as f:
+        f.write(ligne1) # on réécrit la première ligne
+        for nom, profondeur, ancien_elo, temps in (ligne.strip().split(";") for ligne in lignes_classement):
+            if (nom, int(profondeur) if profondeur != "None" else None) in elos_IA:
+                f.write(f"{nom};{profondeur};{elos_IA[(nom, int(profondeur) if profondeur != 'None' else None)]};{temps}\n")
+            else:
+                f.write(f"{nom};{profondeur};{ancien_elo};{temps}\n") # si l'IA n'est pas dans elos.txt on garde son ancien elo
+            
 
 def matchmaking_selon_classement():
     # faire un matchmaking selon le classement, les IA les plus proches s'affrontent
@@ -337,13 +483,12 @@ def tourne_pnd_2_jours():
             
 
 if __name__ == "__main__":
-    vider_classement()
-    remplir_IA(liste_IA_existantes)
-    
-    afficher_classement()
-    simuler_partie()
-    afficher_classement()
+
+    importer_elos()
+    afficher_temps()
     afficher_classement_graphique()
+    afficher_elo_en_fonction_du_temps()
+    afficher_elo_en_fonction_du_temps_v2()
     #tourne_pnd_2_jours()
     #matchmaking_selon_classement()
     

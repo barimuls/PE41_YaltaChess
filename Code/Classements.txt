@@ -1,18 +1,15 @@
 nom;profondeur;elo;temps
-choisir_coup_aleatoire;None;1000;None
-choisir_coup_heuristique;None;1000;None
-choisir_coup_heuristique_v1;None;1000;None
-choisir_coup_minimax;1;1000;None
-choisir_coup_minimax;2;1000;None
-choisir_coup_minimax_ou_on_dejoue;1;1000;None
-choisir_coup_IA_optimisee_ou_on_dejoue;1;1000;None
-choisir_coup_IA_optimisee_ou_on_dejoue;2;1000;None
-choisir_coup_IA_optimisee_parallele;1;1000;None
-choisir_coup_IA_optimisee_parallele;2;1000;None
-choisir_coup_IA_optimisee_parallele;3;1000;None
-choisir_coup_paranoid_alpha_beta;1;1000;None
-choisir_coup_paranoid_alpha_beta;2;1000;None
-choisir_coup_paranoid_alpha_beta;3;1000;None
-<function choisir_coup_IA_optimisee_ou_on_dejoue at 0x00000165CBAFDC70>;1;1000;None
-<function choisir_coup_minimax at 0x00000165CBAFDB10>;1;1000;None
-<function choisir_coup_paranoid_alpha_beta at 0x00000165CC1C1F30>;1;1000;None
+choisir_coup_aleatoire;None;807.3612156752827;0.0006783008575439453
+choisir_coup_heuristique;None;876.0841933523271;0.15522289276123047
+choisir_coup_heuristique_v1;None;1000;1.7642858028411865
+choisir_coup_minimax;1;1056.5289016864149;0.09896135330200195
+choisir_coup_minimax;2;963.48186714188;3.163652181625366
+choisir_coup_minimax_ou_on_dejoue;1;973.0202031846001;0.9426391124725342
+choisir_coup_IA_optimisee_ou_on_dejoue;1;972.1448615342723;0.0377352237701416
+choisir_coup_IA_optimisee_ou_on_dejoue;2;1085.9706258098163;0.5743615627288818
+choisir_coup_IA_optimisee_parallele;1;1006.8905743632995;2.3524153232574463
+choisir_coup_IA_optimisee_parallele;2;1078.5136965521028;2.2623493671417236
+choisir_coup_IA_optimisee_parallele;3;1115.7468219428029;4.004180908203125
+choisir_coup_paranoid_alpha_beta;1;1073.478863937851;0.022699356079101562
+choisir_coup_paranoid_alpha_beta;2;1067.0759274824682;0.13199710845947266
+choisir_coup_paranoid_alpha_beta;3;1077.12521959996;3.052757978439331
