@@ -2,7 +2,7 @@
 
 Bienvenue sur le dépôt Github du PE41 Echec Yalta de l'école Centrale de Lyon.
 
-Manuel d'instruction pour lancer le projet sur votre machine :
+**Manuel d'instruction pour lancer le projet sur votre machine :**
 - Télécharger les bibliothèques suivantes :
     - argon2-cffi
     - PyJWT
