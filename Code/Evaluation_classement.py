@@ -96,6 +96,7 @@ def afficher_classement_graphique(): # a mettre a jour plus tard
 
     plt.barh(noms, elos)
 
+    plt.xlim(min(elos)-100, max(elos) + 50)  # ajuster les limites de l'axe x
     plt.xlabel("Elo")
     plt.title("Classement des joueurs")
 
@@ -200,13 +201,13 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     with open(classements, "w") as f:
         next(f)  # Ignore la première ligne
         for ligne in lignes:
-            nom, _, elo, _ = ligne.strip().split(";")
+            nom, profondeur, elo, temps = ligne.strip().split(";")
             if nom == joueur0:
-                f.write(f"{joueur0};{None};{nouvel_elo_joueur_0};{None}\n")
+                f.write(f"{joueur0};{profondeur};{nouvel_elo_joueur_0};{temps}\n")
             elif nom == joueur1:
-                f.write(f"{joueur1};{None};{nouvel_elo_joueur_1};{None}\n")
+                f.write(f"{joueur1};{profondeur};{nouvel_elo_joueur_1};{temps}\n")
             elif nom == joueur2:
-                f.write(f"{joueur2};{None};{nouvel_elo_joueur_2};{None}\n")
+                f.write(f"{joueur2};{profondeur};{nouvel_elo_joueur_2};{temps}\n")
             else:
                 f.write(ligne)
 
@@ -278,6 +279,31 @@ def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
         print("Match nul")
         mettre_a_jour_classement_3j((IAs[0][0], IAs[0][1]), (IAs[1][0], IAs[1][1]), (IAs[2][0], IAs[2][1]), -1)
 
+def recuperer_position_d_une_partie(nmbre_coups = 10):
+    # faire une partie entre IA et récupérer la position après n coups
+    plateau = creer_plateau()
+    plateau.remplir_arete()
+    plateau.remplir_pieces_initiales()
+    
+    liste_IA = recuperer_IA()
+    
+    
+    IA0 = random.choice(liste_IA)
+    IA1 = random.choice(liste_IA)
+    IA2 = random.choice(liste_IA)
+    IAs = [IA0, IA1, IA2]
+    
+    
+    for i in range(nmbre_coups): # on joue nmbre_coups coups
+        IA_actuelle = IAs[i % 3]
+        if IA_actuelle[1] is not None:
+            (depart, arrivee) = IA_actuelle[0](plateau, i % 3, IA_actuelle[1]) # on choisit le coup
+        else: # si il n'y a pas de profondeur
+            (depart, arrivee) = IA_actuelle[0](plateau, i % 3) 
+        jouer_le_coup(plateau, i % 3, depart, arrivee)
+    
+    return plateau
+
 def test_temps():
     #test de temps pour les différentes IA
     temps_IA = {}
@@ -310,7 +336,39 @@ def test_temps():
                 f.write(f"{nom};{profondeur};{elo};{temps_IA[(nom, int(profondeur) if profondeur != 'None' else None)]}\n")
             else:
                 f.write(ligne)
-        
+  
+def test_temps_postions(positions):
+    #test de temps pour les différentes IA à partir de différentes positions
+    temps_IA = {}
+    
+    IAs = recuperer_IA()
+    
+    for position in positions:
+        for IA in IAs:
+            start_time = time.time()
+            if IA[1] is not None:
+                IA[0](position, 0, IA[1]) # on choisit le coup
+            else: # si il n'y a pas de profondeur
+                IA[0](position, 0) 
+            end_time = time.time()
+            if (IA[0].__name__, IA[1]) in temps_IA:
+                temps_IA[(IA[0].__name__, IA[1])] += end_time - start_time
+            else:
+                temps_IA[(IA[0].__name__, IA[1])] = end_time - start_time
+    moyenne_temps_IA = {k: v / len(positions) for k, v in temps_IA.items()} # on fait la moyenne des temps pour chaque IA
+    
+    #on met à jour le fichier classements avec les temps
+    with open(classements, "r") as f:
+        ligne1 = f.readline()  # Lire la première ligne
+        lignes = f.readlines()  # Lire le reste
+    with open(classements, "w") as f:
+        f.write(ligne1) # on réécrit la première ligne
+        for ligne in lignes:
+            nom, profondeur, elo, _ = ligne.strip().split(";")
+            if (nom, int(profondeur) if profondeur != "None" else None) in moyenne_temps_IA:
+                f.write(f"{nom};{profondeur};{elo};{moyenne_temps_IA[(nom, int(profondeur) if profondeur != 'None' else None)]}\n")
+            else:
+                f.write(ligne)
 def afficher_temps():
     with open(classements, "r") as f:
         next(f)  # Ignore la première ligne
@@ -340,33 +398,6 @@ def afficher_temps():
     plt.show()
     
 def afficher_elo_en_fonction_du_temps():
-    with open(classements, "r") as f:
-        next(f)  # Ignore la première ligne
-        lignes = f.readlines()
-
-    elo_temps = {}
-    for ligne in lignes:
-        nom, profondeur, elo, temps = ligne.strip().split(";")
-        if temps != "None":
-            elo_temps[(nom, int(profondeur) if profondeur != "None" else None)] = (float(elo), float(temps))
-
-    elements = list(elo_temps.keys())
-    noms = [f"{nom} (profondeur {profondeur})" for nom, profondeur in elements]
-    elos = [elo for elo, _ in elo_temps.values()]
-    temps = [temps for _, temps in elo_temps.values()]
-
-    plt.figure(figsize=(12, 6))  # largeur, hauteur
-
-    plt.scatter(temps, elos)
-
-    plt.xlabel("Temps d'exécution (secondes)")
-    plt.ylabel("Elo")
-    plt.legend(noms)
-    plt.title("Elo en fonction du temps d'exécution des IA")
-
-    plt.show()
-    
-def afficher_elo_en_fonction_du_temps_v2():
     with open(classements, "r") as f:
         next(f)
         lignes = f.readlines()
@@ -470,29 +501,50 @@ def matchmaking_selon_classement():
         simuler_partie((eval(IA0[0]), IA0[1]), (eval(IA1[0]), IA1[1]), (eval(IA2[0]), IA2[1]))
         afficher_classement()
 
-def tourne_pnd_2_jours():
-    # faire tourner un pnd pendant 2 jours, en simulant des parties entre IA
+def tourne_pnd_temps(t): # en minutes
+    # faire tourner un pnd pendant t secondes, en simulant des parties entre IA
     start_time = time.time()
     compteur_parties = 0
-    while time.time() - start_time < 2 * 24 * 60 * 60: # 2 jours en secondes
+    while time.time() - start_time < t * 60:
         simuler_partie()
         compteur_parties += 1
         if compteur_parties % 10 == 0:
             matchmaking_selon_classement()
             afficher_classement()
             
+def sauvegarder_classement():
+    with open(classements, "r") as f:
+        contenu = f.read()
+    with open(classements.with_suffix(".backup.txt"), "w") as f:
+        f.write(contenu)
+            
+def recuperer_sauvegarde_classement():
+    with open(classements.with_suffix(".backup.txt"), "r") as f:
+        contenu = f.read()
+    with open(classements, "w") as f:
+        f.write(contenu)
 
 if __name__ == "__main__":
-
-    importer_elos()
+    recuperer_sauvegarde_classement() 
     afficher_temps()
     afficher_classement_graphique()
     afficher_elo_en_fonction_du_temps()
-    afficher_elo_en_fonction_du_temps_v2()
-    #tourne_pnd_2_jours()
-    #matchmaking_selon_classement()
     
     
+    tourne_pnd_temps(2)
+    afficher_classement_graphique()
+    
+    '''
+    # on mets les nouveaux temps
+    k = 5
+    positions = []
+    for i in range(k):
+        positions.append(recuperer_position_d_une_partie(nmbre_coups=10)) 
+        print(f"Position {i+1} récupérée")
+    test_temps_postions(positions)
+    afficher_temps()
+    afficher_elo_en_fonction_du_temps()
+    '''
     '''
     #test mettre à jour:
     reset_classement()
