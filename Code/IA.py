@@ -224,7 +224,7 @@ def evaluation_rec_avantage_ou_on_dejoue(plateau, couleur, profondeur):
         depart = coup[0]
         for arrivee in coup[1]:
             
-            #plateau_copie = copy.deepcopy(plateau)
+            
             jouer_le_coup(plateau, couleur, depart, arrivee)
 
             #Appel récursif pour la couleur suivante
@@ -416,8 +416,6 @@ def evaluation_rec_heuristique_ou_on_dejoue(plateau, couleur, profondeur):
             evaluation = evaluation_rec_heuristique_ou_on_dejoue(plateau, (couleur+1)%3, profondeur-1)
             #print(evaluation)
             heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
-            
-            heuristic = evaluation[couleur%3] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
             if heuristic > meilleur_score:
                 meilleur_score = heuristic
                 meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
@@ -545,6 +543,82 @@ def evaluation_rec_parallele(plateau, couleur, profondeur):
 def choisir_coup_IA_optimisee_parallele(plateau , couleur , profondeur=1 ):
     meilleur_coup = evaluation_rec_parallele(plateau, couleur, profondeur)
     return (meilleur_coup[3], meilleur_coup[4]);
+def choix_IA (plateau, couleur, profondeur, parallelisme : type=bool, dejouer : type=bool, heuristique : type=function) :
+    if profondeur == 0:
+        return [heuristique(plateau,0),heuristique(plateau,1),heuristique(plateau,2),None,None];
+    
+      
+    
+    liste_coups = coup_possible(plateau, couleur)
+    if not liste_coups:
+        heuristique = calculer_heuristiques(plateau)
+        return [heuristique(plateau,0),heuristique(plateau,1),heuristique(plateau,2),None,None];
+
+    meilleur_score = -float('inf');
+    meilleur_coup = None;
+   
+    taches = []
+    for coup in liste_coups: 
+        
+        depart = coup[0]
+        for arrivee in coup[1]:
+         if  not (parallelisme) :
+            
+             if dejouer :
+                jouer_le_coup(plateau, couleur, depart, arrivee)
+
+                #Appel récursif pour la couleur suivante
+                evaluation = heuristique(plateau, (couleur+1)%3, profondeur-1)
+            #print(evaluation)
+                heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
+                if heuristic > meilleur_score:
+                    meilleur_score = heuristic
+                    meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
+
+                dejouer_le_coup(plateau, couleur, depart, arrivee)
+             else :
+                plateau_bis= copy.deepcopy(plateau)
+                jouer_le_coup(plateau_bis, couleur, depart, arrivee)
+
+                #Appel récursif pour la couleur suivante
+                evaluation = heuristique(plateau, (couleur+1)%3, profondeur-1)
+            #print(evaluation)
+                heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
+                if heuristic > meilleur_score:
+                    meilleur_score = heuristic
+                    meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
+
+         else :
+               
+
+                
+                taches.append(
+                (
+                    plateau,
+                    couleur,
+                    profondeur,
+                    depart,
+                    arrivee
+                )
+            )
+                with ProcessPoolExecutor() as executor:
+
+                 resultats = executor.map(evaluer_branche, taches)
+
+                for resultat in resultats:
+
+                    heuristic, s0, s1, s2, depart, arrivee = resultat
+
+                if heuristic > meilleur_score:
+                    meilleur_score = heuristic
+                    meilleur_coup = (s0, s1, s2, depart, arrivee)
+
+    return meilleur_coup
+
+
+
+          
+    return meilleur_coup;
 
 # ----------------------Paranoid Alpha-Beta----------------------
 
