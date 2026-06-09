@@ -65,7 +65,7 @@ def afficher_classement():
     classement = []
     for ligne in lignes:
         nom, profondeur, elo, _ = ligne.strip().split(";") 
-        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(elo)))
+        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(float(elo))))
 
     classement.sort(key=lambda x: x[2], reverse=True)
 
@@ -141,9 +141,9 @@ def mettre_a_jour_classement_2j(joueur0,joueur1,resultat):
     print(f"difference de points : {nouvel_elo_joueur_0 - classement_joueur0} pour {joueur0}, {nouvel_elo_joueur_1 - classement_joueur1} pour {joueur1}")
 
 def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
-    ajouter_joueur_classement(joueur0[0], profondeur=joueur0[1])
-    ajouter_joueur_classement(joueur1[0], profondeur=joueur1[1])
-    ajouter_joueur_classement(joueur2[0], profondeur=joueur2[1])# n'ajoute le joueur que s'il n'est pas déjà présent dans le classement
+    ajouter_joueur_classement(joueur0[0].__name__, profondeur=joueur0[1])
+    ajouter_joueur_classement(joueur1[0].__name__, profondeur=joueur1[1])
+    ajouter_joueur_classement(joueur2[0].__name__, profondeur=joueur2[1])# n'ajoute le joueur que s'il n'est pas déjà présent dans le classement
     
     #gagnant vaut -1 en cas d'égalité
     
@@ -160,12 +160,12 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     classement_joueur2 = None
     
     for ligne in lignes:
-        nom, _, elo, _ = ligne.strip().split(";")
-        if nom == joueur0:
+        nom, profondeur, elo, _ = ligne.strip().split(";")
+        if nom == joueur0[0].__name__ and profondeur == str(joueur0[1]):
             classement_joueur0 = float(elo)
-        if nom == joueur1:
+        elif nom == joueur1[0].__name__ and profondeur == str(joueur1[1]):
             classement_joueur1 = float(elo)
-        if nom == joueur2:
+        elif nom == joueur2[0].__name__ and profondeur == str(joueur2[1]):
             classement_joueur2 = float(elo)
     
     if classement_joueur0 is None or classement_joueur1 is None or classement_joueur2 is None:
@@ -199,15 +199,15 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     nouvel_elo_joueur_2 = classement_joueur2 + variation_joueur2
         
     with open(classements, "w") as f:
-        next(f)  # Ignore la première ligne
+        f.write(ligne1) # on réécrit la première ligne
         for ligne in lignes:
             nom, profondeur, elo, temps = ligne.strip().split(";")
-            if nom == joueur0:
-                f.write(f"{joueur0};{profondeur};{nouvel_elo_joueur_0};{temps}\n")
-            elif nom == joueur1:
-                f.write(f"{joueur1};{profondeur};{nouvel_elo_joueur_1};{temps}\n")
-            elif nom == joueur2:
-                f.write(f"{joueur2};{profondeur};{nouvel_elo_joueur_2};{temps}\n")
+            if nom == joueur0[0].__name__ and profondeur == str(joueur0[1]):
+                f.write(f"{joueur0[0].__name__};{profondeur};{nouvel_elo_joueur_0};{temps}\n")
+            elif nom == joueur1[0].__name__ and profondeur == str(joueur1[1]):
+                f.write(f"{joueur1[0].__name__};{profondeur};{nouvel_elo_joueur_1};{temps}\n")
+            elif nom == joueur2[0].__name__ and profondeur == str(joueur2[1]):
+                f.write(f"{joueur2[0].__name__};{profondeur};{nouvel_elo_joueur_2};{temps}\n")
             else:
                 f.write(ligne)
 
@@ -478,12 +478,13 @@ def importer_elos():
 def matchmaking_selon_classement():
     # faire un matchmaking selon le classement, les IA les plus proches s'affrontent
     with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
         lignes = f.readlines()
 
     classement = []
     for ligne in lignes:
-        nom, elo = ligne.strip().split(";")
-        classement.append((nom, float(elo)))
+        nom,profondeur,elo,temps = ligne.strip().split(";")
+        classement.append(((nom,int(profondeur) if profondeur != "None" else None), float(elo)))
 
     classement.sort(key=lambda x: x[1])
     
@@ -492,20 +493,15 @@ def matchmaking_selon_classement():
         IA1 = classement[i+1][0]
         IA2 = classement[i+2][0]
         print(f"Matchmaking : {IA0} vs {IA1} vs {IA2}")
-        IA0 = IA0.split(" profondeur ")
-        IA1 = IA1.split(" profondeur ")
-        IA2 = IA2.split(" profondeur ")
-        IA0[1] = int(IA0[1]) if IA0[1] != "None" else None
-        IA1[1] = int(IA1[1]) if IA1[1] != "None" else None
-        IA2[1] = int(IA2[1]) if IA2[1] != "None" else None
+
         simuler_partie((eval(IA0[0]), IA0[1]), (eval(IA1[0]), IA1[1]), (eval(IA2[0]), IA2[1]))
         afficher_classement()
 
-def tourne_pnd_temps(t): # en minutes
+def tourne_pnd_temps(t): # en secondes
     # faire tourner un pnd pendant t secondes, en simulant des parties entre IA
     start_time = time.time()
     compteur_parties = 0
-    while time.time() - start_time < t * 60:
+    while time.time() - start_time < t:
         simuler_partie()
         compteur_parties += 1
         if compteur_parties % 10 == 0:
@@ -525,14 +521,10 @@ def recuperer_sauvegarde_classement():
         f.write(contenu)
 
 if __name__ == "__main__":
-    recuperer_sauvegarde_classement() 
-    afficher_temps()
-    afficher_classement_graphique()
-    afficher_elo_en_fonction_du_temps()
     
-    
-    tourne_pnd_temps(2)
-    afficher_classement_graphique()
+    temps = 13*3600 # 13 heures en secondes
+    tourne_pnd_temps(temps)
+
     
     '''
     # on mets les nouveaux temps

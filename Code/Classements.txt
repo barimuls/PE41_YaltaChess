@@ -13,6 +13,3 @@ choisir_coup_IA_optimisee_parallele;3;1115.7468219428029;9.235888290405274
 choisir_coup_paranoid_alpha_beta;1;1073.478863937851;0.02594146728515625
 choisir_coup_paranoid_alpha_beta;2;1067.0759274824682;0.32810449600219727
 choisir_coup_paranoid_alpha_beta;3;1077.12521959996;8.07229986190796
-<function choisir_coup_paranoid_alpha_beta at 0x0000021CF5FE7060>;2;1000;None
-<function choisir_coup_IA_optimisee_ou_on_dejoue at 0x0000021CF5CC1D20>;2;1000;None
-<function choisir_coup_paranoid_alpha_beta at 0x0000021CF5FE7060>;2;1000;None
