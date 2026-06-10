@@ -35,12 +35,12 @@ def choisir_coup_heuristique(plateau , couleur):
     for coup in liste_coups:
         depart = coup[0]
         for arrivee in coup[1]:
-            # Copie profonde du plateau
+            #Copie profonde du plateau
             plateau_copie = copy.deepcopy(plateau)
 
             jouer_le_coup(plateau_copie, couleur, depart, arrivee)
                      
-            # Calculer le score
+            #Calculer le score
             h = heuristic(plateau_copie, couleur)
             
             if h > meilleur_score:
@@ -467,32 +467,19 @@ import math
 
 
 def evaluer_branche(args):
-    plateau, couleur, profondeur, depart, arrivee = args
-
+    plateau, couleur, profondeur, depart, arrivee, heuristique = args
     plateau_copie = copy.deepcopy(plateau)
-
     jouer_le_coup(plateau_copie, couleur, depart, arrivee)
-
-    evaluation = evaluation_rec_avantage_ou_on_dejoue(
+    evaluation = choix_IA(
         plateau_copie,
         (couleur + 1) % 3,
-        profondeur - 1
+        profondeur - 1,
+        parallelisme=False,
+        dejouer=False,
+        heuristique=heuristique
     )
-
-    heuristic = (
-        evaluation[couleur]
-        - 0.5 * evaluation[(couleur + 1) % 3]
-        - 0.5 * evaluation[(couleur + 2) % 3]
-    )
-
-    return (
-        heuristic,
-        evaluation[0],
-        evaluation[1],
-        evaluation[2],
-        depart,
-        arrivee
-    )
+    score = evaluation[couleur] - 0.5 * evaluation[(couleur + 1) % 3] - 0.5 * evaluation[(couleur + 2) % 3]
+    return score, evaluation[0], evaluation[1], evaluation[2], depart, arrivee
 
 def evaluation_rec_parallele(plateau, couleur, profondeur):
 
@@ -532,10 +519,10 @@ def evaluation_rec_parallele(plateau, couleur, profondeur):
 
         for resultat in resultats:
 
-            heuristic, s0, s1, s2, depart, arrivee = resultat
+            score, s0, s1, s2, depart, arrivee = resultat
 
-            if heuristic > meilleur_score:
-                meilleur_score = heuristic
+            if score > meilleur_score:
+                meilleur_score = score
                 meilleur_coup = (s0, s1, s2, depart, arrivee)
 
     return meilleur_coup
@@ -548,70 +535,46 @@ from typing import Callable # pour mettre un type de fonction
 
 def choix_IA(plateau, couleur, profondeur, parallelisme: bool, dejouer: bool, heuristique: Callable):
     if profondeur == 0:
-        return [heuristique(plateau,0),heuristique(plateau,1),heuristique(plateau,2),None,None];
-    
-      
-    
+        return [heuristique(plateau, 0), heuristique(plateau, 1), heuristique(plateau, 2), None, None]
+
     liste_coups = coup_possible(plateau, couleur)
     if not liste_coups:
-        heuristique = calculer_heuristiques(plateau)
-        return [heuristique(plateau,0),heuristique(plateau,1),heuristique(plateau,2),None,None];
+        h = calculer_heuristiques(plateau)
+        return [h[0], h[1], h[2], None, None]
 
-    meilleur_score = -float('inf');
-    meilleur_coup = None;
-   
-    taches = []
-    for coup in liste_coups: 
-        
-        depart = coup[0]
-        for arrivee in coup[1]:
-         if  not (parallelisme) :
-            
-             if dejouer :
-                jouer_le_coup(plateau, couleur, depart, arrivee)
+    meilleur_score = -float("inf")
+    meilleur_coup = None
 
-                #Appel récursif pour la couleur suivante
-                evaluation = heuristique(plateau, (couleur+1)%3, profondeur-1)
-            #print(evaluation)
-                heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
-                if heuristic > meilleur_score:
-                    meilleur_score = heuristic
-                    meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
+    if parallelisme:
+        taches = []
+        for coup in liste_coups:
+            depart = coup[0]
+            for arrivee in coup[1]:
+                taches.append((plateau, couleur, profondeur, depart, arrivee, heuristique))
 
-                dejouer_le_coup(plateau, couleur, depart, arrivee)
-             else :
-                plateau_bis= copy.deepcopy(plateau)
-                jouer_le_coup(plateau_bis, couleur, depart, arrivee)
-
-                #Appel récursif pour la couleur suivante
-                evaluation = heuristique(plateau, (couleur+1)%3, profondeur-1)
-            #print(evaluation)
-                heuristic = evaluation[couleur] - 0.5*evaluation[(couleur+1)%3] - 0.5*evaluation[(couleur+2)%3];
-                if heuristic > meilleur_score:
-                    meilleur_score = heuristic
-                    meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
-
-         else :
-                taches.append(
-                (
-                    plateau,
-                    couleur,
-                    profondeur,
-                    depart,
-                    arrivee
-                )
-            )
-                with ProcessPoolExecutor() as executor:
-
-                 resultats = executor.map(evaluer_branche, taches)
-
-                for resultat in resultats:
-
-                    heuristic, s0, s1, s2, depart, arrivee = resultat
-
-                if heuristic > meilleur_score:
-                    meilleur_score = heuristic
+        with ProcessPoolExecutor() as executor:
+            for score, s0, s1, s2, depart, arrivee in executor.map(evaluer_branche, taches):
+                if score > meilleur_score:
+                    meilleur_score = score
                     meilleur_coup = (s0, s1, s2, depart, arrivee)
+
+    else:
+        for coup in liste_coups:
+            depart = coup[0]
+            for arrivee in coup[1]:
+                if dejouer:
+                    jouer_le_coup(plateau, couleur, depart, arrivee)
+                    evaluation = choix_IA(plateau, (couleur + 1) % 3, profondeur - 1, False, True, heuristique)
+                    dejouer_le_coup(plateau, couleur, depart, arrivee)
+                else:
+                    plateau_bis = copy.deepcopy(plateau)
+                    jouer_le_coup(plateau_bis, couleur, depart, arrivee)
+                    evaluation = choix_IA(plateau_bis, (couleur + 1) % 3, profondeur - 1, False, False, heuristique)
+
+                score = evaluation[couleur] - 0.5 * evaluation[(couleur + 1) % 3] - 0.5 * evaluation[(couleur + 2) % 3]
+                if score > meilleur_score:
+                    meilleur_score = score
+                    meilleur_coup = (evaluation[0], evaluation[1], evaluation[2], depart, arrivee)
 
     return meilleur_coup
 
@@ -912,8 +875,7 @@ if __name__ == "__main__":
     #     heuristique_v1 (plateau,1)
     # end_time = time.time()
     # print(f"Moyenne des temps pour {k} calculs d'heuristiques avec heuristique_v1: {(end_time - start_time) / k:.4f} secondes")
-    
-    
-    
-    
-    
+
+
+
+
