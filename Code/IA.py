@@ -589,9 +589,6 @@ def choix_IA (plateau, couleur, profondeur, parallelisme : type=bool, dejouer : 
                     meilleur_coup = (evaluation[0],evaluation[1],evaluation[2],depart, arrivee)
 
          else :
-               
-
-                
                 taches.append(
                 (
                     plateau,
