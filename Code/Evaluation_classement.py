@@ -5,8 +5,9 @@ from Plateau import *
 import time
 import matplotlib.pyplot as plt
 
-# elos= Path(__file__).parent / "Elos.txt" # l'ancien qui contient uniquement les elos
+elos= Path(__file__).parent / "Elos.txt" # l'ancien qui contient uniquement les elos, ne jamais modifier
 classements = Path(__file__).parent / "Classements.txt" 
+ligne1 = "nom;profondeur;elo;temps\n"
 
 def formule_elo(elo_joueur_0,elo_joueur_1, resultat, k=32):
     # k est un facteur de pondération qui détermine à quel point les classements changent après chaque partie
@@ -64,7 +65,7 @@ def afficher_classement():
     classement = []
     for ligne in lignes:
         nom, profondeur, elo, _ = ligne.strip().split(";") 
-        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(elo)))
+        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(float(elo))))
 
     classement.sort(key=lambda x: x[2], reverse=True)
 
@@ -83,17 +84,19 @@ def afficher_classement_graphique(): # a mettre a jour plus tard
     classement = []
     for ligne in lignes:
         nom, profondeur, elo, _ = ligne.strip().split(";")
-        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(elo)))
+        classement.append((nom, int(profondeur) if profondeur != "None" else None, int(float(elo))))
 
     classement.sort(key=lambda x: x[2], reverse=True)
 
-    noms = [nom for nom, _, _ in classement]
+    elements = [(nom, profondeur) for nom, profondeur, _ in classement]
+    noms = [f"{nom} (profondeur {profondeur})" if profondeur is not None else nom for nom, profondeur in elements]
     elos = [elo for _, _, elo in classement]
 
     plt.figure(figsize=(12, 6))  # largeur, hauteur
 
     plt.barh(noms, elos)
 
+    plt.xlim(min(elos)-100, max(elos) + 50)  # ajuster les limites de l'axe x
     plt.xlabel("Elo")
     plt.title("Classement des joueurs")
 
@@ -138,9 +141,9 @@ def mettre_a_jour_classement_2j(joueur0,joueur1,resultat):
     print(f"difference de points : {nouvel_elo_joueur_0 - classement_joueur0} pour {joueur0}, {nouvel_elo_joueur_1 - classement_joueur1} pour {joueur1}")
 
 def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
-    ajouter_joueur_classement(joueur0[0], profondeur=joueur0[1])
-    ajouter_joueur_classement(joueur1[0], profondeur=joueur1[1])
-    ajouter_joueur_classement(joueur2[0], profondeur=joueur2[1])# n'ajoute le joueur que s'il n'est pas déjà présent dans le classement
+    ajouter_joueur_classement(joueur0[0].__name__, profondeur=joueur0[1])
+    ajouter_joueur_classement(joueur1[0].__name__, profondeur=joueur1[1])
+    ajouter_joueur_classement(joueur2[0].__name__, profondeur=joueur2[1])# n'ajoute le joueur que s'il n'est pas déjà présent dans le classement
     
     #gagnant vaut -1 en cas d'égalité
     
@@ -157,12 +160,12 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     classement_joueur2 = None
     
     for ligne in lignes:
-        nom, _, elo, _ = ligne.strip().split(";")
-        if nom == joueur0:
+        nom, profondeur, elo, _ = ligne.strip().split(";")
+        if nom == joueur0[0].__name__ and profondeur == str(joueur0[1]):
             classement_joueur0 = float(elo)
-        if nom == joueur1:
+        elif nom == joueur1[0].__name__ and profondeur == str(joueur1[1]):
             classement_joueur1 = float(elo)
-        if nom == joueur2:
+        elif nom == joueur2[0].__name__ and profondeur == str(joueur2[1]):
             classement_joueur2 = float(elo)
     
     if classement_joueur0 is None or classement_joueur1 is None or classement_joueur2 is None:
@@ -196,15 +199,15 @@ def mettre_a_jour_classement_3j(joueur0,joueur1,joueur2,gagnant):
     nouvel_elo_joueur_2 = classement_joueur2 + variation_joueur2
         
     with open(classements, "w") as f:
-        next(f)  # Ignore la première ligne
+        f.write(ligne1) # on réécrit la première ligne
         for ligne in lignes:
-            nom, _, elo, _ = ligne.strip().split(";")
-            if nom == joueur0:
-                f.write(f"{joueur0};{None};{nouvel_elo_joueur_0};{None}\n")
-            elif nom == joueur1:
-                f.write(f"{joueur1};{None};{nouvel_elo_joueur_1};{None}\n")
-            elif nom == joueur2:
-                f.write(f"{joueur2};{None};{nouvel_elo_joueur_2};{None}\n")
+            nom, profondeur, elo, temps = ligne.strip().split(";")
+            if nom == joueur0[0].__name__ and profondeur == str(joueur0[1]):
+                f.write(f"{joueur0[0].__name__};{profondeur};{nouvel_elo_joueur_0};{temps}\n")
+            elif nom == joueur1[0].__name__ and profondeur == str(joueur1[1]):
+                f.write(f"{joueur1[0].__name__};{profondeur};{nouvel_elo_joueur_1};{temps}\n")
+            elif nom == joueur2[0].__name__ and profondeur == str(joueur2[1]):
+                f.write(f"{joueur2[0].__name__};{profondeur};{nouvel_elo_joueur_2};{temps}\n")
             else:
                 f.write(ligne)
 
@@ -276,37 +279,212 @@ def simuler_partie(IA0 = None, IA1 = None, IA2 = None):
         print("Match nul")
         mettre_a_jour_classement_3j((IAs[0][0], IAs[0][1]), (IAs[1][0], IAs[1][1]), (IAs[2][0], IAs[2][1]), -1)
 
-def test_temps():
-    #test de temps pour les différentes IA
-    temps = []
-    
+def recuperer_position_d_une_partie(nmbre_coups = 10):
+    # faire une partie entre IA et récupérer la position après n coups
     plateau = creer_plateau()
     plateau.remplir_arete()
     plateau.remplir_pieces_initiales()
     
+    liste_IA = recuperer_IA()
     
-    for IA in liste_IA_existantes:
+    
+    IA0 = random.choice(liste_IA)
+    IA1 = random.choice(liste_IA)
+    IA2 = random.choice(liste_IA)
+    IAs = [IA0, IA1, IA2]
+    
+    
+    for i in range(nmbre_coups): # on joue nmbre_coups coups
+        IA_actuelle = IAs[i % 3]
+        if IA_actuelle[1] is not None:
+            (depart, arrivee) = IA_actuelle[0](plateau, i % 3, IA_actuelle[1]) # on choisit le coup
+        else: # si il n'y a pas de profondeur
+            (depart, arrivee) = IA_actuelle[0](plateau, i % 3) 
+        jouer_le_coup(plateau, i % 3, depart, arrivee)
+    
+    return plateau
+
+def test_temps():
+    #test de temps pour les différentes IA
+    temps_IA = {}
+    plateau = creer_plateau()
+    plateau.remplir_arete()
+    plateau.remplir_pieces_initiales()
+    
+    IAs = recuperer_IA()
+    
+    
+    for IA in IAs:
         start_time = time.time()
         if IA[1] is not None:
-            IA[0](plateau, 0, IA[1])
-        else:
-            IA[0](plateau, 0)
+            IA[0](plateau, 0, IA[1]) # on choisit le coup
+        else: # si il n'y a pas de profondeur
+            IA[0](plateau, 0) 
         end_time = time.time()
-        temps.append((IA[0].__name__, IA[1], end_time - start_time))
+        temps_IA[(IA[0].__name__, IA[1])] = end_time - start_time
         
-    temps.sort(key=lambda x: x[2])
-    for nom, profondeur, t in temps:
-        print(f"IA : {nom} profondeur {profondeur}, temps : {t:.4f} secondes")
+    with open(classements, "r") as f:
+        ligne1 = f.readline()  # Lire la première ligne
+        lignes = f.readlines()  # Lire le reste
+    
+    with open(classements, "w") as f:
+        
+        f.write(ligne1) # on réécrit la première ligne
+        for ligne in lignes:
+            nom, profondeur, elo, _ = ligne.strip().split(";")
+            if (nom, int(profondeur) if profondeur != "None" else None) in temps_IA:
+                f.write(f"{nom};{profondeur};{elo};{temps_IA[(nom, int(profondeur) if profondeur != 'None' else None)]}\n")
+            else:
+                f.write(ligne)
+  
+def test_temps_postions(positions):
+    #test de temps pour les différentes IA à partir de différentes positions
+    temps_IA = {}
+    
+    IAs = recuperer_IA()
+    
+    for position in positions:
+        for IA in IAs:
+            start_time = time.time()
+            if IA[1] is not None:
+                IA[0](position, 0, IA[1]) # on choisit le coup
+            else: # si il n'y a pas de profondeur
+                IA[0](position, 0) 
+            end_time = time.time()
+            if (IA[0].__name__, IA[1]) in temps_IA:
+                temps_IA[(IA[0].__name__, IA[1])] += end_time - start_time
+            else:
+                temps_IA[(IA[0].__name__, IA[1])] = end_time - start_time
+    moyenne_temps_IA = {k: v / len(positions) for k, v in temps_IA.items()} # on fait la moyenne des temps pour chaque IA
+    
+    #on met à jour le fichier classements avec les temps
+    with open(classements, "r") as f:
+        ligne1 = f.readline()  # Lire la première ligne
+        lignes = f.readlines()  # Lire le reste
+    with open(classements, "w") as f:
+        f.write(ligne1) # on réécrit la première ligne
+        for ligne in lignes:
+            nom, profondeur, elo, _ = ligne.strip().split(";")
+            if (nom, int(profondeur) if profondeur != "None" else None) in moyenne_temps_IA:
+                f.write(f"{nom};{profondeur};{elo};{moyenne_temps_IA[(nom, int(profondeur) if profondeur != 'None' else None)]}\n")
+            else:
+                f.write(ligne)
+def afficher_temps():
+    with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
+        lignes = f.readlines()
+
+    temps_IA = {}
+    for ligne in lignes:
+        nom, profondeur, _, temps = ligne.strip().split(";")
+        if temps != "None":
+            temps_IA[(nom, int(profondeur) if profondeur != "None" else None)] = float(temps)
+
+    elements = list(temps_IA.keys())
+    noms = [f"{nom} (profondeur {profondeur})" for nom, profondeur in elements]
+    temps = list(temps_IA.values())
+
+    plt.figure(figsize=(12, 6))  # largeur, hauteur
+
+    plt.barh(noms, temps)
+
+    plt.xlabel("Temps d'exécution (secondes)")
+    plt.title("Temps d'exécution des IA")
+
+    plt.gca().invert_yaxis()
+
+    plt.subplots_adjust(left=0.35)  # espace pour les noms
+
+    plt.show()
+    
+def afficher_elo_en_fonction_du_temps():
+    with open(classements, "r") as f:
+        next(f)
+        lignes = f.readlines()
+
+    elo_temps = {}
+    for ligne in lignes:
+        nom, profondeur, elo, temps = ligne.strip().split(";")
+        if temps != "None":
+            prof = int(profondeur) if profondeur != "None" else None
+            elo_temps[(nom, prof)] = (float(elo), float(temps))
+
+    # Marqueurs selon la profondeur
+    markers = {None: "o", 1: "s", 2: "D", 3: "^"}
+
+    # Couleur unique par nom d'IA
+    noms_uniques = list(dict.fromkeys(nom for nom, _ in elo_temps.keys()))
+    palette = plt.cm.tab10.colors
+    couleurs = {nom: palette[i % len(palette)] for i, nom in enumerate(noms_uniques)}
+
+    plt.figure(figsize=(12, 6))
+
+    for (nom, profondeur), (elo, temps) in elo_temps.items():
+        marker = markers.get(profondeur, "o")
+        couleur = couleurs[nom]
+        plt.scatter(temps, elo, color=couleur, marker=marker, s=100, zorder=3)
+
+    # Légende couleurs (IAs)
+    legende_ias = [
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=couleurs[nom],
+                   markersize=10, label=nom)
+        for nom in noms_uniques
+    ]
+
+    # Légende marqueurs (profondeurs)
+    legende_profondeurs = [
+        plt.Line2D([0], [0], marker=m, color="gray", markersize=10,
+                   label=f"Profondeur {p if p is not None else 'None'}", linestyle="None")
+        for p, m in markers.items()
+    ]
+    
+    leg1 = plt.legend(handles=legende_ias, title="IA",
+                      loc="lower right", bbox_to_anchor=(1, 0))
+    plt.gca().add_artist(leg1)
+    plt.legend(handles=legende_profondeurs, title="Profondeur",
+               loc="lower right", bbox_to_anchor=(0.67, 0))  
+
+    plt.xlabel("Temps d'exécution (secondes)")
+    plt.ylabel("Elo")
+    plt.title("Elo en fonction du temps d'exécution des IA")
+    plt.tight_layout()
+    plt.show()
+
+def importer_elos():
+    with open(elos, "r") as f:
+        next(f)  # Ignore la première ligne
+        lignes = f.readlines()
+
+    elos_IA = {}
+    for ligne in lignes:
+        nom_profondeur, elo = ligne.strip().split(";")
+        nom, profondeur = nom_profondeur.split(" profondeur ")
+        profondeur = int(profondeur) if profondeur != "None" else None
+        elos_IA[(nom, profondeur)] = float(elo)
+
+    with open(classements, "r") as f:
+        ligne1 = f.readline()  # Lire la première ligne
+        lignes_classement = f.readlines()  # Lire le reste
+
+    with open(classements, "w") as f:
+        f.write(ligne1) # on réécrit la première ligne
+        for nom, profondeur, ancien_elo, temps in (ligne.strip().split(";") for ligne in lignes_classement):
+            if (nom, int(profondeur) if profondeur != "None" else None) in elos_IA:
+                f.write(f"{nom};{profondeur};{elos_IA[(nom, int(profondeur) if profondeur != 'None' else None)]};{temps}\n")
+            else:
+                f.write(f"{nom};{profondeur};{ancien_elo};{temps}\n") # si l'IA n'est pas dans elos.txt on garde son ancien elo
+            
 
 def matchmaking_selon_classement():
     # faire un matchmaking selon le classement, les IA les plus proches s'affrontent
     with open(classements, "r") as f:
+        next(f)  # Ignore la première ligne
         lignes = f.readlines()
 
     classement = []
     for ligne in lignes:
-        nom, elo = ligne.strip().split(";")
-        classement.append((nom, float(elo)))
+        nom,profondeur,elo,temps = ligne.strip().split(";")
+        classement.append(((nom,int(profondeur) if profondeur != "None" else None), float(elo)))
 
     classement.sort(key=lambda x: x[1])
     
@@ -315,39 +493,50 @@ def matchmaking_selon_classement():
         IA1 = classement[i+1][0]
         IA2 = classement[i+2][0]
         print(f"Matchmaking : {IA0} vs {IA1} vs {IA2}")
-        IA0 = IA0.split(" profondeur ")
-        IA1 = IA1.split(" profondeur ")
-        IA2 = IA2.split(" profondeur ")
-        IA0[1] = int(IA0[1]) if IA0[1] != "None" else None
-        IA1[1] = int(IA1[1]) if IA1[1] != "None" else None
-        IA2[1] = int(IA2[1]) if IA2[1] != "None" else None
+
         simuler_partie((eval(IA0[0]), IA0[1]), (eval(IA1[0]), IA1[1]), (eval(IA2[0]), IA2[1]))
         afficher_classement()
 
-def tourne_pnd_2_jours():
-    # faire tourner un pnd pendant 2 jours, en simulant des parties entre IA
+def tourne_pnd_temps(t): # en secondes
+    # faire tourner un pnd pendant t secondes, en simulant des parties entre IA
     start_time = time.time()
     compteur_parties = 0
-    while time.time() - start_time < 2 * 24 * 60 * 60: # 2 jours en secondes
+    while time.time() - start_time < t:
         simuler_partie()
         compteur_parties += 1
         if compteur_parties % 10 == 0:
             matchmaking_selon_classement()
             afficher_classement()
             
+def sauvegarder_classement():
+    with open(classements, "r") as f:
+        contenu = f.read()
+    with open(classements.with_suffix(".backup.txt"), "w") as f:
+        f.write(contenu)
+            
+def recuperer_sauvegarde_classement():
+    with open(classements.with_suffix(".backup.txt"), "r") as f:
+        contenu = f.read()
+    with open(classements, "w") as f:
+        f.write(contenu)
 
 if __name__ == "__main__":
-    vider_classement()
-    remplir_IA(liste_IA_existantes)
     
-    afficher_classement()
-    simuler_partie()
-    afficher_classement()
-    afficher_classement_graphique()
-    #tourne_pnd_2_jours()
-    #matchmaking_selon_classement()
+    temps = 13*3600 # 13 heures en secondes
+    tourne_pnd_temps(temps)
+
     
-    
+    '''
+    # on mets les nouveaux temps
+    k = 5
+    positions = []
+    for i in range(k):
+        positions.append(recuperer_position_d_une_partie(nmbre_coups=10)) 
+        print(f"Position {i+1} récupérée")
+    test_temps_postions(positions)
+    afficher_temps()
+    afficher_elo_en_fonction_du_temps()
+    '''
     '''
     #test mettre à jour:
     reset_classement()

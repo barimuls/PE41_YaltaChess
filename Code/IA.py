@@ -543,7 +543,10 @@ def evaluation_rec_parallele(plateau, couleur, profondeur):
 def choisir_coup_IA_optimisee_parallele(plateau , couleur , profondeur=1 ):
     meilleur_coup = evaluation_rec_parallele(plateau, couleur, profondeur)
     return (meilleur_coup[3], meilleur_coup[4]);
-def choix_IA (plateau, couleur, profondeur, parallelisme : type=bool, dejouer : type=bool, heuristique : type=function) :
+
+from typing import Callable # pour mettre un type de fonction
+
+def choix_IA(plateau, couleur, profondeur, parallelisme: bool, dejouer: bool, heuristique: Callable):
     if profondeur == 0:
         return [heuristique(plateau,0),heuristique(plateau,1),heuristique(plateau,2),None,None];
     
@@ -909,9 +912,6 @@ if __name__ == "__main__":
     #     heuristique_v1 (plateau,1)
     # end_time = time.time()
     # print(f"Moyenne des temps pour {k} calculs d'heuristiques avec heuristique_v1: {(end_time - start_time) / k:.4f} secondes")
-    
-    
-    
     
     
     

@@ -1,3 +1,4 @@
 flask
 PyJWT
 argon2-cffi
+matplotlib
