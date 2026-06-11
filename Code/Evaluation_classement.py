@@ -98,7 +98,7 @@ def afficher_classement_graphique(): # a mettre a jour plus tard
 
     plt.xlim(min(elos)-100, max(elos) + 50)  # ajuster les limites de l'axe x
     plt.xlabel("Elo")
-    plt.title("Classement des joueurs")
+
 
     plt.gca().invert_yaxis()
 
@@ -389,7 +389,6 @@ def afficher_temps():
     plt.barh(noms, temps)
 
     plt.xlabel("Temps d'exécution (secondes)")
-    plt.title("Temps d'exécution des IA")
 
     plt.gca().invert_yaxis()
 
@@ -446,7 +445,7 @@ def afficher_elo_en_fonction_du_temps():
 
     plt.xlabel("Temps d'exécution (secondes)")
     plt.ylabel("Elo")
-    plt.title("Elo en fonction du temps d'exécution des IA")
+
     plt.tight_layout()
     plt.show()
 
@@ -522,9 +521,10 @@ def recuperer_sauvegarde_classement():
 
 if __name__ == "__main__":
     
-    temps = 13*3600 # 13 heures en secondes
-    tourne_pnd_temps(temps)
-
+    IAs = recuperer_IA()
+    print(recuperer_IA())
+    simuler_partie(IAs[0],IAs[2],IAs[2])
+    afficher_classement()
     
     '''
     # on mets les nouveaux temps
