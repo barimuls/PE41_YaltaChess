@@ -63,7 +63,7 @@ def tour_de_jeu_avec_IA_web(plateau, depart, arrivee):
 
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA
@@ -73,7 +73,7 @@ def tour_de_jeu_avec_IA_web(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True
     
     #tour de l'IA 2
@@ -83,7 +83,7 @@ def tour_de_jeu_avec_IA_web(plateau, depart, arrivee):
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
     #verifier la condition de victoire
-    if verifier_victoire(plateau, joueur):
+    if verifier_victoire(plateau):
         return True 
     
     return None
@@ -247,11 +247,10 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     if verifier_victoire(plateau):
         return True
     
-    profondeur = 3
-    
+    profondeur = 2  
     #tour de l'IA
     joueur =1 #IA
-    coups = IA.choisir_coup_IA_optimisee_parallele(plateau,joueur,profondeur);
+    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur,profondeur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);
@@ -261,7 +260,7 @@ def tour_de_jeu_test(plateau, depart, arrivee):
     
     #tour de l'IA 2
     joueur =2 #IA
-    coups = IA.choisir_coup_IA_optimisee_parallele(plateau,joueur,profondeur);
+    coups = IA.choisir_coup_IA_optimisee_ou_on_dejoue(plateau,joueur,profondeur);
     depart = coups[0];
     arrivee = coups[1];
     jouer_le_coup(plateau, joueur, depart, arrivee);

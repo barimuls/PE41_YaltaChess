@@ -1369,3 +1369,10 @@ def creer_plateau():
         for col in cols:
             plateau.ajouter_case(f"{col}{ligne}")
     return plateau
+
+
+if __name__ == "__main__":
+    plateau = creer_plateau()
+    plateau.remplir_pieces_initiales()
+    plateau.afficher()
+    print(plateau.sommets('a1').piece)

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Exemple Site Web</title>
+    <title>PE41 Echecs Yalta</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
 </head>
 
@@ -57,17 +57,17 @@
                 <h2>Jeu contre IA</h2>
                 <p>Choisissez le niveau de l'IA :</p>
                 <button class="mon-bouton" onclick="goToJeu('ia_aleatoire')" style="margin-top: 50px; width: 250px;">IA Aleatoire</button>
-                <button class="mon-bouton" onclick="returnModal(4,5)" style="margin-top: 30px; width: 250px;">IA Profondeur</button>
-                <button class="mon-bouton" onclick="ModalErreur(4)" style="margin-top: 30px; width: 250px;">IA Heuristique</button>
+                <button class="mon-bouton" onclick="returnModal(4,5)" style="margin-top: 30px; width: 250px;">IA Parallèle</button>
+                <button class="mon-bouton" onclick="ModalErreur(4)" style="margin-top: 30px; width: 250px;">IA Paranoid</button>
             </div>
         </div>
         <div class="overlay" id="overlay5">
             <div class="modal" style="max-width: 400px; max-height: 450px;">
                 <span class="bouton-fermer" onclick="returnModal(5,4)">↩</span>
-                <h2>Jeu contre IA Profondeur</h2>
+                <h2>Jeu contre IA Parallèle</h2>
                 <p>Choisissez la profondeur de l'IA :</p>
-                <button class="mon-bouton" onclick="goToJeu('ia_min_min_max')" style="margin-top: 50px; width: 250px;">Profondeur 1</button>
-                <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Profondeur 2</button>
+                <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 50px; width: 250px;">Profondeur 1</button>
+                <button class="mon-bouton" onclick="goToJeu('ia_parallele')" style="margin-top: 30px; width: 250px;">Profondeur 2</button>
                 <button class="mon-bouton" onclick="ModalErreur(5)" style="margin-top: 30px; width: 250px;">Profondeur 3</button>
             </div>
         </div>
